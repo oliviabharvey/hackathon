@@ -12,9 +12,10 @@ This version of the OS does not have a GUI and will require that we interface wi
 * Insert SD card in card reader and format card in FAT format.
 * Write the Raspberry Pi OS Lite on the SD card using the [Imager tool](https://www.raspberrypi.com/software/). This will create two compartments (rootfs and boot)
 * Go to boot folder and add an empty file called ssh, without extension:  `touch media/<user>/boot/ssh`
+  - For Windows, create the same empty file named `ssh` in your removable device under the `boot` folder.
 * Eject rootfs folder, insert sd card in pi but do not plug in pi nor the ethernet cable yet. 
 * Go to Settings/Network/Wired. In the options, go to IPV4 and set the default to `shared to other computers`
-  For Windows (Control Panel/Network and Sharing/Change Adapter Setting/*Select your ethernet adapter* > Properties > TCP/IP v4 Properties > use a fix IP - Frank To define a bit better after diner)
+  - For Windows go to Control Panel/Network and Sharing/Network, Select your WiFi connection/Properties/Sharing and select `Allow other network to connect through this computer's Internet connection` and select your Ethernet connection in the dropdown below.
 * Plug ethernet cable in both laptop and pi, then plug in power in pi.
 * Reboot computer
 * Launch terminal (Powershell for Windows) and use `ping raspberrypi.local` to get static ip of pi. 
