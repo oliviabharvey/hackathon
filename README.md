@@ -1,5 +1,5 @@
 # Setup
-## **On Ubuntu**
+Setup on Ubuntu by default. Windows specific steps are also described below.
 
 ### **Required**
 * Raspberry Pi with power cable
