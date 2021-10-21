@@ -34,22 +34,19 @@ Install [VS Code](https://code.visualstudio.com/Download?WT.mc_id=academic-11397
 Congrats! Now your VS Code IDE is remotely linked to your pi. You can launch a terminal from there, or you can access the project repo and start coding! You will eventually also be able to launch your scripts and troubleshoot code as well. 
 
 ### **Install Anaconda**
-* `wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh`
-  - For Windows, download `http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe`
+* Open your SSH window (ideally from VScode Terminal) and enter `wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh`
+  - For Windows, if you can connect to the Pi at this moment, but the `apt-get` commands are timing out, your netsh set up needs to be modified.
+  - Open an admin command prompt/Powershell and enter `netsh wlan show drivers`. Make sure "Hosted network supported" says "Yes". If it's "No", you cannot share the Internet conection over Ethernet.
+  - Enter `netsh wlan set hostednetwork mode=allow ssid="YOUR WIFI SSID" key="YOUR WIFI PASSWORD"`. Note that the `"` will be required if you have spaces in your WiFi SSID or password strings.
 * `sudo /bin/bash Miniconda3-latest-Linux-armv7l.sh`
-  - For Widowns, Install `Miniconda3-latest-Windows-x86_64.exe`
 * Accept the license agreement with yes
 * When asked, change the install location: `/home/pi/miniconda3`
-  - For Windows, select all users and keep default folder `C:\ProgramData\Miniconda3`
 * Do you wish the installer to prepend the Miniconda3 install location... answer yes
 * Now add the install path to the PATH variable: `sudo nano /home/pi/.bashrc`. Go to the end of the file .bashrc and add the following line: `export PATH="/home/pi/miniconda3/bin:$PATH"`
-  - For Windows, Select `Add Miniconda3 to system PATH environment variable`
 * Save the file and exit with ctrl+X then yes then enter. 
 * `source /home/pi/.bashrc`
 
 ## Path and update your pi
 * `sudo apt-get update`
 * `sudo apt-get upgrade`
-  - For Windows, if you can connect to the Pi at this moment, but the `apt-get` commands are timing out, your netsh set up needs to be modified.
-  - Open an admin command prompt/Powershell and enter `netsh wlan show drivers`. Make sure "Hosted network supported" says "Yes". If it's "No", you cannot share the Internet conection over Ethernet.
-  - Enter `netsh wlan set hostednetwork mode=allow ssid="YOUR WIFI SSID" key="YOUR WIFI PASSWORD"`. Note that the `"` will be required if you have spaces in your WiFi SSID or password strings.
+
