@@ -50,3 +50,6 @@ Congrats! Now your VS Code IDE is remotely linked to your pi. You can launch a t
 ## Path and update your pi
 * `sudo apt-get update`
 * `sudo apt-get upgrade`
+  - For Windows, if you can connect to the Pi at this moment, but the `apt-get` commands are timing out, your netsh set up needs to be modified.
+  - Open an admin command prompt/Powershell and enter `netsh wlan show drivers`. Make sure "Hosted network supported" says "Yes". If it's "No", you cannot share the Internet conection over Ethernet.
+  - Enter `netsh wlan set hostednetwork mode=allow ssid="YOUR WIFI SSID" key="YOUR WIFI PASSWORD"`. Note that the `"` will be required if you have spaces in your WiFi SSID or password strings.
