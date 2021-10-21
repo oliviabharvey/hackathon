@@ -14,10 +14,11 @@ This version of the OS does not have a GUI and will require that we interface wi
 * Go to boot folder and add an empty file called ssh, without extension:  `touch media/<user>/boot/ssh`
 * Eject rootfs folder, insert sd card in pi but do not plug in pi nor the ethernet cable yet. 
 * Go to Settings/Network/Wired. In the options, go to IPV4 and set the default to `shared to other computers`
+  For Windows (Control Panel/Network and Sharing/Change Adapter Setting/*Select your ethernet adapter* > Properties > TCP/IP v4 Properties > use a fix IP - Frank To define a bit better after diner)
 * Plug ethernet cable in both laptop and pi, then plug in power in pi.
 * Reboot computer
-* Launch terminal and use `ping raspberrypi.local` to get static ip of pi. 
-* ssh into pi using `ssh pi@<ip address of pi>`
+* Launch terminal (Powershell for Windows) and use `ping raspberrypi.local` to get static ip of pi. 
+* ssh into pi using `ssh pi@<ip address of pi>` or use `ssh pi@raspberrypi.local`
 * input password : `raspberry`
 
 Congrats! Now you can ssh into your pi via ethernet!
