@@ -9,7 +9,8 @@ Setup on Ubuntu by default. Windows specific steps are also described below.
 ### **Install Rasberry Pi OS Lite**
 This version of the OS does not have a GUI and will require that we interface with the pi with the command line. The good news is that we will use our IDE (i.e. VS Code) on our laptop and remotely connect to the pi via VS Code.
 
-* Insert SD card in card reader and format card in FAT format.
+* Insert SD card in card reader (in your computer) and format card in FAT format.
+  - See steps [here](https://www.techwalla.com/articles/format-sd-card-fat)
 * Write the Raspberry Pi OS Lite on the SD card using the [Imager tool](https://www.raspberrypi.com/software/). This will create two compartments (rootfs and boot)
 * Go to boot folder and add an empty file called ssh, without extension:  `touch media/<user>/boot/ssh`
   - For Windows, create the same empty file named `ssh` in your removable device under the `boot` folder.
