@@ -4,9 +4,9 @@ import random
 from experiments.base_exp import BaseExperiment
 from utils.enums import *
 
-class Experiment4(BaseExperiment):
+class Experiment5(BaseExperiment):
     """
-    Definition of Experiment of Stage 4
+    Definition of Experiment of Stage 5
     """
 
     def __init__(self, duration_minutes=60):
@@ -48,7 +48,7 @@ class Experiment4(BaseExperiment):
                 self.proceed_to_ir_break()
             elif self.bad_click:
                 # self.touch_screen_helper.image_off()
-                self.proceed_to_punish_delay(delay=15)
+                self.proceed_to_punish_delay()
 
         elif self.state == States.IR_BREAK: 
             if random.uniform(0, 1) >= 0.95:  # TO UPDATE
