@@ -1,6 +1,7 @@
 import time
 import random
 
+from module_touchscreen.touch_screen_helper import TouchScreenHelper
 from utils.enums import *
 
 TICK = 0.1
@@ -59,7 +60,7 @@ class BaseExperiment():
         return
 
     def initialize_touch_screen_helper(self, display_type):
-        # self.touch_screen_helper = TouchScreenClass()
+        self.touch_screen_helper = TouchScreenHelper(self, display_type)
         return
 
     def on_completion(self):

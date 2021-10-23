@@ -37,8 +37,8 @@ class Experiment2(BaseExperiment):
 
     def update_state(self):
         if self.state == States.TOUCH_OR_DELAY:
-            if random.uniform(0, 1) >= 0.95:  # TO UPDATE
-                self.good_click = True
+            #if random.uniform(0, 1) >= 0.95:  # TO UPDATE
+             #   self.good_click = True
             if self.good_click:
                 self.deliver_sequence(qty=60)
                 self.proceed_to_delay_step()

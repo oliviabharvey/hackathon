@@ -1,0 +1,150 @@
+2021-10-23 20:59:32,259: Mouse moved to (398, 267)
+2021-10-23 20:59:32,416: Mouse moved to (418, 278)
+2021-10-23 20:59:32,806: Mouse moved to (320, 249)
+2021-10-23 20:59:32,986: Mouse moved to (383, 255)
+2021-10-23 20:59:33,136: Mouse moved to (412, 278)
+2021-10-23 20:59:33,316: Mouse moved to (315, 270)
+2021-10-23 20:59:33,466: Mouse moved to (337, 272)
+2021-10-23 20:59:33,596: Mouse moved to (355, 285)
+2021-10-23 20:59:33,756: Mouse moved to (385, 293)
+2021-10-23 20:59:33,966: Mouse moved to (424, 278)
+2021-10-23 20:59:34,096: Mouse moved to (413, 268)
+2021-10-23 20:59:34,276: Mouse moved to (335, 289)
+2021-10-23 20:59:34,436: Mouse moved to (320, 313)
+2021-10-23 20:59:34,556: Mouse moved to (357, 325)
+2021-10-23 20:59:39,266: Mouse moved to (377, 306)
+2021-10-23 20:59:39,536: Mouse moved to (467, 311)
+2021-10-23 20:59:39,775: Mouse moved to (527, 315)
+2021-10-23 20:59:39,925: Mouse moved to (543, 330)
+2021-10-23 20:59:40,315: Mouse moved to (401, 391)
+2021-10-23 20:59:40,496: Mouse moved to (388, 384)
+2021-10-23 20:59:40,646: Mouse moved to (417, 362)
+2021-10-23 21:00:12,416: Mouse moved to (417, 322)
+2021-10-23 21:00:12,716: Mouse moved to (421, 316)
+2021-10-23 21:00:12,896: Mouse moved to (426, 312)
+2021-10-23 21:00:15,466: Mouse moved to (309, 321)
+2021-10-23 21:00:15,736: Mouse moved to (391, 327)
+2021-10-23 21:00:15,866: Mouse moved to (401, 315)
+2021-10-23 21:16:10,819: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+  File "/home/pi/hackathon_souris/module_touchscreen/touch_screen_helper.py", line 13, in on_move
+    self.current_exp.on_click()
+NameError: name 'self' is not defined
+2021-10-23 21:16:47,510: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+  File "/home/pi/hackathon_souris/module_touchscreen/touch_screen_helper.py", line 13, in on_move
+    current_exp.on_click()
+NameError: name 'current_exp' is not defined
+2021-10-23 21:23:04,899: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+  File "/home/pi/hackathon_souris/module_touchscreen/touch_screen_helper.py", line 16, in on_move
+    def on_move(x, y):
+NameError: name 'current_exp' is not defined
+2021-10-23 21:23:04,894: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+  File "/home/pi/hackathon_souris/module_touchscreen/touch_screen_helper.py", line 17, in on_move
+    current_exp.on_click()
+NameError: name 'current_exp' is not defined
+2021-10-23 21:31:34,244: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+  File "/home/pi/hackathon_souris/module_touchscreen/touch_screen_helper.py", line 17, in on_move
+    current_exp.on_click()
+NameError: name 'current_exp' is not defined
+2021-10-23 21:39:12,813: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+TypeError: on_move() takes 2 positional arguments but 3 were given
+2021-10-23 21:40:19,035: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+TypeError: on_move() takes 2 positional arguments but 3 were given
+2021-10-23 21:42:12,344: Unhandled exception in listener callback
+Traceback (most recent call last):
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 211, in inner
+    return f(self, *args, **kwargs)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/xorg.py", line 471, in _handler
+    self._handle(self._display_stop, event)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/mouse/_xorg.py", line 156, in _handle
+    self.on_move(px, py)
+  File "/home/pi/miniconda3/envs/souris/lib/python3.6/site-packages/pynput/_util/__init__.py", line 127, in inner
+    if f(*args) is False:
+  File "/home/pi/hackathon_souris/module_touchscreen/touch_screen_helper.py", line 19, in on_move
+    current_exp.on_click()
+NameError: name 'current_exp' is not defined
+2021-10-23 21:43:17,932: Mouse moved to (377, 273)
+2021-10-23 21:43:18,699: Mouse moved to (401, 282)
+2021-10-23 21:43:19,671: Mouse moved to (378, 265)
+2021-10-23 21:43:20,011: Mouse moved to (398, 261)
+2021-10-23 21:43:20,191: Mouse moved to (429, 268)
+2021-10-23 21:43:32,671: Mouse moved to (429, 236)
+2021-10-23 21:43:32,801: Mouse moved to (384, 196)
+2021-10-23 21:43:33,170: Mouse moved to (455, 243)
+2021-10-23 21:43:33,380: Mouse moved to (479, 245)
+2021-10-23 21:43:33,510: Mouse moved to (491, 252)
+2021-10-23 21:43:33,690: Mouse moved to (479, 259)
+2021-10-23 21:43:33,840: Mouse moved to (483, 257)
+2021-10-23 21:43:33,970: Mouse moved to (487, 243)
+2021-10-23 21:43:34,080: Mouse moved to (488, 240)
+2021-10-23 21:43:34,170: Mouse moved to (496, 241)
+2021-10-23 21:43:34,351: Mouse moved to (499, 246)
+2021-10-23 21:43:34,500: Mouse moved to (496, 248)
+2021-10-23 21:43:34,620: Mouse moved to (513, 250)
+2021-10-23 21:43:34,750: Mouse moved to (506, 247)
+2021-10-23 21:53:02,262: Mouse moved to (418, 315)
+2021-10-23 21:53:04,961: Mouse moved to (328, 269)
+2021-10-23 21:53:05,231: Mouse moved to (339, 265)
+2021-10-23 21:53:09,459: Mouse moved to (355, 226)
