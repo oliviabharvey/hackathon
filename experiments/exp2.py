@@ -19,7 +19,7 @@ class Experiment2(BaseExperiment):
         """
         super().initialize()
         self.initialize_touch_screen_helper(DisplayPatterns.FIND_THE_SQUARE)
-        # self.touch_screen_helper.display_image()
+        self.touch_screen_helper.show_next_image()
         self.proceed_to_touch_or_delay()
 
     def proceed_to_touch_or_delay(self):
@@ -29,22 +29,19 @@ class Experiment2(BaseExperiment):
         self.log_msg('Waiting for mouse to touch screen or 30 sec delay.')
         self.state = States.TOUCH_OR_DELAY
         self.touch_time_start = time.time()
-        self.good_click = False
-
-    def on_click(self):
-        self.good_click = True
-        return
+        self.click_type = ClickTypes.NONE
+        self.touch_screen_helper.show_next_image()
 
     def update_state(self):
         if self.state == States.TOUCH_OR_DELAY:
             if random.uniform(0, 1) >= 0.95:  # TO UPDATE
-               self.good_click = True
-            if self.good_click:
-                # self.touch_screen_helper.image_off()
+               self.click_type = ClickTypes.GOOD
+            if self.click_type == ClickTypes.GOOD:
+                self.touch_screen_helper.display_black_screen()
                 self.deliver_sequence(qty=60)
                 self.proceed_to_ir_break()
             elif time.time() - self.touch_time_start >= 30:
-                # self.touch_screen_helper.image_off()
+                self.touch_screen_helper.display_black_screen()
                 self.deliver_sequence(qty=20)
                 self.proceed_to_ir_break()
         elif self.state == States.IR_BREAK: 

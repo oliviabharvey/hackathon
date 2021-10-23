@@ -29,7 +29,7 @@ from experiments.exp5 import Experiment5
 
 def main(): 
     
-    my_exp = Experiment5(duration_minutes=2)
+    my_exp = Experiment2(duration_minutes=2)
     my_exp.run_experiment()
 
     return

@@ -85,3 +85,7 @@ class BaseExperiment():
         self.punish_time_left = delay
         self.log_msg(f'Waiting for {self.punish_time_left} seconds due to incorrect touch.')
         self.state = States.PUNISH_DELAY
+
+    def on_click(self, click_type):
+        self.click_type = click_type
+        return

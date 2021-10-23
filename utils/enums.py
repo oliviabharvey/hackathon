@@ -19,3 +19,19 @@ class States(Enum):
     TOUCH_OR_DELAY = 4
     TOUCH = 5
     PUNISH_DELAY = 6
+
+class Sides(Enum):
+    """
+    Defines all possible side possibilities
+    """
+    NONE = 0
+    LEFT = 1
+    RIGHT = 2
+
+class ClickTypes(Enum):
+    """
+    Defines all possible click types
+    """
+    NONE = 0
+    GOOD = 1
+    BAD = 2
