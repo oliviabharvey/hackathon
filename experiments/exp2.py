@@ -35,9 +35,6 @@ class Experiment2(BaseExperiment):
         self.good_click = True
         return
 
-    def on_ir_break(self):
-        self.ir_break = True
-
     def update_state(self):
         if self.state == States.TOUCH_OR_DELAY:
             if random.uniform(0, 1) >= 0.95:  # TO UPDATE

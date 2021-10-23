@@ -53,8 +53,8 @@ class BaseExperiment():
     def update_state(self):
         return
 
-    def has_head_in_tray(self):
-        return random.choice([True, False]) # TO UPDATE
+    def on_ir_break(self):
+        self.ir_break = True
 
     def tray_light_off(self):
         return
