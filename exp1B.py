@@ -33,7 +33,7 @@ class Experiment1B():
 
     def initialize(self):
         """
-        Initiates food delivery sequence. 
+        Starting experiment with first steps.
         """
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
@@ -41,25 +41,41 @@ class Experiment1B():
         self.deliver_sequence(qty=150)
 
     def proceed_to_eat_and_exit(self):
+        """
+        Update states to waiting for mouse to eat and exit tray.
+        """
         self.log_msg('Waiting for mouse to eat food and exit tray')
         self.state = States.EAT_AND_EXIT
         self.need_to_go_in_tray = True
 
     def deliver_sequence(self, qty=100):
+        """
+        Implement food delivery sequence.
+        """
         self.tray_light_on()
         self.play_tone() # asynch - we don't wait for tone to finish playing
         self.deliver_food(qty)
 
     def tray_light_on(self):
+        """
+        Turns light on on food tray.
+        """
         return
     
     def play_tone(self): 
+        """
+        Play tone for asynch. duration of time. 
+        """
         return
 
     def deliver_food(self, qty=100):
+        """
+        Deliver food via seringe.
+        """
         self.log_msg(f'Food delivered: {qty}')
 
     def is_completed(self):
+       
             return time.time() - self.start_time >= self.exp_duration
 
     def update_state(self):
