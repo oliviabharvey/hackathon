@@ -59,3 +59,7 @@ Congrats! Now your VS Code IDE is remotely linked to your pi. You can launch a t
 * Create a python environment `conda create --name souris python=3.6`
 * You can now exit the root `exit`
 * Active your enviroment to use it `source activate souris`
+
+## Install GIT & Repo
+* Install Git`sudo apt install git`
+* Clone the repo `git clone https://github.com/oliviabharvey/hackathon.git`. VSCode will pop up a web connection to Github. Enter your crendentials.
