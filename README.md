@@ -52,3 +52,8 @@ Congrats! Now your VS Code IDE is remotely linked to your pi. You can launch a t
 * `sudo apt-get update`
 * `sudo apt-get upgrade`
 
+## Update your pi to Python 3.6
+* Add rpi channel to conda `conda config --add channels rpi`
+* Install python 3.6 `conda install python=3.6`
+* Create a python environment `conda create --name souris python=3.6`
+* Active your enviroment to use it `source activate souris`
