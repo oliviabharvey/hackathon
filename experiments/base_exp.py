@@ -24,12 +24,15 @@ class BaseExperiment():
 
     def initialize(self):
         """
-        Initiates food delivery sequence. 
+        Initiates initial steps of experiment.
         """
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
 
     def deliver_sequence(self, qty=100):
+        """
+        Performs full food delivery sequence: turning tray light on, playing tone and delivering food.
+        """
         self.tray_light_on()
         self.play_tone() # asynch - we don't wait for tone to finish playing
         self.deliver_food(qty)
@@ -67,7 +70,7 @@ class BaseExperiment():
 
     def proceed_to_delay_step(self):
         self.tray_light_off()
-        self.delay_time_left = 10
+        self.delay_time_left = 5
         self.log_msg(f'Waiting for {self.delay_time_left} seconds while mouse is out of tray')
         self.state = States.RESET_DELAY
 

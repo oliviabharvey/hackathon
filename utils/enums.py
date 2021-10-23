@@ -14,3 +14,4 @@ class States(Enum):
     EAT_AND_EXIT = 1
     RESET_DELAY = 2
     TOUCH_OR_DELAY = 3
+    TOUCH = 4
