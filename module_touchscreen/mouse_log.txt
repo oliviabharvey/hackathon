@@ -148,3 +148,5 @@ NameError: name 'current_exp' is not defined
 2021-10-23 21:53:04,961: Mouse moved to (328, 269)
 2021-10-23 21:53:05,231: Mouse moved to (339, 265)
 2021-10-23 21:53:09,459: Mouse moved to (355, 226)
+2021-10-23 21:57:46,931: Mouse moved to (421, 326)
+2021-10-23 21:57:53,763: Mouse moved to (338, 333)
