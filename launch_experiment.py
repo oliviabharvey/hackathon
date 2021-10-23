@@ -3,6 +3,7 @@
 import argparse
 import yaml
 
+from experiments.exp1A import Experiment1A
 from experiments.exp1B import Experiment1B
 from experiments.exp2 import Experiment2
 from experiments.exp3 import Experiment3
@@ -26,7 +27,7 @@ from experiments.exp3 import Experiment3
 
 def main(): 
     
-    my_exp = Experiment3(duration_minutes=2)
+    my_exp = Experiment1A(duration_minutes=1)
     my_exp.run_experiment()
 
     return

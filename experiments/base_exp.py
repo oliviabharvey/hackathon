@@ -63,7 +63,7 @@ class BaseExperiment():
         return
 
     def on_completion(self):
-        print('finished!!')
+        self.log_msg("Finished!")
 
     def log_msg(self, msg):
         print(f'Time: {round(time.time() - self.start_time, 1)} s - {str(msg)}')
