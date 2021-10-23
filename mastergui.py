@@ -2,10 +2,15 @@ from tkinter import *
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk
 import datetime
+import os
 
 class MasterGUI:
 
     def __init__(self,setups,experiments):
+
+        if os.environ.get('DISPLAY','') == '':
+            print('no display found. Using :0.0')
+            os.environ.__setitem__('DISPLAY', ':0.0')
 
         print("MasterGUI: Running GUI...")
         win = Tk()
@@ -60,6 +65,6 @@ class MasterGUI:
         file.writelines([mouse, "\n"+setup, "\n"+exp])
         file.close()
 
-# setups = ["Setup 1","Setup 2","Setup 3","Setup 4"]
-# experiments = ["Experiment 1","Experiment 2","Experiment 3","Experiment 4","Experiment 5","Experiment 6","Experiment 7","Experiment 8"]
-# myWin = MasterGUI(setups,experiments)
+setups = ["Setup 1","Setup 2","Setup 3","Setup 4"]
+experiments = ["Experiment 1","Experiment 2","Experiment 3","Experiment 4","Experiment 5","Experiment 6","Experiment 7","Experiment 8"]
+myWin = MasterGUI(setups,experiments)
