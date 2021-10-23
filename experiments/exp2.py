@@ -1,8 +1,8 @@
 import time
 import random
 
-from base_exp import BaseExperiment
-from enums import *
+from experiments.base_exp import BaseExperiment
+from utils.enums import *
 
 class Experiment2(BaseExperiment):
     """

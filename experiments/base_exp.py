@@ -1,7 +1,7 @@
 import time
 import random
 
-from enums import *
+from utils.enums import *
 
 TICK = 0.1
 

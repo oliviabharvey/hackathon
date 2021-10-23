@@ -3,8 +3,8 @@
 import argparse
 import yaml
 
-from exp1B import Experiment1B
-from exp2 import Experiment2
+from experiments.exp1B import Experiment1B
+from experiments.exp2 import Experiment2
 
 # def parse_args():
 #     """
