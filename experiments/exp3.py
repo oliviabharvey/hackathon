@@ -29,7 +29,6 @@ class Experiment3(BaseExperiment):
         self.log_msg('Waiting for mouse to touch screen.')
         self.state = States.TOUCH
         self.good_click = False
-        self.ir_break = False
 
     def on_click(self):
         self.good_click = True
