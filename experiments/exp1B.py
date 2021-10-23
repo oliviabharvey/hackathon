@@ -29,6 +29,7 @@ class Experiment1B(BaseExperiment):
         self.log_msg('Waiting for mouse to eat food and exit tray')
         self.state = States.EAT_AND_EXIT
         self.need_to_go_in_tray = True
+        self.ir_break = False
 
     def update_state(self):
         if self.state == States.EAT_AND_EXIT:

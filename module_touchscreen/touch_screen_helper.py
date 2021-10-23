@@ -1,5 +1,6 @@
 # Imports
 import os
+import random
 os.environ["DISPLAY"]=":0"
 
 from pynput.mouse import Listener
@@ -9,7 +10,6 @@ from utils.enums import *
 
 logging.basicConfig(filename="module_touchscreen/mouse_log.txt", level=logging.DEBUG, format='%(asctime)s: %(message)s')
 
-
 class TouchScreenHelper():
     def __init__(self, experiment, display_type):
         self.current_exp = experiment
@@ -17,7 +17,7 @@ class TouchScreenHelper():
         thread = threading.Thread(target=self.start_listening, args=())
         thread.start()
 
-        self.side = Sides.NONE
+        self.side = random.choice([Sides.LEFT, Sides.RIGHT])
         self.same_side_count = 0
         return
 
@@ -46,12 +46,19 @@ class TouchScreenHelper():
 
     def display_find_the_square(self):
         if self.same_side_count >= 3: 
-            self.same_side_count = 0
             self.swap_side()
-        
-
+            self.same_side_count = 1
+        else: 
+            swap = random.choice([True, False])
+            if swap:  
+                self.swap_side()
+                self.same_side_count = 1
+            else: 
+                self.same_side_count += 1
+        # to do : dan
 
     def display_left_or_right(self):
+            
         return
 
     def display_left_or_right_with_randomness(self):
