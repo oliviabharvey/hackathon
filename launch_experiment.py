@@ -3,9 +3,11 @@
 import argparse
 #import yaml
 
+from experiments.exp1A import Experiment1A
 from experiments.exp1B import Experiment1B
 from experiments.exp2 import Experiment2
 from experiments.exp3 import Experiment3
+from experiments.exp4 import Experiment4
 
 # def parse_args():
 #     """
