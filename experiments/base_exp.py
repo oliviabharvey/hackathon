@@ -71,7 +71,11 @@ class BaseExperiment():
     def proceed_to_delay_step(self):
         self.tray_light_off()
         self.delay_time_left = 5
-        self.log_msg(f'Waiting for {self.delay_time_left} seconds while mouse is out of tray')
+        self.log_msg(f'Waiting for {self.delay_time_left} seconds.')
         self.state = States.RESET_DELAY
 
-
+    def proceed_to_punish_delay(self):
+        self.tray_light_on()
+        self.punish_time_left = 10
+        self.log_msg(f'Waiting for {self.punish_time_left} seconds due to incorrect touch.')
+        self.state = States.PUNISH_DELAY

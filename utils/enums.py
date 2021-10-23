@@ -15,3 +15,4 @@ class States(Enum):
     RESET_DELAY = 2
     TOUCH_OR_DELAY = 3
     TOUCH = 4
+    PUNISH_DELAY = 5

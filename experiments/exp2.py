@@ -40,9 +40,11 @@ class Experiment2(BaseExperiment):
             if random.uniform(0, 1) >= 0.95:  # TO UPDATE
                 self.good_click = True
             if self.good_click:
+                # self.touch_screen_helper.image_off()
                 self.deliver_sequence(qty=60)
                 self.proceed_to_delay_step()
             elif time.time() - self.touch_time_start >= 30:
+                # self.touch_screen_helper.image_off()
                 self.deliver_sequence(qty=20)
                 self.proceed_to_delay_step()
         elif self.state == States.RESET_DELAY: 
