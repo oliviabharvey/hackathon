@@ -14,6 +14,7 @@ class TouchScreenHelper():
     def __init__(self, experiment, display_type):
         self.current_exp = experiment
         self.display_type = display_type
+        self.touch_screen_enabled = False
         thread = threading.Thread(target=self.start_listening, args=())
         thread.start()
 
@@ -26,8 +27,11 @@ class TouchScreenHelper():
             listener.join()
 
     def on_move(self, x, y):
-        self.current_exp.on_click(ClickTypes.GOOD)
-        logging.info("Mouse moved to ({0}, {1})".format(x, y))
+        if  self.touch_screen_enabled:
+            self.touch_screen_enabled = False
+            self.click_type = self.check_click_type()
+            self.current_exp.on_click(self.click_type)
+            logging.info("Mouse moved to ({0}, {1})".format(x, y))
 
     def show_next_image(self):
         if self.display_type == DisplayPatterns.NONE:
@@ -38,6 +42,8 @@ class TouchScreenHelper():
             self.display_left_or_right()
         elif self.display_type == DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS:
             self.display_left_or_right_with_randomness()
+        
+        self.touch_screen_enabled = True
 
     
     def display_black_screen(self):
@@ -58,7 +64,7 @@ class TouchScreenHelper():
         # to do : dan
 
     def display_left_or_right(self):
-
+        # to do : dan
         return
 
     def display_left_or_right_with_randomness(self):
@@ -70,6 +76,7 @@ class TouchScreenHelper():
         else: 
             self.side = Sides.LEFT
 
-
+    def check_click_type(self):
+        return ClickTypes.GOOD
 
     
