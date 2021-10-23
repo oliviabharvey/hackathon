@@ -18,6 +18,7 @@ class Experiment1B(BaseExperiment):
         Starting experiment with first steps.
         """
         super().initialize()
+        self.initialize_touch_screen_helper(DisplayPatterns.NONE)
         self.proceed_to_eat_and_exit()
         self.deliver_sequence(qty=150)
 

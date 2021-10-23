@@ -18,7 +18,7 @@ class Experiment5(BaseExperiment):
         Starting experiment with first steps.
         """
         super().initialize()
-        self.initialize_touch_screen_helper(ScreenTypes.TWO_SQUARES)
+        self.initialize_touch_screen_helper(DisplayPatterns.LEFT_OR_RIGHT)
         # self.touch_screen_helper.display_image()
         self.proceed_to_touch()
 

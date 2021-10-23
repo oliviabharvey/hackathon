@@ -18,6 +18,7 @@ class Experiment1A(BaseExperiment):
         Starting experiment with first steps.
         """
         super().initialize()
+        self.initialize_touch_screen_helper(DisplayPatterns.NONE)
 
     def update_state(self):
         return

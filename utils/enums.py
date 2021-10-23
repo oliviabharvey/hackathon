@@ -1,11 +1,13 @@
 from enum import Enum
 
-class ScreenTypes(Enum):
+class DisplayPatterns(Enum):
     """
     Defines all possible types of touch screen displays
     """
     NONE = 0
-    TWO_SQUARES = 1
+    FIND_THE_SQUARE = 1
+    LEFT_OR_RIGHT = 2
+    LEFT_OR_RIGHT_WITH_RANDOMNESS = 3
 
 class States(Enum):
     """
