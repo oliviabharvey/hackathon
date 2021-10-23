@@ -26,7 +26,7 @@ class TouchScreenHelper():
             listener.join()
 
     def on_move(self, x, y):
-        self.current_exp.on_click()
+        self.current_exp.on_click(ClickTypes.GOOD)
         logging.info("Mouse moved to ({0}, {1})".format(x, y))
 
     def show_next_image(self):
@@ -58,7 +58,7 @@ class TouchScreenHelper():
         # to do : dan
 
     def display_left_or_right(self):
-            
+
         return
 
     def display_left_or_right_with_randomness(self):
