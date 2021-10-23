@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-import yaml
+#import yaml
 
 from experiments.exp1A import Experiment1A
 from experiments.exp1B import Experiment1B
@@ -28,7 +28,7 @@ from experiments.exp4 import Experiment4
 
 def main(): 
     
-    my_exp = Experiment4(duration_minutes=1)
+    my_exp = Experiment2(duration_minutes=2)
     my_exp.run_experiment()
 
     return
