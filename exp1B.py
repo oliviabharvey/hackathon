@@ -1,18 +1,8 @@
 import time
 import random
 
-from enum import Enum
-
 from base_exp import BaseExperiment
-
-TICK = 0.1
-
-class States(Enum):
-    """
-    Defines all possible states
-    """
-    EAT_AND_EXIT = 1
-    DELAY = 2
+from enums import *
 
 class Experiment1B(BaseExperiment):
     """
@@ -45,16 +35,9 @@ class Experiment1B(BaseExperiment):
                 self.need_to_go_in_tray = False
             elif not self.need_to_go_in_tray and not self.has_head_in_tray():
                 self.proceed_to_delay_step()
-        elif self.state == States.DELAY: 
+        elif self.state == States.RESET_DELAY: 
             if not self.has_head_in_tray():
-                self.delay_time_left -= TICK
+                self.delay_time_left -= self.tick
             if self.delay_time_left <= 0:
                 self.deliver_sequence(qty=20)
                 self.proceed_to_eat_and_exit()
-
-    def proceed_to_delay_step(self):
-        self.tray_light_off()
-        self.delay_time_left = 10
-        self.log_msg(f'Waiting for {self.delay_time_left} seconds while mouse is out of tray')
-        self.state = States.DELAY
-

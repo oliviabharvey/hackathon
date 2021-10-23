@@ -4,6 +4,7 @@ import argparse
 import yaml
 
 from exp1B import Experiment1B
+from exp2 import Experiment2
 
 # def parse_args():
 #     """
@@ -24,7 +25,7 @@ from exp1B import Experiment1B
 
 def main(): 
     
-    my_exp = Experiment1B(duration_minutes=2)
+    my_exp = Experiment2(duration_minutes=2)
     my_exp.run_experiment()
 
     return

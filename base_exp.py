@@ -1,13 +1,14 @@
 import time
 import random
 
-from enum import Enum
+from enums import *
 
 TICK = 0.1
 
 class BaseExperiment():
 
     def __init__(self, duration_minutes):
+        self.tick = TICK
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
         return
 
@@ -18,7 +19,7 @@ class BaseExperiment():
         self.initialize()
         while not self.is_completed():
             self.update_state()
-            time.sleep(TICK)
+            time.sleep(self.tick)
         self.on_completion()
 
     def initialize(self):
@@ -54,10 +55,20 @@ class BaseExperiment():
     def tray_light_off(self):
         return
 
+    def initialize_touch_screen_helper(self, display_type):
+        # self.touch_screen_helper = TouchScreenClass()
+        return
+
     def on_completion(self):
         print('finished!!')
 
     def log_msg(self, msg):
         print(f'Time: {round(time.time() - self.start_time, 1)} s - {str(msg)}')
+
+    def proceed_to_delay_step(self):
+        self.tray_light_off()
+        self.delay_time_left = 10
+        self.log_msg(f'Waiting for {self.delay_time_left} seconds while mouse is out of tray')
+        self.state = States.RESET_DELAY
 
 
