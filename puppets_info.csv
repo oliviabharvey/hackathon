@@ -1,2 +1,2 @@
-real_puppet,pi,raspberry_motor.local,raspberry
+Puppet 1,pi,puppet1.local,raspberry
 Puppet2,pi2,raspberry2.local,thisisthepassword2
