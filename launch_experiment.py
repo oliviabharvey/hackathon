@@ -24,7 +24,7 @@ from exp1B import Experiment1B
 
 def main(): 
     
-    my_exp = Experiment1B()
+    my_exp = Experiment1B(duration_minutes=2)
     my_exp.run_experiment()
 
     return

@@ -5,20 +5,10 @@ from enum import Enum
 
 TICK = 0.1
 
-class States(Enum):
-    """
-    Defines all possible states
-    """
-    EAT_AND_EXIT = 1
-    DELAY = 2
+class BaseExperiment():
 
-class Experiment1B():
-    """
-    Definition of Experiment of Stage 1B
-    """
-
-    def __init__(self):
-        self.exp_duration = 2 * 60 # duration in seconds TO UPDATE
+    def __init__(self, duration_minutes):
+        self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
         return
 
     def run_experiment(self):
@@ -37,13 +27,6 @@ class Experiment1B():
         """
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
-        self.proceed_to_eat_and_exit()
-        self.deliver_sequence(qty=150)
-
-    def proceed_to_eat_and_exit(self):
-        self.log_msg('Waiting for mouse to eat food and exit tray')
-        self.state = States.EAT_AND_EXIT
-        self.need_to_go_in_tray = True
 
     def deliver_sequence(self, qty=100):
         self.tray_light_on()
@@ -63,26 +46,10 @@ class Experiment1B():
             return time.time() - self.start_time >= self.exp_duration
 
     def update_state(self):
-        if self.state == States.EAT_AND_EXIT:
-            if self.need_to_go_in_tray and self.has_head_in_tray():
-                self.need_to_go_in_tray = False
-            elif not self.need_to_go_in_tray and not self.has_head_in_tray():
-                self.proceed_to_delay_step()
-        elif self.state == States.DELAY: 
-            if not self.has_head_in_tray():
-                self.delay_time_left -= TICK
-            if self.delay_time_left <= 0:
-                self.deliver_sequence(qty=20)
-                self.proceed_to_eat_and_exit()
+        return
 
     def has_head_in_tray(self):
         return random.choice([True, False]) # TO UPDATE
-
-    def proceed_to_delay_step(self):
-        self.tray_light_off()
-        self.delay_time_left = 10
-        self.log_msg(f'Waiting for {self.delay_time_left} seconds while mouse is out of tray')
-        self.state = States.DELAY
 
     def tray_light_off(self):
         return

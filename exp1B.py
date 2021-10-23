@@ -3,6 +3,8 @@ import random
 
 from enum import Enum
 
+from base_exp import BaseExperiment
+
 TICK = 0.1
 
 class States(Enum):
@@ -12,31 +14,20 @@ class States(Enum):
     EAT_AND_EXIT = 1
     DELAY = 2
 
-class Experiment1B():
+class Experiment1B(BaseExperiment):
     """
     Definition of Experiment of Stage 1B
     """
 
-    def __init__(self):
-        self.exp_duration = 20 * 60 # duration in seconds
+    def __init__(self, duration_minutes=20):
+        super().__init__(duration_minutes)
         return
-
-    def run_experiment(self):
-        """
-        Initializes and runs experiment, then perform end of experiment steps.
-        """
-        self.initialize()
-        while not self.is_completed():
-            self.update_state()
-            time.sleep(TICK)
-        self.on_completion()
 
     def initialize(self):
         """
         Starting experiment with first steps.
         """
-        self.start_time = time.time()
-        self.log_msg('Starting Experiment')
+        super().initialize()
         self.proceed_to_eat_and_exit()
         self.deliver_sequence(qty=150)
 
@@ -47,36 +38,6 @@ class Experiment1B():
         self.log_msg('Waiting for mouse to eat food and exit tray')
         self.state = States.EAT_AND_EXIT
         self.need_to_go_in_tray = True
-
-    def deliver_sequence(self, qty=100):
-        """
-        Implement food delivery sequence.
-        """
-        self.tray_light_on()
-        self.play_tone() # asynch - we don't wait for tone to finish playing
-        self.deliver_food(qty)
-
-    def tray_light_on(self):
-        """
-        Turns light on on food tray.
-        """
-        return
-    
-    def play_tone(self): 
-        """
-        Play tone for asynch. duration of time. 
-        """
-        return
-
-    def deliver_food(self, qty=100):
-        """
-        Deliver food via seringe.
-        """
-        self.log_msg(f'Food delivered: {qty}')
-
-    def is_completed(self):
-       
-            return time.time() - self.start_time >= self.exp_duration
 
     def update_state(self):
         if self.state == States.EAT_AND_EXIT:
@@ -91,21 +52,9 @@ class Experiment1B():
                 self.deliver_sequence(qty=20)
                 self.proceed_to_eat_and_exit()
 
-    def has_head_in_tray(self):
-        return random.choice([True, False]) # TO UPDATE
-
     def proceed_to_delay_step(self):
         self.tray_light_off()
         self.delay_time_left = 10
         self.log_msg(f'Waiting for {self.delay_time_left} seconds while mouse is out of tray')
         self.state = States.DELAY
-
-    def tray_light_off(self):
-        return
-
-    def on_completion(self):
-        print('finished!!')
-
-    def log_msg(self, msg):
-        print(f'Time: {round(time.time() - self.start_time, 1)} s - {str(msg)}')
 
