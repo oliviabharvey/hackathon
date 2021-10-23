@@ -45,10 +45,16 @@ class Experiment4(BaseExperiment):
             if self.good_click:
                 # self.touch_screen_helper.image_off()
                 self.deliver_sequence(qty=20)
-                self.proceed_to_delay_step()
+                self.proceed_to_ir_break()
             elif self.bad_click:
                 # self.touch_screen_helper.image_off()
                 self.proceed_to_punish_delay()
+
+        elif self.state == States.IR_BREAK: 
+            if random.uniform(0, 1) >= 0.95:  # TO UPDATE
+                self.ir_break = True
+            if self.ir_break == True:
+                self.proceed_to_delay_step()
 
         elif self.state == States.RESET_DELAY: 
             self.delay_time_left -= self.tick

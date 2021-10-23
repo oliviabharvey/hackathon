@@ -12,7 +12,8 @@ class States(Enum):
     Defines all possible states
     """
     EAT_AND_EXIT = 1
-    RESET_DELAY = 2
-    TOUCH_OR_DELAY = 3
-    TOUCH = 4
-    PUNISH_DELAY = 5
+    IR_BREAK = 2
+    RESET_DELAY = 3
+    TOUCH_OR_DELAY = 4
+    TOUCH = 5
+    PUNISH_DELAY = 6
