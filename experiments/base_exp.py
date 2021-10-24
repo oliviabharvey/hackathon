@@ -22,11 +22,20 @@ class BaseExperiment():
         """
         Initializes and runs experiment, then perform end of experiment steps.
         """
-        self.initialize()
-        while not self.is_completed():
-            self.update_state()
-            time.sleep(self.tick)
-        self.on_completion()
+        try:
+            self.initialize()
+            while not self.is_completed():
+                self.update_state()
+                time.sleep(self.tick)
+            self.on_completion()
+        except:
+            import sys            
+            self.log_msg("Exception occured : "+ str(sys.exc_info())) 
+            if debug :
+                raise     
+        
+            self.data_mgr.update_status('error')
+            self.data_mgr.write_dict(self.cfg['results'])
 
     def initialize(self):
         """
@@ -78,6 +87,15 @@ class BaseExperiment():
             self.touch_screen_helper.listener_ref.stop()
         self.log_msg("Finished!")
         self.data_mgr.update_status('completed')
+        self.data_mgr.write_dict(self.cfg['results'])
+
+    def on_error(self):
+        import sys            
+        self.log_msg("Exception occured : "+ sys.exc_info()) 
+        if debug :
+            raise     
+       
+        self.data_mgr.update_status('error')
         self.data_mgr.write_dict(self.cfg['results'])
 
     def log_msg(self, msg):
