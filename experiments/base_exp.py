@@ -2,15 +2,17 @@ import time
 import random
 
 from module_touchscreen.touch_screen_helper import TouchScreenHelper
+from hardware.hardware_connector import HardwareConnector
 from utils.enums import *
 
 TICK = 0.1
 
 class BaseExperiment():
 
-    def __init__(self, duration_minutes):
+    def __init__(self, duration_minutes, debug=False):
         self.tick = TICK
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
+        self.debug = debug
         return
 
     def run_experiment(self):
@@ -29,6 +31,7 @@ class BaseExperiment():
         """
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
+        self.hardware_connector = HardwareConnector(self.debug)
 
     def deliver_sequence(self, qty=100):
         """

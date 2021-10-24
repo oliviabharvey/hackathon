@@ -13,6 +13,10 @@ class Experiment4(BaseExperiment):
         super().__init__(duration_minutes)
         return
 
+    def __init__(self, duration_minutes=60, debug=False):
+        super().__init__(duration_minutes, debug)
+        return
+
     def initialize(self):
         """
         Starting experiment with first steps.
@@ -46,9 +50,7 @@ class Experiment4(BaseExperiment):
                 self.proceed_to_punish_delay(delay=15)
 
         elif self.state == States.IR_BREAK: 
-            if random.uniform(0, 1) >= 0.95:  # TO UPDATE
-                self.ir_break = True
-            if self.ir_break == True:
+            if self.hardware_connector.is_irb_broken() == True:
                 self.proceed_to_delay_step()
 
         elif self.state == States.RESET_DELAY: 

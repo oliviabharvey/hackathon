@@ -9,8 +9,8 @@ class Experiment3(BaseExperiment):
     Definition of Experiment of Stage 3
     """
 
-    def __init__(self, duration_minutes=60):
-        super().__init__(duration_minutes)
+    def __init__(self, duration_minutes=60, debug=False):
+        super().__init__(duration_minutes, debug)
         return
 
     def initialize(self):
@@ -41,9 +41,7 @@ class Experiment3(BaseExperiment):
                 self.proceed_to_ir_break()
 
         elif self.state == States.IR_BREAK: 
-            if random.uniform(0, 1) >= 0.95:  # TO UPDATE
-                self.ir_break = True
-            if self.ir_break == True:
+            if self.hardware_connector.is_irb_broken() == True:
                 self.proceed_to_delay_step()
 
         elif self.state == States.RESET_DELAY: 

@@ -30,7 +30,7 @@ from experiments.exp6 import Experiment6
 
 def main(): 
     
-    my_exp = Experiment6(duration_minutes=2)
+    my_exp = Experiment6(duration_minutes=2, debug=True)
     my_exp.run_experiment()
 
     return

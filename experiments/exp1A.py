@@ -9,8 +9,8 @@ class Experiment1A(BaseExperiment):
     Definition of Experiment of Stage 1A
     """
 
-    def __init__(self, duration_minutes=10):
-        super().__init__(duration_minutes)
+    def __init__(self, duration_minutes=10, debug=False):
+        super().__init__(duration_minutes, debug)
         return
 
     def initialize(self):
