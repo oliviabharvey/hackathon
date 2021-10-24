@@ -63,5 +63,5 @@ Congrats! Now your VS Code IDE is remotely linked to your pi. You can launch a t
 ## Install GIT & Repo
 * Install Git`sudo apt install git`
 * Create a folder `mkdir /home/pi/Projects/hackathon/`
-* Got to home folder `cd /home/pi`
+* Got to home folder `cd /home/pi/Projects`
 * Clone the repo `git clone https://github.com/oliviabharvey/hackathon.git`. VSCode will pop up a web connection to Github. Enter your crendentials.
