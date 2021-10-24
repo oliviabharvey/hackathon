@@ -1,3 +1,4 @@
 experiment: exp2 # choices: exp1A, exp1B, exp2, exp3, exp4, exp5, prl1
+results_path: results/results.yaml
 mouse_name: NAME
 puppet: Puppet2

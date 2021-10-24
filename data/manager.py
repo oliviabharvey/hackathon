@@ -1,4 +1,4 @@
-
+import yaml
 
 class DataManager():
 
@@ -9,7 +9,11 @@ class DataManager():
     def update(self):
         return
 
-    def write_dict(self, path):
-        return
+    def update_status(self, status):
+        self.data['status'] = status
+
+    def write_dict(self, path='results/results.yaml'):
+        with open(path, "w") as file:
+            yaml.dump(self.data, file, default_flow_style=False)
 
 

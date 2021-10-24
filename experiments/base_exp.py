@@ -34,8 +34,9 @@ class BaseExperiment():
         """
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
-        self.hardware_connector = HardwareConnector(self.debug)
         self.data_mgr = DataManager(self.cfg)
+        self.data_mgr.update_status('running')
+        self.hardware_connector = HardwareConnector(self.debug)
 
     def deliver_sequence(self, qty=100):
         """
@@ -72,9 +73,12 @@ class BaseExperiment():
 
     def on_completion(self):
         self.log_msg("Finished!")
+        self.data_mgr.update_status('completed')
+        self.data_mgr.write_dict(self.cfg['results_path'])
 
     def log_msg(self, msg):
-        print(f'Time: {round(time.time() - self.start_time, 1)} s - {str(msg)}')
+        m, s = divmod((time.time() - self.start_time), 60)
+        print(f'Time: {round(m)} min {round(s,1)} s - {str(msg)}'.replace('0 min ', ''))
 
     def proceed_to_ir_break(self):
         self.log_msg(f'Waiting for mouse to get into food tray.')
