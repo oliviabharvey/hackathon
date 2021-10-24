@@ -6,10 +6,13 @@ import time
 
 
 class motor_control:
+    """
+    Enables interfacting with the motor.
+    """
 
     def __init__(self, StepDirection=1, WaitTime=4, debug=False):
         self.debug = bool(debug)
-        self.motorPins = (12, 16, 18, 22)  # Physical location (GPIO pin# 12,23,24,25)
+        self.motorPins = (12, 16, 18, 22)  # Physical location (GPIO pin# 18,23,24,25)
         # Define motor step sequence as shown in manufacturers datasheet
         self.PinSequence =   [[1,0,0,1],
                              [1,0,0,0],
@@ -33,9 +36,8 @@ class motor_control:
             # RAISE ERROR / sys.exit()
 
 
-    #Initialization of pins
     def setup(self):
-        print ('Motor Initialization...')
+        #Initialization of pins
         GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         for pin in self.motorPins:
@@ -45,6 +47,7 @@ class motor_control:
         self.CurrentStep = 0
         self.FullRotationCounter = 0
         self.TotalStepCounter = 0
+        print ('Motor initialized')
 
 
     def single_step(self,StepDirection=self.StepDirection):
@@ -83,44 +86,43 @@ class motor_control:
     def reset(self,StepDirection= -self.StepDirection): # To call at the end of experience
         for i in range(0,self.TotalStepCounter): # MAYBE A WHILE?
         self.single_step(self,StepDirection)
-        GPIO.cleanup()
 
-
-
+###################################
+## TEST WHEN CALLING THIS SCRIPT ##
+###################################
 if __name__ == '__main__':
-    try:
-        debug=True
-        if debug:
-            motor = motor_control(debug)
-            motor = motor_control.setup()
+    debug=True
+    if debug:
+        motor = motor_control(debug=debug)
+        motor.setup()
 
-            print('Turning clockwise slow - 8 steps, 1 full turn...')
-            for i in range(0,8): # MAYBE A WHILE?
-                motor_control.single_step(1)
-                time.sleep(1000)
-            
-            print('Turning clockwise fast - 4 steps, 1 full turn...')
-            for i in range(0,4): # MAYBE A WHILE?
-                motor_control.single_step(2)
-                time.sleep(1000)
-            
-            print('Turning counterclockwise fast - 8 steps, 1 full turn...')
-            for i in range(0,8): # MAYBE A WHILE?
-                motor_control.single_step(-1)
-                time.sleep(1000)
-            
-            print('Turning counterclockwise fast - 4 steps, 1 full turn...')
-            for i in range(0,4): # MAYBE A WHILE?
-                motor_control.single_step(-2)
-                time.sleep(1000)
+        print('Turning clockwise slow - 8 steps, 1 full turn...')
+        for i in range(0,8): # MAYBE A WHILE?
+            motor.single_step(1)
+            time.sleep(1000)
+        
+        print('Turning clockwise fast - 4 steps, 1 full turn...')
+        for i in range(0,4): # MAYBE A WHILE?
+            motor.single_step(2)
+            time.sleep(1000)
+        
+        print('Turning counterclockwise fast - 8 steps, 1 full turn...')
+        for i in range(0,8): # MAYBE A WHILE?
+            motor.single_step(-1)
+            time.sleep(1000)
+        
+        print('Turning counterclockwise fast - 4 steps, 1 full turn...')
+        for i in range(0,4): # MAYBE A WHILE?
+            motor.single_step(-2)
+            time.sleep(1000)
 
-            print('Turning clockwise full turn - slow')
-                motor_control.full_rotation(1)
-                time.sleep(1000)
+        print('Turning clockwise full turn - slow')
+            motor.full_rotation(1)
+            time.sleep(1000)
 
-            print('Turning counterclockwise full turn - fast')
-                motor_control.full_rotation(-2)
-                time.sleep(1000)   
+        print('Turning counterclockwise full turn - fast')
+            motor.full_rotation(-2)
+            time.sleep(1000)   
 
-    except KeyboardInterrupt:
-        destroy()
+        print('End of test.')
+        GPIO.cleanup()
