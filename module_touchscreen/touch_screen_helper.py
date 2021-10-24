@@ -24,6 +24,7 @@ class TouchScreenHelper():
         self.side = random.choice([Sides.LEFT, Sides.RIGHT])
         self.same_side_count = 0
         self.consecutive_good_clicks = 0
+        self.consecutive_random_swaps = 0
         return
 
     def start_listening(self):
@@ -92,19 +93,20 @@ class TouchScreenHelper():
         else: 
             self.consecutive_good_clicks = 0
 
-        if DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS:
-            swap = random.uniform(0, 1) <= 0.2
-            if (good_collision and not swap) or (not good_collision and swap):
-                return ClickTypes.GOOD
-            else:
-                return ClickTypes.BAD
-        else: 
-            if good_collision:
-                return ClickTypes.GOOD
-            else:
-                return ClickTypes.BAD
+        if DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS and random.uniform(0, 1) <= 0.2:
+            self.consecutive_random_swaps += 1
+            if self.consecutive_random_swaps <= 2:
+                if good_collision:
+                    return ClickTypes.BAD
+                else:
+                    return ClickTypes.GOOD
+
+        self.consecutive_random_swaps = 0
+        if good_collision:
+            return ClickTypes.GOOD
+        else:
+            return ClickTypes.BAD
 
     def check_collision(self, x, y):
         # to do Dan (use self.side)
         return True
-    
