@@ -65,7 +65,7 @@ class ImageCreator():
         im = Image.new(mode="RGB", size=ImageCreator.size_canvas, color=0)
         draw = ImageDraw.Draw(im)
 
-        draw.rectangle(xy=ImageCreator.rectangle_left, fill=(255,255,255), outline=None, width=2)
+        draw.rectangle(xy=ImageCreator.rectangle_left, fill=(255,255,255), outline=None)
 
         im.save(ImageCreator.saving_path, quality=100)
         pilImage = Image.open(ImageCreator.saving_path)
@@ -75,7 +75,7 @@ class ImageCreator():
         im = Image.new(mode="RGB", size=ImageCreator.size_canvas, color=0)
         draw = ImageDraw.Draw(im)
 
-        draw.rectangle(xy=ImageCreator.rectangle_right, fill=(255,255,255), outline=None, width=2)
+        draw.rectangle(xy=ImageCreator.rectangle_right, fill=(255,255,255), outline=None)
 
         im.save(ImageCreator.saving_path, quality=100)
         pilImage = Image.open(ImageCreator.saving_path)

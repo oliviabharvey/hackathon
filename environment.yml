@@ -1,0 +1,34 @@
+name: souris
+channels:
+  - anaconda
+  - rpi
+  - defaults
+dependencies:
+  - olefile=0.46=py_0
+  - ca-certificates=2018.8.24=0
+  - certifi=2018.8.24=py36_1
+  - freetype=2.9.1=h3105a3c_2
+  - jpeg=9c=hdff2a78_1
+  - libpng=1.6.35=h849d6a0_1
+  - libtiff=4.0.9=h6df8b62_2
+  - ncurses=6.1=h4f752ac_1
+  - openssl=1.0.2r=hdff2a78_0
+  - pillow=5.2.0=py36hcaf462c_1
+  - pip=18.0=py36_1
+  - python=3.6.6=hd0568c0_1
+  - pyyaml=3.13=py36hdff2a78_1
+  - readline=7.0=hcb560eb_1
+  - setuptools=40.2.0=py36_0
+  - sqlite=3.24.0=hfcb1bcf_1
+  - tk=8.6.8=h849d6a0_0
+  - wheel=0.31.1=py36_1
+  - xz=5.2.4=hdff2a78_1
+  - yaml=0.1.7=hdff2a78_1
+  - zlib=1.2.11=hdff2a78_1003
+  - pip:
+    - evdev==1.4.0
+    - pynput==1.7.4
+    - python-xlib==0.31
+    - six==1.16.0
+prefix: /home/pi/miniconda3/envs/souris
+
