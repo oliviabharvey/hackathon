@@ -1,11 +1,12 @@
 # SI la commande est lancée à partir du remote, il faut rajouer ça avant la commande python 
 # DISPLAY=":0" python /home/pi/hackathon_souris/hackathon/module_touchscreen/tutoriel_souris.py
 # après, le log est noté dans mouse_log.txt et on peut voir en temps réel, le log s'ajuster aux récents touch
-
+import os
+os.environ["DISPLAY"]=":0"
 from pynput.mouse import Listener
 import logging
 
-logging.basicConfig(filename="mouse_log.txt", level=logging.DEBUG, format='%(asctime)s: %(message)s')
+logging.basicConfig(filename="module_touchscreen/mouse_log.txt", level=logging.DEBUG, format='%(asctime)s: %(message)s')
 
 def on_move(x, y):
     logging.info("Mouse moved to ({0}, {1})".format(x, y))

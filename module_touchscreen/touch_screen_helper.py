@@ -3,6 +3,7 @@ import os
 os.environ["DISPLAY"]=":0"
 
 from pynput.mouse import Listener
+
 import threading
 import logging
 logging.basicConfig(filename="module_touchscreen/mouse_log.txt", level=logging.DEBUG, format='%(asctime)s: %(message)s')
