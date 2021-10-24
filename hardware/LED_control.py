@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO  # pip install RPi.GPIO
 import time # Only used for debug.
 
 # TODO: Test LED script to confirm activation / stop
+# TODO: Check if GPIO.input output is logical
 # TODO: Confirm if LEDs are Pi (direct) or externally driven (Transitor)
 
 
@@ -13,30 +14,34 @@ class led_control:
     def __init__(self, pin, debug=False):
         self.debug = bool(debug)
         self.pin = pin
-
+        self.state = False
 
     def setup(self):
+        # Setup GPIO control for the led
         GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin,GPIO.LOW)
+        self.state = False
 
 
-    def light_state(self):
-        # Check current light status. 1/True if on - 0/False otherwise.
-        GPIO.input(self.pin)
-
+    def update_light_state(self):
+        # Check current light status. True if on - False otherwise.
+        self.state = GPIO.input(self.pin)
+        return self.state
+        
 
     def light_on(self):
-        # Turn lights on and output at 1/True
+        # Turn lights on and output at True
         GPIO.output(self.pin,GPIO.HIGH)
-        return self.light_state
-
+        self.update_light_state()
+        return self.state
 
     def light_off(self)
-        # Turn lights off and output at 0/False
+        # Turn lights off and output at False
         GPIO.output(self.pin,GPIO.HIGH)
-        return self.light_state
+        self.update_light_state()
+        return self.state
 
 
 
@@ -80,30 +85,36 @@ if __name__ == '__main__':
 
         print('Turning on Experiment LED')
         Lights.ExperienceLED.light_on()
-        time.sleep(500)
-        print('Experiment LED is currently: ',Lights.ExperienceLED.light_state())
+        time.sleep(200)
+        print('Experiment LED is currently: ',Lights.ExperienceLED.state)
         time.sleep(500)
         print('Turning off Experiment LED')
         Lights.ExperienceLED.light_off()
-        time.sleep(1000)
+        time.sleep(200)
+        print('Experiment LED is currently: ',Lights.ExperienceLED.state)
+        time.sleep(700)
 
         print('Turning on TrayLED')
         Lights.TrayLED.light_on()
-        time.sleep(500)
-        print('Tray LED is currently: ',Lights.TrayLED.light_state())
+        time.sleep(200)
+        print('Tray LED is currently: ',Lights.TrayLED.state)
         time.sleep(500)
         print('Turning off Tray LED')
         Lights.TrayLED.light_off()
-        time.sleep(1000)
+        time.sleep(200)
+        print('Tray LED is currently: ',Lights.TrayLED.state)
+        time.sleep(700)
 
         print('Turning on Box LED')
         Lights.BoxLED.light_on()
-        time.sleep(500)
-        print('Box LED is currently: ',Lights.BoxLED.light_state())
+        time.sleep(200)
+        print('Box LED is currently: ',Lights.BoxLED.state)
         time.sleep(500)
         print('Turning off Box LED')
         Lights.BoxLED.light_off()
-        time.sleep(1000)
+        time.sleep(200)
+        print('Box LED is currently: ',Lights.BoxLED.state)
+        time.sleep(700)
 
         print('End of test.')
         GPIO.cleanup()

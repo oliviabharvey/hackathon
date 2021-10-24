@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO  # pip install RPi.GPIO
+import threading
 import time 
 
 # TODO: Test piezzo script to confirm activation / stop
@@ -25,13 +26,17 @@ class buzzer_control:
         self.Buzzer = GPIO.PWM(self.BuzzerPin, self.Frequency)
         
     
-    def play_sound(self,frequency=self.Frequency,time=self.Duration, volume=self.DutyCycle):
-        if debug:
+    def start_sound(self,frequency=self.Frequency,time=self.Duration, volume=self.DutyCycle):
+        if self.debug:
             print('Playing sound')
         Buzzer = GPIO.PWM(self.buzzerPin, frequency)
         Buzzer.start(volume)
         time.sleep(time)
         Buzzer.stop()
+
+    def play_sound(self,frequency=self.Frequency,time=self.Duration, volume=self.DutyCycle)):
+        thread = threading.Thread(target=self.start_sound, args=(frequency,time,volume))
+        thread.start()
 
 
 ###################################
@@ -44,12 +49,15 @@ if __name__ == '__main__':
         buzzer.setup()
 
         print('Playing "normal" sound')
-        buzzer.play_sound()
+        buzzer.start_sound()
 
         print('Funky stuff...')
-        buzzer.play_sound(frequency=440,time=500, volume=75)
-        buzzer.play_sound(frequency=880,time=500, volume=25)
-        buzzer.play_sound(frequency=2000,time=500, volume=50)
+        buzzer.start_sound(frequency=440,time=500, volume=75)
+        buzzer.start_sound(frequency=880,time=500, volume=25)
+        buzzer.start_sound(frequency=2000,time=500, volume=50)
+
+        print('Testing thread')
+        buzzer.play_sound()
 
         print('End of test.')
         GPIO.cleanup()

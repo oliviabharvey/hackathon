@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO  # pip install RPi.GPIO
+import threading
 import time 
 
 # TODO: Test motor/script to confirm activation / reset
@@ -7,13 +8,13 @@ import time
 
 class motor_control:
     """
-    Enables interfacting with the motor.
+    Enables interfacing with the motor.
     """
 
     def __init__(self, StepDirection=1, WaitTime=4, debug=False):
         self.debug = bool(debug)
         self.motorPins = (12, 16, 18, 22)  # Physical location (GPIO pin# 18,23,24,25)
-        # Define motor step sequence as shown in manufacturers datasheet
+        # Define motor step sequence (datasheet)
         self.PinSequence =   [[1,0,0,1],
                              [1,0,0,0],
                              [1,1,0,0],
@@ -51,12 +52,13 @@ class motor_control:
 
 
     def single_step(self,StepDirection=self.StepDirection):
+        # Make a single (smallest) motor step
         if self.debug:
-        print ("Current Step: ",self.CurrentStep)  # Number of PinSequence 
-        print ("Current Pin Sequence: ",self.PinSequence[CurrentStep])  # Current pin matrix
-        print ("Number of Steps: ",self.TotalStepCounter)  # Current pin matrix
-        print ("Number of Full Rotation: ",self.FullRotationCounter)
-        
+            print ("Current Step: ",self.CurrentStep)  # Number of PinSequence 
+            print ("Current Pin Sequence: ",self.PinSequence[CurrentStep])  # Current pin matrix
+            print ("Number of Steps: ",self.TotalStepCounter)  # Current pin matrix
+            print ("Number of Full Rotation: ",self.FullRotationCounter)
+            
         self.TotalStepCounter += StepDirection
         self.CurrentStep = self.TotalStepCounter % self.MaxPinSequence  # Modulo of TotalStepCounter gives next step
         self.FullRotationCounter = self.TotalStepCounter // self.MaxPinSequence # Floor division of TotalStepCounter gives next step
@@ -64,7 +66,7 @@ class motor_control:
 
         # Turning on/off appropriate pins for the step
         for pin in range(0, 4):
-        pin = self.motorPins[pin]
+            pin = self.motorPins[pin]
         if self.PinSequence[self.CurrentStep][pin]!=0:
             if self.debug:
             print " Enable GPIO %i" %(pin)
@@ -76,16 +78,32 @@ class motor_control:
     
     return self.TotalStepCounter
 
-    def full_rotation(self,StepDirection=self.StepDirection):
-        if abs(StepDirection) == 2
-        step_to_rotation = 4
-        else step_to_rotation = 8
-        for i in range(0,step_to_rotation): # MAYBE A WHILE?
-        single_step(self,StepDirection)
 
-    def reset(self,StepDirection= -self.StepDirection): # To call at the end of experience
+    def full_rotation(self,StepDirection=self.StepDirection):
+        # Make one full motor rotation
+        if abs(StepDirection) == 2:
+            step_to_rotation = 4
+        else step_to_rotation = 8:
+            for i in range(0,step_to_rotation): # MAYBE A WHILE?
+                single_step(self,StepDirection)
+
+
+    def microliter(self, microliter, StepDirection=self.StepDirection):
+        # How many turn/step for a microliter
+        pass
+        return
+
+
+    def provide_reward(self, microliter, StepDirection=self.StepDirection):
+        # Provide the number of microliter as a reward
+        thread = threading.Thread(target=self.microliter, args=(microliter))
+        thread.start()
+
+
+    def reset(self,StepDirection= -self.StepDirection):
+        # To call at the end of experience to inverse all motor movement
         for i in range(0,self.TotalStepCounter): # MAYBE A WHILE?
-        self.single_step(self,StepDirection)
+            self.single_step(self,StepDirection)
 
 ###################################
 ## TEST WHEN CALLING THIS SCRIPT ##
