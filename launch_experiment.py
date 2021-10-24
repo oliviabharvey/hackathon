@@ -29,8 +29,7 @@ from experiments.exp6 import Experiment6
 #     return parser.parse_args()
 
 def main(): 
-    
-    my_exp = Experiment5(duration_minutes=2, debug=True, enableAutoClick=True)
+    my_exp = Experiment4(duration_minutes=2, debug=True, enableAutoClick=False)
     my_exp.run_experiment()
 
     return

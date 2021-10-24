@@ -93,7 +93,7 @@ class TouchScreenHelper():
         else: 
             self.consecutive_good_clicks = 0
 
-        if DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS and random.uniform(0, 1) <= 0.2:
+        if self.display_type == DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS and random.uniform(0, 1) <= 0.2:
             self.consecutive_random_swaps += 1
             if self.consecutive_random_swaps <= 2:
                 if good_collision:
@@ -108,5 +108,21 @@ class TouchScreenHelper():
             return ClickTypes.BAD
 
     def check_collision(self, x, y):
-        # to do Dan (use self.side)
-        return True
+
+        if self.side == Sides.LEFT:
+            box_left = ImageCreator.rectangle_left[0][0]
+            box_right = ImageCreator.rectangle_left[1][0]
+            box_top = ImageCreator.rectangle_left[1][1]
+            box_bottom = ImageCreator.rectangle_left[0][1]
+        elif self.side == Sides.RIGHT:
+            box_left = ImageCreator.rectangle_right[0][0]
+            box_right = ImageCreator.rectangle_right[1][0]
+            box_top = ImageCreator.rectangle_right[1][1]
+            box_bottom = ImageCreator.rectangle_right[0][1]
+        else:
+            return False
+        return self.check_collision_internal(x,y,box_left, box_right, box_top, box_bottom)
+
+
+    def check_collision_internal(self,click_x, click_y, box_left, box_right, box_top, box_bottom):
+        return not (click_x < box_left or click_x > box_right or click_y > box_top or click_y < box_bottom)
