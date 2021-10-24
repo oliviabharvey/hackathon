@@ -37,10 +37,10 @@ class Experiment4(BaseExperiment):
 
     def update_state(self):
         if self.state == States.TOUCH:
-            if random.uniform(0, 1) >= 0.99:  # TO UPDATE
-                self.click_type = ClickTypes.GOOD
-            if random.uniform(0,1) >= 0.99: # TO UPDATE
-                self.click_type = ClickTypes.BAD
+                #if random.uniform(0, 1) >= 0.99:  # TO UPDATE
+                 #   self.click_type = ClickTypes.GOOD
+                #if random.uniform(0,1) >= 0.99: # TO UPDATE
+                 #   self.click_type = ClickTypes.BAD
             if self.click_type == ClickTypes.GOOD:
                 self.touch_screen_helper.display_black_screen()
                 self.deliver_sequence(qty=20)

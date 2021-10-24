@@ -8,6 +8,7 @@ from pynput.mouse import Listener
 import threading
 import logging
 from utils.enums import *
+from module_touchscreen.image_creator import ImageCreator
 
 logging.basicConfig(filename="module_touchscreen/mouse_log.txt", level=logging.DEBUG, format='%(asctime)s: %(message)s')
 
@@ -19,6 +20,7 @@ class TouchScreenHelper():
         thread = threading.Thread(target=self.start_listening, args=())
         thread.start()
 
+        self.imageCreator = ImageCreator()
         self.side = random.choice([Sides.LEFT, Sides.RIGHT])
         self.same_side_count = 0
         self.consecutive_good_clicks = 0
@@ -45,11 +47,18 @@ class TouchScreenHelper():
             self.display_left_or_right()
         
         self.touch_screen_enabled = True
-
     
     def display_black_screen(self):
-        # to do : dan
-        return
+        self.imageCreator.reset_canvas()
+
+    def display_single_rectangle(self):
+        if self.side == Sides.LEFT:
+            self.imageCreator.show_left_rectangle()
+        elif self.side == Sides.RIGHT:
+            self.imageCreator.show_right_rectangle()
+
+    def display_both_rectangle(self):
+        self.imageCreator.show_left_and_right_rectangles()
 
     def display_find_the_square(self):
         if self.same_side_count >= 3: 
@@ -62,15 +71,12 @@ class TouchScreenHelper():
                 self.same_side_count = 1
             else: 
                 self.same_side_count += 1
-        # to do : dan (use self.side)
+        self.display_single_rectangle()
 
     def display_left_or_right(self):
-        if self.consecutive_good_clicks <= 4:
-            return
-            # to do : dan (use self.side)
-        else: 
+        if self.consecutive_good_clicks >= 5:
             self.swap_side()
-        # to do : dan (use self.side)
+        self.display_both_rectangle()
 
     def swap_side(self):
         if self.side == Sides.LEFT:
