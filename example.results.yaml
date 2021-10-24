@@ -1,0 +1,31 @@
+status: completed
+experiment: Exp2
+mouse_name: NAME
+puppet: 2
+trials: 
+  1: 
+    success: true # good click
+    rewarded: true
+    seconds_between_display_and_touch: 5 
+    seconds_between_feed_and_eat: 5
+  2: 
+    success: true # good click, but no reward due to 20%
+    rewarded: false
+    seconds_between_display_and_touch: 5 
+    seconds_between_feed_and_eat: null # null when no reward given
+  3:
+    success: false # too long
+    rewarded: false
+    seconds_between_display_and_touch: null # null when no touch
+    seconds_between_feed_and_eat: 5
+  4:
+    success: false # bad click
+    seconds_between_display_and_touch: 7 
+    seconds_between_feed_and_eat: null # null when no reward given
+summary: 
+  total_time: 30
+  trials_number: 14
+  average_seconds_between_display_and_touch: 6
+  average_seconds_between_feed_and_eat: 5
+  number_of_reversals: 7 # only valid for experience 5 and prl
+  

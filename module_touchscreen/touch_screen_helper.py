@@ -34,8 +34,8 @@ class TouchScreenHelper():
     def on_move(self, x, y):
         if  self.touch_screen_enabled:
             self.touch_screen_enabled = False
-            self.click_type = self.check_click_type(x, y)
-            self.current_exp.on_click(self.click_type)
+            click_type, good_collision = self.check_click_type(x, y)
+            self.current_exp.on_click(click_type, good_collision)
             logging.info("Mouse moved to ({0}, {1})".format(x, y))
 
     def show_next_image(self):
@@ -97,15 +97,15 @@ class TouchScreenHelper():
             self.consecutive_random_swaps += 1
             if self.consecutive_random_swaps <= 2:
                 if good_collision:
-                    return ClickTypes.BAD
+                    return ClickTypes.BAD, good_collision
                 else:
-                    return ClickTypes.GOOD
+                    return ClickTypes.GOOD, good_collision
 
         self.consecutive_random_swaps = 0
         if good_collision:
-            return ClickTypes.GOOD
+            return ClickTypes.GOOD, good_collision
         else:
-            return ClickTypes.BAD
+            return ClickTypes.BAD, good_collision
 
     def check_collision(self, x, y):
 

@@ -33,6 +33,7 @@ class Exp1B(BaseExperiment):
     def update_state(self):
         if self.state == States.EAT_AND_EXIT:
             if self.need_to_go_in_tray and self.hardware_connector.is_irb_broken():
+                self.on_ir_break()
                 self.need_to_go_in_tray = False
             elif not self.need_to_go_in_tray and not self.hardware_connector.is_irb_broken():
                 self.proceed_to_delay_step()

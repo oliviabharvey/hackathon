@@ -27,14 +27,17 @@ def parse_args():
                         required=False,
                         default='example.config.yaml',
                         help="Path to config file containing the experiment definition.")
+    parser.add_argument('--debug',
+                        action="store_true",
+                        default=True,
+                        help="Whether to launch script in debug mode - auto click.")
     return parser.parse_args()
 
-def main(cfg): 
+def main(cfg, debug): 
     print(f"\n --- EXPERIMENT {cfg['experiment'].upper()} ON MOUSE {cfg['mouse_name'].upper()} ---\n")
     Experiment = eval(f"{cfg['experiment'].capitalize()}")
-    my_exp = Experiment(cfg=cfg, duration_minutes=0.25, debug=True)
+    my_exp = Experiment(cfg=cfg, duration_minutes=2, debug=debug, enableAutoClick=debug)
     my_exp.run_experiment()
-
     return
 
 
@@ -43,4 +46,4 @@ if __name__ == "__main__":
     with open(args.cfg, 'r') as f:
         cfg = yaml.load(f, Loader=yaml.Loader)
 
-    main(cfg=cfg)
+    main(cfg=cfg, debug=args.debug)

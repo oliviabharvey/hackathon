@@ -35,3 +35,12 @@ class ClickTypes(Enum):
     NONE = 0
     GOOD = 1
     BAD = 2
+
+class TimeStamps(Enum):
+    """
+    Defines all possible time stamps for data manager"
+    """
+    DISPLAY = 0
+    TOUCH = 1
+    FEED = 2
+    EAT = 3

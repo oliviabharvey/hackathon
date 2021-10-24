@@ -10,7 +10,7 @@ TICK = 0.1
 
 class BaseExperiment():
 
-    def __init__(self, duration_minutes, debug=False, enableAutoClick=False):
+    def __init__(self, cfg, duration_minutes, debug=False, enableAutoClick=False):
         self.tick = TICK
         self.cfg = cfg
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
@@ -47,13 +47,16 @@ class BaseExperiment():
         self.deliver_food(qty)
 
     def tray_light_on(self):
+        self.hardware_connector.turn_tray_light_on() 
         return
     
-    def play_tone(self): 
+    def play_tone(self):
+        self.hardware_connector.play_tone(duration=5) 
         return
 
     def deliver_food(self, qty=100):
         self.log_msg(f'Food delivered: {qty}')
+        self.data_mgr.update(TimeStamps.FEED)
 
     def is_completed(self):
             return time.time() - self.start_time >= self.exp_duration
@@ -63,8 +66,10 @@ class BaseExperiment():
 
     def on_ir_break(self):
         self.ir_break = True
+        self.data_mgr.update(TimeStamps.EAT)
 
     def tray_light_off(self):
+        self.hardware_connector.turn_tray_light_off() 
         return
 
     def initialize_touch_screen_helper(self, display_type):
@@ -80,6 +85,15 @@ class BaseExperiment():
     def log_msg(self, msg):
         m, s = divmod((time.time() - self.start_time), 60)
         print(f'Time: {round(m)} min {round(s,1)} s - {str(msg)}'.replace('0 min ', ''))
+
+    def proceed_to_touch(self):
+        """
+        Update states to waiting for mouse to interract with tourch screen.
+        """
+        self.log_msg('Waiting for mouse to touch screen.')
+        self.state = States.TOUCH
+        self.click_type = ClickTypes.NONE
+        self.show_next_image()
 
     def proceed_to_ir_break(self):
         self.log_msg(f'Waiting for mouse to get into food tray.')
@@ -98,6 +112,14 @@ class BaseExperiment():
         self.log_msg(f'Waiting for {self.punish_time_left} seconds due to incorrect touch.')
         self.state = States.PUNISH_DELAY
 
-    def on_click(self, click_type):
-        self.click_type = click_type
+    def on_click(self, click_type, good_collision):
+        self.click_type = click_type # wheter the mouse is rewarded: GOOD = reward
+        rewarded = click_type == ClickTypes.GOOD
+        success = good_collision
+        self.data_mgr.update(TimeStamps.TOUCH, {'rewarded': rewarded, 'success': success})
         return
+
+    def show_next_image(self):
+        self.touch_screen_helper.show_next_image()
+        self.data_mgr.start_trial()
+        self.data_mgr.update(TimeStamps.DISPLAY)

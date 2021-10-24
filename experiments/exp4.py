@@ -18,25 +18,17 @@ class Exp4(BaseExperiment):
         """
         super().initialize()
         self.initialize_touch_screen_helper(DisplayPatterns.FIND_THE_SQUARE)
-        self.touch_screen_helper.show_next_image()
         self.proceed_to_touch()
-
-    def proceed_to_touch(self):
-        """
-        Update states to waiting for mouse to interract with tourch screen.
-        """
-        self.log_msg('Waiting for mouse to touch screen.')
-        self.state = States.TOUCH
-        self.click_type = ClickTypes.NONE
-        self.touch_screen_helper.show_next_image()
 
     def update_state(self):
         if self.state == States.TOUCH:
             if self.enableAutoClick:
-                if random.uniform(0, 1) >= 0.99:
+                if random.uniform(0, 1) >= 0.98:
                     self.click_type = ClickTypes.GOOD
-                if random.uniform(0,1) >= 0.99:
+                    self.on_click(self.click_type, True)
+                if random.uniform(0,1) >= 0.98:
                     self.click_type = ClickTypes.BAD
+                    self.on_click(self.click_type, False)
             if self.click_type == ClickTypes.GOOD:
                 self.touch_screen_helper.display_black_screen()
                 self.deliver_sequence(qty=20)
@@ -47,6 +39,7 @@ class Exp4(BaseExperiment):
 
         elif self.state == States.IR_BREAK: 
             if self.hardware_connector.is_irb_broken() == True:
+                self.on_ir_break()
                 self.proceed_to_delay_step()
 
         elif self.state == States.RESET_DELAY: 
