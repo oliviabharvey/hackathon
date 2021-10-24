@@ -6,7 +6,7 @@ import time
 # TODO: Measure microliter per turn/step and create a function that calls the motor per microliter.
 
 
-class motor_control:
+class MotorControl:
     """
     Enables interfacing with the motor.
     """

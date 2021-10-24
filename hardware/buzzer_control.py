@@ -5,7 +5,7 @@ import time
 # TODO: Test piezzo script to confirm activation / stop
 # TODO: Check if default volume is too / not enough loud
 
-class buzzer_control:
+class BuzzerControl:
     """
     Enabling control of the buzzer (frequency, duration and volume)
     """

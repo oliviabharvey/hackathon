@@ -1,4 +1,7 @@
 import random
+import led_control
+import buzzer_control
+import motor_control
 
 class HardwareConnector():
     """
@@ -8,9 +11,21 @@ class HardwareConnector():
     def __init__(self, debug=False):
         self.debug = debug
 
+        # Initializing LEDs
+        self.leds = led_control.LEDs(debug=self.debug)
+        self.leds.setup()
+
+        # Initializing buzzer
+        self.buzzer = buzzer_control.BuzzerControl(debug=self.debug)
+        self.buzzer.setup()
+
+        # Initializing motor
+        self.motor = motor_control.MotorControl(debug=self.debug)
+        self.motor.setup()
+
 
     def is_irb_broken(self):
-        # return True if broken, False otherwise
+        # return True if infrared beam is broken, False otherwise
         if self.debug: 
             ir_break = False
             if random.uniform(0, 1) >= 0.95:
@@ -22,17 +37,19 @@ class HardwareConnector():
     def play_tone(self, duration):
         # start playing tone for duration, but do not wait for it to be finished
         # to continue (needs to be asynchronous)
+        self.buzzer.play_sound(self, time=duration)
         return
 
     def turn_tray_light_on(self):
-        # no duration, just do it!
+        self.leds.tray_led.light_on()
         return
 
     def turn_tray_light_off(self):
-        # no duration, just do it!
+        self.leds.tray_led.light_off()
         return
 
-    def squeeze_seringe(self, qty):
+    def squeeze_syringe(self, qty):
         # turn motor to provide a given qty of fluid (in microliter) in food tray.
         # This probably needs to be asynchronous.
+        self.motor.provide_reward(microliter=qty)
         return

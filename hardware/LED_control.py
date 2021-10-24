@@ -13,7 +13,7 @@ class led_control:
 
     def __init__(self, pin, debug=False):
         self.debug = bool(debug)
-        self.pin = pin
+        self.pin = int(pin)
         self.state = False
 
     def setup(self):
@@ -58,19 +58,19 @@ class LEDs:
         self.LEDPins = [self.ExperienceLEDPin, self.TrayLEDPin, self.BoxLEDPin]
 
         # Initiliazing future LED objects
-        self.ExperienceLED = None
-        self.TrayLED = None
-        self.BoxLED = None
+        self.experience_led = None
+        self.tray_led = None
+        self.box_led = None
 
     def setup(self)
         # Initiliazing lEDs
-        self.ExperienceLED = led_control(pin=self.ExperienceLEDPin,debug=self.debug)
-        self.TrayLED = led_control(pin=self.TrayLEDPin,debug=self.debug)
-        self.BoxLED = led_control(pin=self.BoxLEDPin,debug=self.debug)
+        self.experience_led = led_control(pin=self.ExperienceLEDPinPin,debug=self.debug)
+        self.tray_led = led_control(pin=self.TrayLEDPin,debug=self.debug)
+        self.box_led = led_control(pin=self.BoxLEDPin,debug=self.debug)
         
-        self.ExperienceLED.setup()
-        self.TrayLED.setup()
-        self.BoxLED.setup()
+        self.experience_led.setup()
+        self.tray_led.setup()
+        self.box_led.setup()
         print ('LEDs initialized')
 
 
@@ -84,36 +84,36 @@ if __name__ == '__main__':
         Lights = LEDs(debug=debug)
 
         print('Turning on Experiment LED')
-        Lights.ExperienceLED.light_on()
+        Lights.experience_led.light_on()
         time.sleep(200)
-        print('Experiment LED is currently: ',Lights.ExperienceLED.state)
+        print('Experiment LED is currently: ',Lights.experience_led.state)
         time.sleep(500)
         print('Turning off Experiment LED')
-        Lights.ExperienceLED.light_off()
+        Lights.experience_led.light_off()
         time.sleep(200)
-        print('Experiment LED is currently: ',Lights.ExperienceLED.state)
+        print('Experiment LED is currently: ',Lights.experience_led.state)
         time.sleep(700)
 
-        print('Turning on TrayLED')
-        Lights.TrayLED.light_on()
+        print('Turning on tray_led')
+        Lights.tray_led.light_on()
         time.sleep(200)
-        print('Tray LED is currently: ',Lights.TrayLED.state)
+        print('Tray LED is currently: ',Lights.tray_led.state)
         time.sleep(500)
         print('Turning off Tray LED')
-        Lights.TrayLED.light_off()
+        Lights.tray_led.light_off()
         time.sleep(200)
-        print('Tray LED is currently: ',Lights.TrayLED.state)
+        print('Tray LED is currently: ',Lights.tray_led.state)
         time.sleep(700)
 
         print('Turning on Box LED')
-        Lights.BoxLED.light_on()
+        Lights.box_led.light_on()
         time.sleep(200)
-        print('Box LED is currently: ',Lights.BoxLED.state)
+        print('Box LED is currently: ',Lights.box_led.state)
         time.sleep(500)
         print('Turning off Box LED')
-        Lights.BoxLED.light_off()
+        Lights.box_led.light_off()
         time.sleep(200)
-        print('Box LED is currently: ',Lights.BoxLED.state)
+        print('Box LED is currently: ',Lights.box_led.state)
         time.sleep(700)
 
         print('End of test.')
