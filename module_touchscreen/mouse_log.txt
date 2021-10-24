@@ -279,3 +279,5 @@ NameError: name 'check_collision_internal' is not defined
 2021-10-24 20:29:30,306: Mouse moved to (591, 178)
 2021-10-24 20:29:45,246: Mouse moved to (207, 141)
 2021-10-24 20:29:59,735: Mouse moved to (224, 179)
+2021-10-24 21:27:11,550: Mouse moved to (421, 321)
+2021-10-24 21:30:22,460: Mouse moved to (209, 138)

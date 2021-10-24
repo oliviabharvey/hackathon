@@ -9,9 +9,6 @@ from PIL import Image, ImageTk
 os.environ["DISPLAY"]=":0"
 
 class ImageCreator():
-    # size_canvas = (1280,800)
-    # rectangle_left = ((800, 0), (1200, 400))
-    #rectangle_right = ((80, 0), (480, 400 ))
     size_canvas = (800,480)
     rectangle_left = ((440, 0), (740, 300))
     rectangle_right = ((60, 0), (360, 300 ))
