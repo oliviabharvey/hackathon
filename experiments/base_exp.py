@@ -1,5 +1,6 @@
 import time
 import random
+from data.manager import DataManager
 
 from module_touchscreen.touch_screen_helper import TouchScreenHelper
 from hardware.hardware_connector import HardwareConnector
@@ -11,6 +12,7 @@ class BaseExperiment():
 
     def __init__(self, duration_minutes, debug=False, enableAutoClick=False):
         self.tick = TICK
+        self.cfg = cfg
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
         self.debug = debug
         self.enableAutoClick = enableAutoClick
@@ -33,6 +35,7 @@ class BaseExperiment():
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
         self.hardware_connector = HardwareConnector(self.debug)
+        self.data_mgr = DataManager(self.cfg)
 
     def deliver_sequence(self, qty=100):
         """
