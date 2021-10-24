@@ -34,7 +34,7 @@ class motor_control:
 
 
     #Initialization of pins
-    def setup():
+    def setup(self):
         print ('Motor Initialization...')
         GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
