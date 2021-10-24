@@ -21,6 +21,7 @@ class TouchScreenHelper():
         self.side = random.choice([Sides.LEFT, Sides.RIGHT])
         self.same_side_count = 0
         self.consecutive_good_clicks = 0
+        self.consecutive_random_swaps = 0
         return
 
     def start_listening(self):
@@ -85,13 +86,20 @@ class TouchScreenHelper():
         else: 
             self.consecutive_good_clicks = 0
 
-        if DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS:
-            swap = random.uniform(0, 1) <= 0.2
-            if (good_collision and not swap) or (not good_collision and swap):
-                return ClickTypes.GOOD
-            else:
-                return ClickTypes.BAD
-        else: 
+        if DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS and random.uniform(0, 1) <= 0.2:
+            self.consecutive_random_swaps += 1
+            if self.consecutive_random_swaps <= 2:
+                if good_collision:
+                    return ClickTypes.BAD
+                else:
+                    return ClickTypes.GOOD
+            else: 
+                if good_collision:
+                    return ClickTypes.GOOD
+                else:
+                    return ClickTypes.BAD
+        else:
+            self.consecutive_random_swaps = 0
             if good_collision:
                 return ClickTypes.GOOD
             else:
@@ -101,3 +109,19 @@ class TouchScreenHelper():
         # to do Dan (use self.side)
         return True
     
+
+
+        if DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS:
+            swap = random.uniform(0, 1) <= 0.2
+            if swap:
+                self.consecutive_random_swaps += 1
+            if self.consecutive_random_swaps <= 2:
+                if (good_collision and not swap) or (not good_collision and swap):
+                    return ClickTypes.GOOD
+                else:
+                    return ClickTypes.BAD
+            else: 
+                if good_collision:
+                    return ClickTypes.GOOD
+                else:
+                    return ClickTypes.BAD
