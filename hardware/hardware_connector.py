@@ -1,8 +1,8 @@
-import random
-import led_control
-import buzzer_control
-import motor_control
-import ir_control
+#import random
+#import led_control
+#import buzzer_control
+#import motor_control
+#import ir_control
 
 class HardwareConnector():
     """
@@ -13,7 +13,7 @@ class HardwareConnector():
         self.debug = debug
 
         # Initializing LEDs
-        self.leds = led_control.LEDs(debug=self.debug)
+        """self.leds = led_control.LEDs(debug=self.debug)
         self.leds.setup()
 
         # Initializing buzzer
@@ -26,7 +26,8 @@ class HardwareConnector():
 
         # Initializing IR beam (tray)
         self.ir = ir_control.IrLed(debug=self.debug)
-        self.ir.setup()
+        self.ir.setup()"""
+
 
 
 
@@ -40,29 +41,29 @@ class HardwareConnector():
         else: 
             return False
 
-        self.ir.is_irb_broken
+      #  self.ir.is_irb_broken
 
     def play_tone(self, duration):
         # start playing tone for duration, but do not wait for it to be finished
         # to continue (needs to be asynchronous)
-        self.buzzer.play_sound(self, time=duration)
+        #self.buzzer.play_sound(self, time=duration)
         return
 
     def turn_tray_light_on(self):
-        self.leds.tray_led.light_on()
+        #self.leds.tray_led.light_on()
         return
 
     def turn_tray_light_off(self):
-        self.leds.tray_led.light_off()
+        #self.leds.tray_led.light_off()
         return
 
     def squeeze_syringe(self, qty):
         # turn motor to provide a given qty of fluid (in microliter) in food tray.
         # This probably needs to be asynchronous.
-        self.motor.provide_reward(microliter=qty)
+        #self.motor.provide_reward(microliter=qty)
         return
 
-    def stop_hardware(self):
+    """def stop_hardware(self):
         # Ending hardware appropriately
         self.motor.reset() #  Reset motor to initial position
         # Stopping hardware approriately
@@ -70,3 +71,4 @@ class HardwareConnector():
         self.buzzer.stop_buzzer()
         self.motor.stop_motor()
         self.ir.stop_ir()
+    """
