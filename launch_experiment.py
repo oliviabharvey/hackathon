@@ -36,7 +36,7 @@ def parse_args():
 def main(cfg, debug): 
     print(f"\n --- EXPERIMENT {cfg['experiment'].upper()} ON MOUSE {cfg['mouse_name'].upper()} ---\n")
     Experiment = eval(f"{cfg['experiment']}")
-    my_exp = Experiment(cfg=cfg, duration_minutes=0.25, debug=debug, enableAutoClick=False)
+    my_exp = Experiment(cfg=cfg, duration_minutes=2, debug=debug, enableAutoClick=debug)
     my_exp.run_experiment()
     return
 
