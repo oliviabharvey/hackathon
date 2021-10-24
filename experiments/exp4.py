@@ -8,13 +8,8 @@ class Experiment4(BaseExperiment):
     """
     Definition of Experiment of Stage 4
     """
-
-    def __init__(self, duration_minutes=60):
-        super().__init__(duration_minutes)
-        return
-
-    def __init__(self, duration_minutes=60, debug=False):
-        super().__init__(duration_minutes, debug)
+    def __init__(self, duration_minutes=60, debug=False, enableAutoClick=False):
+        super().__init__(duration_minutes, debug, enableAutoClick)
         return
 
     def initialize(self):
@@ -37,10 +32,11 @@ class Experiment4(BaseExperiment):
 
     def update_state(self):
         if self.state == States.TOUCH:
-                #if random.uniform(0, 1) >= 0.99:  # TO UPDATE
-                 #   self.click_type = ClickTypes.GOOD
-                #if random.uniform(0,1) >= 0.99: # TO UPDATE
-                 #   self.click_type = ClickTypes.BAD
+            if self.enableAutoClick:
+                if random.uniform(0, 1) >= 0.99:
+                    self.click_type = ClickTypes.GOOD
+                if random.uniform(0,1) >= 0.99:
+                    self.click_type = ClickTypes.BAD
             if self.click_type == ClickTypes.GOOD:
                 self.touch_screen_helper.display_black_screen()
                 self.deliver_sequence(qty=20)
