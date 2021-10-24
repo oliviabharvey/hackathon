@@ -127,13 +127,13 @@ class MasterGUI:
     def ssh_send_config(self,current_puppet):
         print('Sending config file to puppet..')
         path = self.puppet_path_to_configs
-        filename = self.master_path_to_configs+self.filename_config[current_puppet]
+        filename = self.filename_config[current_puppet]
         username = self.puppets[current_puppet]['username']
         domain = self.puppets[current_puppet]['domain']
-        ssh = subprocess.run(["scp", filename, f"{username}@{domain}:{path}{filename}"])
+        ssh = subprocess.run(["scp", self.master_path_to_configs+filename, f"{username}@{domain}:{path}{filename}"])
         if ssh.returncode != 0:
             self.remove_puppet_from_current(current_puppet)
-            self.warning(f"Copying config file to {current_puppet} failed.\n\nError:\n{ssh.communicate()[0]}")
+            self.warning(f"Copying config file to {current_puppet} failed.")
         else:
             self.lbl_tabs_config[current_puppet] = Label(self.tab[current_puppet], text="Sent confg file successfully...")
             self.lbl_tabs_config[current_puppet].place(x=50,y=75)
