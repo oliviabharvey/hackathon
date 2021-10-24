@@ -2,15 +2,17 @@ import time
 import random
 
 from module_touchscreen.touch_screen_helper import TouchScreenHelper
+from hardware.hardware_connector import HardwareConnector
 from utils.enums import *
 
 TICK = 0.1
 
 class BaseExperiment():
 
-    def __init__(self, duration_minutes):
+    def __init__(self, duration_minutes, debug=False):
         self.tick = TICK
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
+        self.debug = debug
         return
 
     def run_experiment(self):
@@ -29,6 +31,7 @@ class BaseExperiment():
         """
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
+        self.hardware_connector = HardwareConnector(self.debug)
 
     def deliver_sequence(self, qty=100):
         """
@@ -53,8 +56,8 @@ class BaseExperiment():
     def update_state(self):
         return
 
-    def has_head_in_tray(self):
-        return random.choice([True, False]) # TO UPDATE
+    def on_ir_break(self):
+        self.ir_break = True
 
     def tray_light_off(self):
         return
@@ -69,14 +72,23 @@ class BaseExperiment():
     def log_msg(self, msg):
         print(f'Time: {round(time.time() - self.start_time, 1)} s - {str(msg)}')
 
+    def proceed_to_ir_break(self):
+        self.log_msg(f'Waiting for mouse to get into food tray.')
+        self.state = States.IR_BREAK
+        self.ir_break = False
+
     def proceed_to_delay_step(self):
         self.tray_light_off()
-        self.delay_time_left = 5
+        self.delay_time_left = 10
         self.log_msg(f'Waiting for {self.delay_time_left} seconds.')
         self.state = States.RESET_DELAY
 
-    def proceed_to_punish_delay(self):
+    def proceed_to_punish_delay(self, delay=5):
         self.tray_light_on()
-        self.punish_time_left = 10
+        self.punish_time_left = delay
         self.log_msg(f'Waiting for {self.punish_time_left} seconds due to incorrect touch.')
         self.state = States.PUNISH_DELAY
+
+    def on_click(self, click_type):
+        self.click_type = click_type
+        return

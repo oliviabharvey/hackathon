@@ -8,6 +8,8 @@ from experiments.exp1B import Experiment1B
 from experiments.exp2 import Experiment2
 from experiments.exp3 import Experiment3
 from experiments.exp4 import Experiment4
+from experiments.exp5 import Experiment5
+from experiments.exp6 import Experiment6
 
 # def parse_args():
 #     """
@@ -28,7 +30,7 @@ from experiments.exp4 import Experiment4
 
 def main(): 
     
-    my_exp = Experiment2(duration_minutes=2)
+    my_exp = Experiment6(duration_minutes=2, debug=True)
     my_exp.run_experiment()
 
     return
