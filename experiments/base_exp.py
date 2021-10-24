@@ -75,7 +75,7 @@ class BaseExperiment():
         self.touch_screen_helper.imageCreator.reset_canvas()
         self.log_msg("Finished!")
         self.data_mgr.update_status('completed')
-        self.data_mgr.write_dict(self.cfg['results_path'])
+        self.data_mgr.write_dict(self.cfg['results'])
 
     def log_msg(self, msg):
         m, s = divmod((time.time() - self.start_time), 60)
