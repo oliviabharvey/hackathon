@@ -53,15 +53,15 @@ Congrats! Now your VS Code IDE is remotely linked to your pi. You can launch a t
 * `sudo apt-get upgrade`
 
 ## Update your pi to Python 3.6
-* `sudo su` to be root
+* Modify user permissions on miniconda `sudo chown -R pi /home/pi/miniconda3`
 * Add rpi channel to conda `conda config --add channels rpi`
 * Install python 3.6 `conda install python=3.6`
-* Create a python environment `conda create --name souris python=3.6`
+* Create the python environment `conda env create -f environment.yml`
 * You can now exit the root `exit`
 * Active your enviroment to use it `source activate souris`
 
 ## Install GIT & Repo
 * Install Git`sudo apt install git`
-* Create a folder `mkdir /home/pi/hackathon/`
-* Got to home folder `cd /home/pi`
+* Create a folder `mkdir /home/pi/Projects/hackathon/`
+* Got to home folder `cd /home/pi/Projects`
 * Clone the repo `git clone https://github.com/oliviabharvey/hackathon.git`. VSCode will pop up a web connection to Github. Enter your crendentials.

@@ -1,5 +1,6 @@
 import time
 import random
+from data.manager import DataManager
 
 from module_touchscreen.touch_screen_helper import TouchScreenHelper
 from hardware.hardware_connector import HardwareConnector
@@ -9,10 +10,12 @@ TICK = 0.1
 
 class BaseExperiment():
 
-    def __init__(self, duration_minutes, debug=False):
+    def __init__(self, cfg, duration_minutes, debug=False, enableAutoClick=False):
         self.tick = TICK
+        self.cfg = cfg
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
         self.debug = debug
+        self.enableAutoClick = enableAutoClick
         return
 
     def run_experiment(self):
@@ -31,6 +34,8 @@ class BaseExperiment():
         """
         self.start_time = time.time()
         self.log_msg('Starting Experiment')
+        self.data_mgr = DataManager(self.cfg)
+        self.data_mgr.update_status('running')
         self.hardware_connector = HardwareConnector(self.debug)
 
     def deliver_sequence(self, qty=100):
@@ -67,10 +72,17 @@ class BaseExperiment():
         return
 
     def on_completion(self):
+        self.touch_screen_helper.imageCreator.reset_canvas()
+        self.touch_screen_helper.imageCreator.root.destroy()
+        if self.touch_screen_helper.isListenerStarted:
+            self.touch_screen_helper.listener_ref.stop()
         self.log_msg("Finished!")
+        self.data_mgr.update_status('completed')
+        self.data_mgr.write_dict(self.cfg['results'])
 
     def log_msg(self, msg):
-        print(f'Time: {round(time.time() - self.start_time, 1)} s - {str(msg)}')
+        m, s = divmod((time.time() - self.start_time), 60)
+        print(f'Time: {round(m)} min {round(s,1)} s - {str(msg)}'.replace('0 min ', ''))
 
     def proceed_to_ir_break(self):
         self.log_msg(f'Waiting for mouse to get into food tray.')
@@ -78,14 +90,19 @@ class BaseExperiment():
         self.ir_break = False
 
     def proceed_to_delay_step(self):
+        
         self.tray_light_off()
         self.delay_time_left = 10
+        if self.debug:
+            self.delay_time_left = 2
         self.log_msg(f'Waiting for {self.delay_time_left} seconds.')
         self.state = States.RESET_DELAY
 
     def proceed_to_punish_delay(self, delay=5):
         self.tray_light_on()
         self.punish_time_left = delay
+        if self.debug:
+            self.punish_time_left = 2
         self.log_msg(f'Waiting for {self.punish_time_left} seconds due to incorrect touch.')
         self.state = States.PUNISH_DELAY
 
