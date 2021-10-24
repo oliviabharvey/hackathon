@@ -1,4 +1,4 @@
-experiment: Exp4 # choices: Exp1A, Exp1B, Exp2, Exp3, Exp4, Exp5, Prl1
+experiment: Prl1 # choices: Exp1A, Exp1B, Exp2, Exp3, Exp4, Exp5, Prl1
 results: results/results.yaml
 mouse_name: NAME
 puppet: Puppet2
