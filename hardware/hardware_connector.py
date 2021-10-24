@@ -2,6 +2,7 @@ import random
 import led_control
 import buzzer_control
 import motor_control
+import ir_control
 
 class HardwareConnector():
     """
@@ -23,6 +24,11 @@ class HardwareConnector():
         self.motor = motor_control.MotorControl(debug=self.debug)
         self.motor.setup()
 
+        # Initializing IR beam (tray)
+        self.ir = ir_control.IrLed(debug=self.debug)
+        self.ir.setup()
+
+
 
     def is_irb_broken(self):
         # return True if infrared beam is broken, False otherwise
@@ -33,6 +39,8 @@ class HardwareConnector():
             return ir_break
         else: 
             return False
+
+        self.ir.is_irb_broken
 
     def play_tone(self, duration):
         # start playing tone for duration, but do not wait for it to be finished
@@ -53,3 +61,12 @@ class HardwareConnector():
         # This probably needs to be asynchronous.
         self.motor.provide_reward(microliter=qty)
         return
+
+    def stop_hardware(self):
+        # Ending hardware appropriately
+        self.motor.reset() #  Reset motor to initial position
+        # Stopping hardware approriately
+        self.leds.stop_leds()
+        self.buzzer.stop_buzzer()
+        self.motor.stop_motor()
+        self.ir.stop_ir()

@@ -11,9 +11,9 @@ class MotorControl:
     Enables interfacing with the motor.
     """
 
-    def __init__(self, StepDirection=1, WaitTime=4, debug=False):
+    def __init__(self, StepDirection=1, WaitTime=4/1000, debug=False):
         self.debug = bool(debug)
-        self.motorPins = (12, 16, 18, 22)  # Physical location (GPIO pin# 18,23,24,25)
+        self.motorPins = (15, 16, 18, 22)  # Physical location (GPIO pin# 22,23,24,25)
         # Define motor step sequence (datasheet)
         self.PinSequence =   [[1,0,0,1],
                              [1,0,0,0],
@@ -24,7 +24,7 @@ class MotorControl:
                              [0,0,1,1],
                              [0,0,0,1]]
 
-        self.WaitTime = int(WaitTime)  #In ms -> 3ms minimum
+        self.WaitTime = float(WaitTime)  #In seconds -> 3ms minimum
         self.MaxPinSequence = len(self.PinSequence)
         self.CurrentStep = 0
         self.FullRotationCounter = 0
@@ -96,7 +96,7 @@ class MotorControl:
 
     def provide_reward(self, microliter, StepDirection=self.StepDirection):
         # Provide the number of microliter as a reward
-        thread = threading.Thread(target=self.microliter, args=(microliter))
+        thread = threading.Thread(target=self.microliter, args=(microliter), deamon=True)
         thread.start()
 
 
@@ -104,6 +104,9 @@ class MotorControl:
         # To call at the end of experience to inverse all motor movement
         for i in range(0,self.TotalStepCounter): # MAYBE A WHILE?
             self.single_step(self,StepDirection)
+
+    def stop_motor(self):
+        GPIO.cleanup()
 
 ###################################
 ## TEST WHEN CALLING THIS SCRIPT ##
