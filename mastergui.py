@@ -23,6 +23,7 @@ class MasterGUI:
         self.puppet_path_to_configs = self.puppet_path_to_repo + "configs/"
         self.puppet_path_to_results = self.puppet_path_to_repo + "results/"
         self.master_path_to_results = "/home/pi/hackathon/hackathon/results/"
+        self.master_path_to_configs = "/home/pi/hackathon/hackathon/configs/"
         # self.master_path_to_results = "C:/dev/olivia/hackathon/results/"
 
         print("MasterGUI: Running GUI...")
@@ -44,6 +45,8 @@ class MasterGUI:
         # create useful folder
         if not os.path.isdir(self.master_path_to_results):
             os.mkdir(self.master_path_to_results)
+        if not os.path.isdir(self.master_path_to_configs):
+            os.mkdir(self.master_path_to_configs)
 
         # create first tab
         self.tabControl = Notebook(win)
@@ -104,17 +107,8 @@ class MasterGUI:
             self.ssh_run_command(current_puppet)
             x = threading.Thread(target=self.ssh_fetch_status, args=(current_puppet,), daemon = True)
             x.start()
-            print('ca print?')
         else:
             self.warning(f"WARNING! An experiment is already running on {self.entry_puppet.get()} \n\nPlease select a different puppet.")
-        
-    def warning(self,message):
-        popup = Tk()
-        lbl1_popup = Label(popup, text=f"{message}",wraplength=500, justify="center")
-        lbl1_popup.place(x=50,y=50)
-        popup.title("WARNING")
-        popup.geometry("600x350+0+0")
-        popup.mainloop()
 
     def print_config_to_yaml(self,current_puppet):
         self.t_start[current_puppet] = datetime.datetime.now()
@@ -125,25 +119,10 @@ class MasterGUI:
         dict_to_yaml = {'mouse_name': self.mouse[current_puppet], 
                         'experiment': self.experiment[current_puppet],
                         'puppet': current_puppet,
-                        'results': self.puppet_path_to_results}
-        with open(self.filename_config[current_puppet], 'w') as file:
+                        'results': self.puppet_path_to_results+self.filename_results[current_puppet]}
+        with open(self.master_path_to_configs+self.filename_config[current_puppet], 'w') as file:
             documents = yaml.dump(dict_to_yaml, file)
         print("OK.")
-
-    def read_experiments_yaml(self,):
-        # print("MasterGUI: Printing experiment parameters to "+self.filename_config[current_puppet]+"...",end="")
-        with open(self.experiments_filename, 'r') as file:
-            exps = yaml.safe_load(file)
-        # print("OK."
-        return exps['experiments']
-
-    def read_puppets(self):
-        file = open(self.puppets_filename)
-        csvreader = csv.reader(file)
-        for row in csvreader:
-            self.puppets[row[0]] = {}
-            self.puppets[row[0]]['username'] = row[1]
-            self.puppets[row[0]]['domain'] = row[2]
 
     def ssh_send_config(self,current_puppet):
         print('Sending config file to puppet..')
@@ -151,10 +130,10 @@ class MasterGUI:
         filename = self.filename_config[current_puppet]
         username = self.puppets[current_puppet]['username']
         domain = self.puppets[current_puppet]['domain']
-        ssh = subprocess.run(["scp", filename, f"{username}@{domain}:{path}{filename}"])
+        ssh = subprocess.run(["scp", self.master_path_to_configs+filename, f"{username}@{domain}:{path}{filename}"])
         if ssh.returncode != 0:
             self.remove_puppet_from_current(current_puppet)
-            self.warning(f"Copying config file to {current_puppet} failed.\n\nError:\n{ssh.communicate()[0]}")
+            self.warning(f"Copying config file to {current_puppet} failed.")
         else:
             self.lbl_tabs_config[current_puppet] = Label(self.tab[current_puppet], text="Sent confg file successfully...")
             self.lbl_tabs_config[current_puppet].place(x=50,y=75)
@@ -165,9 +144,10 @@ class MasterGUI:
         filename = self.filename_config[current_puppet]
         username = self.puppets[current_puppet]['username']
         domain = self.puppets[current_puppet]['domain']
+        print(["python", "launch_experiment.py", "--cfg", f"{path}{filename}"])
         ssh = subprocess.Popen(['ssh', '-t',
                                     f"{username}@{domain}",
-                                    "python", "launch_experiment.py", "--cfgs", f"{path}{filename}"],
+                                    "python", f"{self.puppet_path_to_repo}launch_experiment.py", "--cfg", f"{path}{filename}"],
                                     stdout = subprocess.PIPE,
                                     stderr = subprocess.PIPE)
         if ssh.returncode != 0:
@@ -201,6 +181,21 @@ class MasterGUI:
                 self.lbl_tabs_status[current_puppet].place(x=50,y=150)
                 i = self.thread_max_loops
 
+    def read_experiments_yaml(self,):
+        # print("MasterGUI: Printing experiment parameters to "+self.filename_config[current_puppet]+"...",end="")
+        with open(self.experiments_filename, 'r') as file:
+            exps = yaml.safe_load(file)
+        # print("OK."
+        return exps['experiments']
+
+    def read_puppets(self):
+        file = open(self.puppets_filename)
+        csvreader = csv.reader(file)
+        for row in csvreader:
+            self.puppets[row[0]] = {}
+            self.puppets[row[0]]['username'] = row[1]
+            self.puppets[row[0]]['domain'] = row[2]
+
     def remove_puppet_from_current(self,current_puppet):
         self.tabControl.forget(self.tab[current_puppet])
         self.mouse.pop(current_puppet, None)
@@ -209,6 +204,12 @@ class MasterGUI:
         self.lbl_tabs.pop(current_puppet, None)
         self.filename_config.pop(current_puppet, None)
 
-
+    def warning(self,message):
+        popup = Tk()
+        lbl1_popup = Label(popup, text=f"{message}",wraplength=500, justify="center")
+        lbl1_popup.place(x=50,y=50)
+        popup.title("WARNING")
+        popup.geometry("600x350+0+0")
+        popup.mainloop()
 
 myWin = MasterGUI()
