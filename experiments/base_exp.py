@@ -10,12 +10,12 @@ TICK = 0.1
 
 class BaseExperiment():
 
-    def __init__(self, cfg, duration_minutes, debug=False, enableAtuoClick=False):
+    def __init__(self, duration_minutes, debug=False, enableAutoClick=False):
         self.tick = TICK
         self.cfg = cfg
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
         self.debug = debug
-        self.enableAutoClick = enableAtuoClick
+        self.enableAutoClick = enableAutoClick
         return
 
     def run_experiment(self):
@@ -72,6 +72,7 @@ class BaseExperiment():
         return
 
     def on_completion(self):
+        self.touch_screen_helper.imageCreator.reset_canvas()
         self.log_msg("Finished!")
         self.data_mgr.update_status('completed')
         self.data_mgr.write_dict(self.cfg['results_path'])
