@@ -18,6 +18,7 @@ class TouchScreenHelper():
         self.display_type = display_type
         self.touch_screen_enabled = False
         thread = threading.Thread(target=self.start_listening, args=())
+        thread.daemon = True
         thread.start()
 
         self.imageCreator = ImageCreator()
@@ -25,10 +26,13 @@ class TouchScreenHelper():
         self.same_side_count = 0
         self.consecutive_good_clicks = 0
         self.consecutive_random_swaps = 0
+        self.isListenerStarted = False
         return
 
     def start_listening(self):
         with Listener(on_move=self.on_move) as listener:
+            self.listener_ref = listener
+            isListenerStarted = True
             listener.join()
 
     def on_move(self, x, y):

@@ -1,2 +1,2 @@
-Puppet 1,pi,puppet1.local,raspberry
-Puppet2,pi2,raspberry2.local,thisisthepassword2
+Puppet 1,pi,puppet1.local
+Puppet 2,pi2,puppet2.local

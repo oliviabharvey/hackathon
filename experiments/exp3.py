@@ -31,6 +31,8 @@ class Exp3(BaseExperiment):
                 self.touch_screen_helper.display_black_screen()
                 self.deliver_sequence(qty=20)
                 self.proceed_to_ir_break()
+            elif self.click_type == ClickTypes.BAD :
+                self.touch_screen_helper.touch_screen_enabled = True
 
         elif self.state == States.IR_BREAK: 
             if self.hardware_connector.is_irb_broken() == True:
