@@ -1,5 +1,6 @@
 import yaml
 import time
+import statistics
 from copy import deepcopy
 
 from utils.enums import TimeStamps
@@ -12,9 +13,17 @@ TRIAL_SCHEMA = {
     'seconds_between_feed_and_eat': None
     }
 
+SUMMARY_SCHEMA = {
+    'total_time': None,
+    'trials_number': None,
+    'average_seconds_between_display_and_touch': None,
+    'average_seconds_between_feed_and_eat': None,
+    'number_of_reversals': None
+    }
+
 RESULTS_SCHEMA = {
     'trials': {},
-    'summary': {}
+    'summary': deepcopy(SUMMARY_SCHEMA)
     }  
 
 class DataManager():
@@ -50,3 +59,17 @@ class DataManager():
         self.current_trial += 1
         self.data['trials'][self.current_trial] = deepcopy(TRIAL_SCHEMA)
         return
+
+    def compute_end_of_experiment_statistics(self, start_time, num_reversals):
+        self.data['summary']['total_time'] = round(time.time() - start_time, 1)
+        self.data['summary']['trials_number'] = len(self.data['trials'])
+        display_and_touch_times = []
+        feed_and_eat_times = []
+        for trial in self.data['trials']:
+            if self.data['trials'][trial]['seconds_between_display_and_touch'] != None:
+                display_and_touch_times.append(self.data['trials'][trial]['seconds_between_display_and_touch'])
+            if self.data['trials'][trial]['seconds_between_feed_and_eat'] != None:
+                feed_and_eat_times.append(self.data['trials'][trial]['seconds_between_feed_and_eat'])
+        self.data['summary']['average_seconds_between_display_and_touch'] = round(statistics.mean(display_and_touch_times), 1)
+        self.data['summary']['average_seconds_between_feed_and_eat'] = round(statistics.mean(feed_and_eat_times), 1)
+        self.data['summary']['number_of_reversals'] = num_reversals

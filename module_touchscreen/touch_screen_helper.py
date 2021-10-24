@@ -25,6 +25,7 @@ class TouchScreenHelper():
         self.side = random.choice([Sides.LEFT, Sides.RIGHT])
         self.same_side_count = 0
         self.consecutive_good_clicks = 0
+        self.count_reversals = None
         self.consecutive_random_swaps = 0
         self.isListenerStarted = False
         return
@@ -80,6 +81,10 @@ class TouchScreenHelper():
 
     def display_left_or_right(self):
         if self.consecutive_good_clicks >= 5:
+            if self.count_reversals == None:
+                self.count_reversals = 1
+            else:
+                self.count_reversals += 1
             self.swap_side()
         self.display_both_rectangle()
 
@@ -130,3 +135,6 @@ class TouchScreenHelper():
 
     def check_collision_internal(self,click_x, click_y, box_left, box_right, box_top, box_bottom):
         return not (click_x < box_left or click_x > box_right or click_y > box_top or click_y < box_bottom)
+
+    def get_number_reversals(self):
+        return self.count_reversals

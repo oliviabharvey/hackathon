@@ -91,13 +91,14 @@ class BaseExperiment():
         if self.touch_screen_helper.isListenerStarted:
             self.touch_screen_helper.listener_ref.stop()
         self.log_msg("Finished!")
+        self.data_mgr.compute_end_of_experiment_statistics(self.start_time, self.touch_screen_helper.get_number_reversals())
         self.data_mgr.update_status('completed')
         self.data_mgr.write_dict(self.cfg['results'])
 
     def on_error(self):
         import sys            
         self.log_msg("Exception occured : "+ sys.exc_info()) 
-        if debug :
+        if self.debug:
             raise     
        
         self.data_mgr.update_status('error')
