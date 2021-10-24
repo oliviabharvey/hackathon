@@ -4,6 +4,7 @@ import random
 os.environ["DISPLAY"]=":0"
 
 from pynput.mouse import Listener
+
 import threading
 import logging
 from utils.enums import *
