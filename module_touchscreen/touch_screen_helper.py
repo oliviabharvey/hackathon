@@ -94,7 +94,7 @@ class TouchScreenHelper():
                     return ClickTypes.BAD
                 else:
                     return ClickTypes.GOOD
-                    
+
         self.consecutive_random_swaps = 0
         if good_collision:
             return ClickTypes.GOOD
@@ -104,20 +104,3 @@ class TouchScreenHelper():
     def check_collision(self, x, y):
         # to do Dan (use self.side)
         return True
-    
-
-
-        if DisplayPatterns.LEFT_OR_RIGHT_WITH_RANDOMNESS:
-            swap = random.uniform(0, 1) <= 0.2
-            if swap:
-                self.consecutive_random_swaps += 1
-            if self.consecutive_random_swaps <= 2:
-                if (good_collision and not swap) or (not good_collision and swap):
-                    return ClickTypes.GOOD
-                else:
-                    return ClickTypes.BAD
-            else: 
-                if good_collision:
-                    return ClickTypes.GOOD
-                else:
-                    return ClickTypes.BAD
