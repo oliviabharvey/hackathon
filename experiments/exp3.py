@@ -4,13 +4,13 @@ import random
 from experiments.base_exp import BaseExperiment
 from utils.enums import *
 
-class Experiment3(BaseExperiment):
+class Exp3(BaseExperiment):
     """
     Definition of Experiment of Stage 3
     """
 
-    def __init__(self, duration_minutes=60, debug=False):
-        super().__init__(duration_minutes, debug)
+    def __init__(self, cfg, duration_minutes=60, debug=False):
+        super().__init__(cfg, duration_minutes, debug)
         return
 
     def initialize(self):
