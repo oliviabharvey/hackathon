@@ -31,7 +31,7 @@ class BaseExperiment():
         except:
             import sys            
             self.log_msg("Exception occured : "+ str(sys.exc_info())) 
-            if debug :
+            if self.debug :
                 raise     
         
             self.data_mgr.update_status('error')

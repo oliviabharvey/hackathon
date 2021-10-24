@@ -1,4 +1,4 @@
-#import random
+import random
 #import led_control
 #import buzzer_control
 #import motor_control
