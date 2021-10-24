@@ -37,7 +37,7 @@ class LEDControl:
         self.update_light_state()
         return self.state
 
-    def light_off(self)
+    def light_off(self):
         # Turn lights off and output at False
         GPIO.output(self.pin,GPIO.HIGH)
         self.update_light_state()
@@ -62,7 +62,7 @@ class LEDs:
         self.tray_led = None
         self.box_led = None
 
-    def setup(self)
+    def setup(self):
         # Initiliazing lEDs
         self.experience_led = LEDControl(pin=self.ExperienceLEDPinPin,debug=self.debug)
         self.tray_led = LEDControl(pin=self.TrayLEDPin,debug=self.debug)

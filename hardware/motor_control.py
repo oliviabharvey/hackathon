@@ -15,14 +15,16 @@ class MotorControl:
         self.debug = bool(debug)
         self.motorPins = (15, 16, 18, 22)  # Physical location (GPIO pin# 22,23,24,25)
         # Define motor step sequence (datasheet)
-        self.PinSequence =   [[1,0,0,1],
-                             [1,0,0,0],
-                             [1,1,0,0],
-                             [0,1,0,0],
-                             [0,1,1,0],
-                             [0,0,1,0],
-                             [0,0,1,1],
-                             [0,0,0,1]]
+        self.PinSequence = [
+            [1,0,0,1], 
+            [1,0,0,0],
+            [1,1,0,0],
+            [0,1,0,0],
+            [0,1,1,0],
+            [0,0,1,0],
+            [0,0,1,1],
+            [0,0,0,1]
+            ]
 
         self.WaitTime = float(WaitTime)  #In seconds -> 3ms minimum
         self.MaxPinSequence = len(self.PinSequence)
@@ -34,6 +36,7 @@ class MotorControl:
         self.StepDirection = int(StepDirection)
         # Motor protection
         if (abs(self.StepDirection) > 2) or (self.StepDirection==0):
+            pass
             # RAISE ERROR / sys.exit()
 
 
@@ -42,8 +45,8 @@ class MotorControl:
         GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         for pin in self.motorPins:
-            GPIO.setup(pin,GPIO.OUT)
-            GPIO.output(pin,GPIO.LOW)
+                GPIO.setup(pin,GPIO.OUT)
+                GPIO.output(pin,GPIO.LOW)
         #Initialization of variables (Should force a reset for these values to work)
         self.CurrentStep = 0
         self.FullRotationCounter = 0
@@ -69,23 +72,24 @@ class MotorControl:
             pin = self.motorPins[pin]
         if self.PinSequence[self.CurrentStep][pin]!=0:
             if self.debug:
-            print " Enable GPIO %i" %(pin)
-            GPIO.output(pin, GPIO.HIGH)
+                print('Enable GPIO# ', pin)
+                GPIO.output(pin, GPIO.HIGH)
         else:
             GPIO.output(pin, GPIO.LOW)
         # The motor can only take an input every 3ms
         time.sleep(self.WaitTime)
     
-    return self.TotalStepCounter
+        return self.TotalStepCounter
 
 
     def full_rotation(self,StepDirection=self.StepDirection):
         # Make one full motor rotation
         if abs(StepDirection) == 2:
             step_to_rotation = 4
-        else step_to_rotation = 8:
-            for i in range(0,step_to_rotation): # MAYBE A WHILE?
-                single_step(self,StepDirection)
+        else:
+            step_to_rotation = 8
+        for i in range(0,step_to_rotation): # MAYBE A WHILE?
+            single_step(self,StepDirection)
 
 
     def microliter(self, microliter, StepDirection=self.StepDirection):
@@ -96,7 +100,7 @@ class MotorControl:
 
     def provide_reward(self, microliter, StepDirection=self.StepDirection):
         # Provide the number of microliter as a reward
-        thread = threading.Thread(target=self.microliter, args=(microliter), deamon=True)
+        thread = threading.Thread(target=self.microliter, args=(microliter), daemon=True)
         thread.start()
 
 
@@ -138,12 +142,12 @@ if __name__ == '__main__':
             time.sleep(1000)
 
         print('Turning clockwise full turn - slow')
-            motor.full_rotation(1)
-            time.sleep(1000)
+        motor.full_rotation(1)
+        time.sleep(1000)
 
         print('Turning counterclockwise full turn - fast')
-            motor.full_rotation(-2)
-            time.sleep(1000)   
+        motor.full_rotation(-2)
+        time.sleep(1000)   
 
         print('End of test.')
         GPIO.cleanup()

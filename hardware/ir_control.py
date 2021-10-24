@@ -57,19 +57,19 @@ class IrLed:
         
     
     def check_beam_status(self):
-            while not(self.is_irb_broken):
-                time.sleep(0.100) # 10Hz refresh rate
-                self.state = bool(GPIO.input(self.ir_sensor_pin))
-                if self.state:  # If beam is complete
-                    self.irb_broken_counter = 0
-                    self.irb_complete_counter += 1
-                if self.irb_complete_counter >= self.max_state_trigger:
-                    self.is_irb_broken = False
-                else:  # If beam is broken
-                    self.irb_complete_counter = 0
-                    self.irb_broken_counter += 1
-                if self.irb_broken_counter >= self.max_state_trigger:
-                    self.is_irb_broken = True
+        while not(self.is_irb_broken):
+            time.sleep(0.100) # 10Hz refresh rate
+            self.state = bool(GPIO.input(self.ir_sensor_pin))
+            if self.state:  # If beam is complete
+                self.irb_broken_counter = 0
+                self.irb_complete_counter += 1
+            if self.irb_complete_counter >= self.max_state_trigger:
+                self.is_irb_broken = False
+            else:  # If beam is broken
+                self.irb_complete_counter = 0
+                self.irb_broken_counter += 1
+            if self.irb_broken_counter >= self.max_state_trigger:
+                self.is_irb_broken = True
         return self.is_irb_broken
 
 
@@ -78,7 +78,8 @@ class IrLed:
         GPIO.cleanup()
 
     def listener_beam(self):
-        thread = threading.Thread(target=self.check_beam_status, args=(), deamon=True)
+        # Listener to update beam. Never stop until experiments stops (daemon=true)
+        thread = threading.Thread(target=self.check_beam_status, args=(), daemon=True)
         thread.start()
 
 

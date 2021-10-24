@@ -36,8 +36,8 @@ class BuzzerControl:
         #sys.exit() could be a harsh solution if we cumulate too many threads.
         # Could use a _is_running variable? (https://stackoverflow.com/questions/4541190/how-to-close-a-thread-from-within)
 
-    def play_sound(self,frequency=self.Frequency,time=self.Duration, volume=self.DutyCycle)):
-        thread = threading.Thread(target=self.start_sound, args=(frequency,time,volume), deamon=True)
+    def play_sound(self,frequency=self.Frequency,time=self.Duration, volume=self.DutyCycle):
+        thread = threading.Thread(target=self.start_sound, args=(frequency,time,volume), daemon=True)
         thread.start()
 
     def stop_buzzer(self):
