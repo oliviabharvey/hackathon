@@ -10,11 +10,12 @@ TICK = 0.1
 
 class BaseExperiment():
 
-    def __init__(self, cfg, duration_minutes, debug=False):
+    def __init__(self, cfg, duration_minutes, debug=False, enableAtuoClick=False):
         self.tick = TICK
         self.cfg = cfg
         self.exp_duration = duration_minutes * 60 # duration in seconds TO UPDATE
         self.debug = debug
+        self.enableAutoClick = enableAtuoClick
         return
 
     def run_experiment(self):

@@ -9,8 +9,8 @@ class Exp1B(BaseExperiment):
     Definition of Experiment of Stage 1B
     """
 
-    def __init__(self, cfg, duration_minutes=20, debug=False):
-        super().__init__(cfg, duration_minutes, debug)
+    def __init__(self, cfg, duration_minutes=20, debug=False, enableAutoClick=False):
+        super().__init__(cfg, duration_minutes, debug, enableAutoClick)
         return
 
     def initialize(self):
