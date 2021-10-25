@@ -10,7 +10,7 @@ class BuzzerControl:
     Enabling control of the buzzer (frequency, duration and volume)
     """
 
-    def __init__(self,frequency=3000, duration=1, DutyCycle=50, debug=False):
+    def __init__(self,frequency=3000, duration=1, DutyCycle=10, debug=False):
         self.debug = bool(debug)
         # This pin needs to be PWM capable [(GPIO pin# 12,13,18,19])
         self.BuzzerPin = 32 # Physical location (GPIO pin# 12)
