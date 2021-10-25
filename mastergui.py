@@ -19,12 +19,14 @@ class MasterGUI:
 
         self.puppets_filename = "puppets_info.csv" #convertir en yaml
         self.experiments_filename = "experiments.yaml"
-        self.puppet_path_to_repo = "/home/pi/Projects/hackathon/"
+        self.puppet_path_to_repo = "/home/pi/hackathon_souris/"
+        # self.puppet_path_to_repo = "/home/pi/Projects/hackathon/"
         self.puppet_path_to_configs = self.puppet_path_to_repo + "configs/"
         self.puppet_path_to_results = self.puppet_path_to_repo + "results/"
-        self.master_path_to_results = "/home/pi/hackathon/hackathon/results/"
-        self.master_path_to_configs = "/home/pi/hackathon/hackathon/configs/"
-        # self.master_path_to_results = "C:/dev/olivia/hackathon/results/"
+        self.puppet_path_to_bash = self.puppet_path_to_repo + "bash_files/"
+        self.master_path_to_repo = "/home/pi/hackathon/hackathon/"
+        self.master_path_to_results = self.master_path_to_repo + "results/"
+        self.master_path_to_configs = self.master_path_to_repo + "configs/"
 
         print("MasterGUI: Running GUI...")
         win = Tk()
@@ -36,16 +38,18 @@ class MasterGUI:
         self.lbl_tabs_config = {}
         self.lbl_tabs_command = {}
         self.lbl_tabs_status = {}
+        self.btn_tabs = {}
         self.filename_config = {}
         self.filename_results = {}
         self.t_start = {}
-        self.thread_max_loops = 3
-        self.thread_sleep_seconds = 1
+        self.bash_file = {}
+        self.thread_max_loops = 10
+        self.thread_sleep_seconds = 5
 
         # create useful folder
-        if not os.path.isdir(self.master_path_to_results):
+        if not os.path.exists(self.master_path_to_results):
             os.mkdir(self.master_path_to_results)
-        if not os.path.isdir(self.master_path_to_configs):
+        if not os.path.exists(self.master_path_to_configs):
             os.mkdir(self.master_path_to_configs)
 
         # create first tab
@@ -105,8 +109,6 @@ class MasterGUI:
             self.print_config_to_yaml(current_puppet)
             self.ssh_send_config(current_puppet)
             self.ssh_run_command(current_puppet)
-            x = threading.Thread(target=self.ssh_fetch_status, args=(current_puppet,), daemon = True)
-            x.start()
         else:
             self.warning(f"WARNING! An experiment is already running on {self.entry_puppet.get()} \n\nPlease select a different puppet.")
 
@@ -115,6 +117,8 @@ class MasterGUI:
         t = self.t_start[current_puppet].strftime("%Y-%m-%dT%H%M%S")
         self.filename_config[current_puppet] = t + "_" + current_puppet.replace(" ","-") + "_" + self.experiment[current_puppet].replace(" ","-") + "_" + self.mouse[current_puppet].replace(" ","-") + "_config.yaml"
         self.filename_results[current_puppet] = self.filename_config[current_puppet].replace('_config','_results')
+        self.bash_file[current_puppet] = current_puppet.replace(" ","_")+".sh"
+        print(self.bash_file[current_puppet])
         print("MasterGUI: Printing experiment parameters to "+self.filename_config[current_puppet]+"...",end="")
         dict_to_yaml = {'mouse_name': self.mouse[current_puppet], 
                         'experiment': self.experiment[current_puppet],
@@ -144,18 +148,20 @@ class MasterGUI:
         filename = self.filename_config[current_puppet]
         username = self.puppets[current_puppet]['username']
         domain = self.puppets[current_puppet]['domain']
-        print(["python", "launch_experiment.py", "--cfg", f"{path}{filename}"])
-        ssh = subprocess.Popen(['ssh', '-t',
-                                    f"{username}@{domain}",
-                                    "python", f"{self.puppet_path_to_repo}launch_experiment.py", "--cfg", f"{path}{filename}"],
-                                    stdout = subprocess.PIPE,
-                                    stderr = subprocess.PIPE)
-        if ssh.returncode != 0:
-            self.remove_puppet_from_current(current_puppet)
-            self.warning(f"Command to {current_puppet} failed.\n\nError:\n{ssh.communicate()[0]}")
-        else:
+        command = "python "+ self.puppet_path_to_repo + "launch_experiment.py --cfg " + path + filename
+        self.write_sh(current_puppet,command)
+        try:
+            ssh1 = subprocess.run(["scp", self.master_path_to_repo+self.bash_file[current_puppet], f"{username}@{domain}:{self.puppet_path_to_bash}{self.bash_file[current_puppet]}"])
+            ssh2 = subprocess.run(["ssh", username+"@"+domain, "chmod u+x "+self.puppet_path_to_bash+self.bash_file[current_puppet]])
+            ssh3 = subprocess.Popen(["ssh", username+"@"+domain, self.puppet_path_to_bash+self.bash_file[current_puppet]])
             self.lbl_tabs_command[current_puppet] = Label(self.tab[current_puppet], text="Running...")
             self.lbl_tabs_command[current_puppet].place(x=50,y=100)
+            x = threading.Thread(target=self.ssh_fetch_status, args=(current_puppet,), daemon = True)
+            x.start()
+        except:
+            self.remove_puppet_from_current(current_puppet)
+            self.warning(f"Command to {current_puppet} failed.")
+
 
     def ssh_fetch_status(self,current_puppet):
         path = self.puppet_path_to_results
@@ -166,12 +172,10 @@ class MasterGUI:
         while i<self.thread_max_loops:
             ssh = subprocess.run(["scp", f"{username}@{domain}:{path}{filename}", f"{self.master_path_to_results}{filename}"])
             if ssh.returncode != 0:
-                self.lbl_tabs_status[current_puppet] = Label(self.tab[current_puppet], text=f"Running...")
-                self.lbl_tabs_status[current_puppet].place(x=50,y=125)
                 i += 1
-                if (datetime.datetime.now()-self.t_start[current_puppet]).seconds/60 > 0.1: #if it's been running for more than 80 minutes, cancel run
+                if (datetime.datetime.now()-self.t_start[current_puppet]).seconds/60 > 80: #if it's been running for more than 80 minutes, cancel run
                     self.lbl_tabs_status[current_puppet] = Label(self.tab[current_puppet], text=f"Abnormally long experiment (running for more than 80 minutes). Canceled run.", justify="left")
-                    self.lbl_tabs_status[current_puppet].place(x=50,y=150)
+                    self.lbl_tabs_status[current_puppet].place(x=50,y=125)
                     i = self.thread_max_loops
                 else:
                     time.sleep(self.thread_sleep_seconds)
@@ -180,6 +184,11 @@ class MasterGUI:
                 self.lbl_tabs_status[current_puppet] = Label(self.tab[current_puppet], text=f"Experiment complete! \n\nResults are here:\n{self.master_path_to_results}{self.filename_results[current_puppet]}", justify="left")
                 self.lbl_tabs_status[current_puppet].place(x=50,y=150)
                 i = self.thread_max_loops
+                # Run button
+                time.sleep(10)
+                self.remove_puppet_from_current(current_puppet)
+                # self.btn_tabs[current_puppet] = Button(self.tab[current_puppet], text="Finish", command=self.remove_puppet_from_current(current_puppet))
+                # self.btn_tabs[current_puppet].place(x=380,y=250)
 
     def read_experiments_yaml(self,):
         # print("MasterGUI: Printing experiment parameters to "+self.filename_config[current_puppet]+"...",end="")
@@ -202,7 +211,13 @@ class MasterGUI:
         self.experiment.pop(current_puppet, None)
         self.tab.pop(current_puppet, None)
         self.lbl_tabs.pop(current_puppet, None)
+        self.lbl_tabs_config.pop(current_puppet, None)
+        self.lbl_tabs_command.pop(current_puppet, None)
+        self.lbl_tabs_status.pop(current_puppet, None)
         self.filename_config.pop(current_puppet, None)
+        self.filename_results.pop(current_puppet, None)
+        self.t_start.pop(current_puppet, None)
+        self.bash_file.pop(current_puppet, None)
 
     def warning(self,message):
         popup = Tk()
@@ -211,5 +226,17 @@ class MasterGUI:
         popup.title("WARNING")
         popup.geometry("600x350+0+0")
         popup.mainloop()
+
+    def write_sh(self,current_puppet,command):
+        print(f"LogExpOutput: printing bash...")
+        file = open(self.bash_file[current_puppet], "w")
+        file.write("# "+self.bash_file[current_puppet])
+        file.write("\ncd " + self.puppet_path_to_repo)
+        file.write("\nsource /home/pi/miniconda3/bin/activate souris")
+        file.write("\nsleep 5")
+        file.write("\n"+command)
+        file.close()
+        print("OK.")
+
 
 myWin = MasterGUI()
