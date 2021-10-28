@@ -8,235 +8,292 @@ import yaml
 import subprocess
 import time
 import threading
+import sys
+
+#add background to tabs and canvas. put str in canvas.
 
 class MasterGUI:
 
     def __init__(self):
 
+        print("MasterGUI: Running GUI...")
+
         if os.environ.get('DISPLAY','') != ':0.0':
-            print('no display found. Using :0.0')
             os.environ.__setitem__('DISPLAY', ':0.0')
 
-        self.puppets_filename = "puppets_info.csv" #convertir en yaml
-        self.experiments_filename = "experiments.yaml"
-        self.puppet_path_to_repo = "/home/pi/hackathon_souris/"
-        # self.puppet_path_to_repo = "/home/pi/Projects/hackathon/"
-        self.puppet_path_to_configs = self.puppet_path_to_repo + "configs/"
-        self.puppet_path_to_results = self.puppet_path_to_repo + "results/"
-        self.puppet_path_to_bash = self.puppet_path_to_repo + "bash_files/"
-        self.master_path_to_repo = "/home/pi/hackathon/hackathon/"
-        self.master_path_to_results = self.master_path_to_repo + "results/"
-        self.master_path_to_configs = self.master_path_to_repo + "configs/"
+        # Threads parameters
+        self.thread_max_time = 70 # minutes. If the experiment is not completed after this time, stop looking for a "completed" status
+        self.thread_sleep_seconds = 10 # frequency (s) at which the status checker pings the puppet during run
 
-        print("MasterGUI: Running GUI...")
-        win = Tk()
+        # Set paths
+        self.puppet_path = {}
+        self.master_path = {}
+        self.puppet_path['repo'] = "/home/pi/hackathon_souris/" #"/home/pi/Projects/hackathon/"
+        self.master_path['repo'] = "C:/dev/olivia/hackathon/" #"/home/pi/hackathon/hackathon/"
+        self.puppets_info_filename = "puppets_info.csv"
+        self.experiments_filename = "experiments.yaml"
+        self.add_rel_path("configs")
+        self.add_rel_path("results")
+        self.add_rel_path("bash_files")
+        self.add_rel_path("images")
+
+        # Initialize vars
         self.tab = {}
         self.mouse = {}
         self.puppets = {}
         self.experiment = {}
+        self.destination = {}
+        self.t_start = {}
+        self.bash_file = {}
         self.lbl_tabs = {}
-        self.lbl_tabs_config = {}
-        self.lbl_tabs_command = {}
-        self.lbl_tabs_status = {}
         self.btn_tabs = {}
         self.filename_config = {}
         self.filename_results = {}
-        self.t_start = {}
-        self.bash_file = {}
-        self.thread_max_loops = 10
-        self.thread_sleep_seconds = 5
-
-        # create useful folder
-        if not os.path.exists(self.master_path_to_results):
-            os.mkdir(self.master_path_to_results)
-        if not os.path.exists(self.master_path_to_configs):
-            os.mkdir(self.master_path_to_configs)
-
-        # create first tab
+        self.back_img = {}
+        self.background = {}
+        self.background_lbl = {}
+        self.btn_img = {}
+        self.btn = {}
+        
+        # Create window (main tab)
+        win = Tk()
         self.tabControl = Notebook(win)
         self.tab['main']=Frame(self.tabControl)
         self.tabControl.add(self.tab['main'], text = "Run")
         self.tabControl.pack(expand = 1, fill ="both")
 
+        # Background
+        self.background = ImageTk.PhotoImage(Image.open(self.master_path['images']+"gui_background.png"))
+        self.gui_set_background('main')        
+
+        # canvas
+        self.canvas = Canvas(self.tab['main'],width=400,height=280,highlightthickness=2, highlightbackground="#3b607d")
+        self.canvas.place(x=200,y=50)
+
         # Octopus
-        self.img = Image.open("octopus.jpg")
-        self.img = self.img.resize((50,50),Image.ANTIALIAS)
+        self.img = Image.open(self.master_path['images']+"octopus.png")
+        self.img = self.img.resize((60,60),Image.ANTIALIAS)
         self.test = ImageTk.PhotoImage(self.img)
         self.lbl_img = Label(self.tab['main'],image=self.test)
         self.lbl_img.image = self.test
-        self.lbl_img.place(x=369,y=300)
+        self.lbl_img.place(x=400-60/2,y=265)
 
         # Name of the mouse
-        self.lbl_mouse = Label(self.tab['main'], text="Name of the mouse:")
-        self.lbl_mouse.place(x=250,y=50)
-        self.entry_mouse = Entry(self.tab['main'])
-        self.entry_mouse.insert(END,"NAME")
-        self.entry_mouse.place(x=400,y=50)
+        self.lbl_mouse = Label(self.tab['main'], text="Name of the mouse:",font=("Arial",11))
+        self.lbl_mouse.place(x=240,y=70)
+        self.entry_mouse = Entry(self.tab['main'],font=("Arial",12),borderwidth=0.5)#,highlightthickness=1)
+        self.entry_mouse.insert(END,"Mouse")
+        self.entry_mouse.place(x=410,y=70,height=25,width=147)
         
         # Choose which puppet RPi puppet to use
         self.read_puppets()
-        self.lbl_puppet = Label(self.tab['main'], text="Puppet ID:")
-        self.lbl_puppet.place(x=250,y=100)
-        self.entry_puppet=Combobox(self.tab['main'], values=list(self.puppets.keys()))
-        self.entry_puppet.place(x=400, y=100)
+        self.lbl_puppet = Label(self.tab['main'], text="Puppet ID:",font=("Arial",11))
+        self.lbl_puppet.place(x=240,y=120)
+        self.entry_puppet=Combobox(self.tab['main'], font=('Arial', 12), width=14, values=list(self.destination.keys()))
+        popdown = self.entry_puppet.tk.eval('ttk::combobox::PopdownWindow %s' % self.entry_puppet)
+        self.entry_puppet.tk.call('%s.f.l' % popdown, 'configure', '-font', self.entry_puppet['font'])
+        self.entry_puppet.place(x=410, y=120)
 
         # Choose which experiment to run
-        self.lbl_exp = Label(self.tab['main'], text="Experiment to run:")
-        self.lbl_exp.place(x=250,y=150)
-        self.entry_exp=Combobox(self.tab['main'], values=self.read_experiments_yaml())
-        self.entry_exp.place(x=400, y=150)
+        self.lbl_exp = Label(self.tab['main'], text="Experiment to run:",font=("Arial",11))
+        self.lbl_exp.place(x=240,y=170)
+        self.entry_exp=Combobox(self.tab['main'], font=('Arial', 12), width=14, values=self.read_experiments_yaml())
+        popdown = self.entry_exp.tk.eval('ttk::combobox::PopdownWindow %s' % self.entry_exp)
+        self.entry_exp.tk.call('%s.f.l' % popdown, 'configure', '-font', self.entry_exp['font'])
+        self.entry_exp.place(x=410, y=170)
 
         # Run button
-        self.btn = Button(self.tab['main'], text="Run", command=(lambda: [self.launch_exp()]))
-        self.btn.place(x=380,y=250)
+        self.gui_button('main',self.master_path['images']+"run_button.png","run")
 
         # Build GUI
         win.title("Run experiment")
         win.geometry("800x410+0+0")
         win.mainloop()
-        print("MasterGUI: Done.")
+
+    def gui_button(self,tab,img_file,action):
+        self.btn_width = 70
+        self.btn_img[tab] = Image.open(img_file)
+        self.btn_img[tab] = self.btn_img[tab].resize((self.btn_width,35),Image.ANTIALIAS)
+        self.btn_img[tab] = ImageTk.PhotoImage(self.btn_img[tab])
+        if action == "run":
+            self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.launch_exp()]),borderwidth=0,highlightthickness=0)
+            self.btn[tab].place(x=400-self.btn_width/2+5,y=220)
+        elif action == "finish":
+            self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
+            self.btn[tab].place(x=400-self.btn_width/2+5,y=270)
+        elif action == "cancel":
+            # self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
+            # self.btn[tab].place(x=400-self.btn_width/2+5,y=270)
+            pass #add cancel run ; send a cancel file
+        
+
+    def gui_set_background(self,tab):
+        self.background_lbl[tab] = Label(self.tab[tab],image=self.background)
+        self.background_lbl[tab].place(x=0,y=0)
 
     def launch_exp(self):
-        if self.entry_puppet.get() not in self.experiment:
-            current_puppet = self.entry_puppet.get()
-            self.mouse[current_puppet] = self.entry_mouse.get()
-            self.experiment[current_puppet] = self.entry_exp.get()
-            self.tab[current_puppet] = Frame(self.tabControl)
-            self.tabControl.add(self.tab[current_puppet], text = current_puppet)
-            self.lbl_tabs[current_puppet] = Label(self.tab[current_puppet], text=f"{current_puppet}: {self.experiment[current_puppet]}")
-            self.lbl_tabs[current_puppet].place(x=50,y=50)
-            self.tabControl.select(self.tab[current_puppet])
-            self.print_config_to_yaml(current_puppet)
-            self.ssh_send_config(current_puppet)
-            self.ssh_run_command(current_puppet)
+        if self.entry_puppet.get() not in self.tab and self.entry_puppet.get() != "":
+            try:
+                # Run experiment in thread
+                x = threading.Thread(target=self.ssh_run, args=(self.entry_puppet.get(),), daemon = True)
+                x.start()
+            except Exception as e:
+                self.warning(f"Experiment raised an error:\n{e}")
+                self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+        elif self.entry_puppet.get() == "":
+            self.warning("Please enter a valid mouse name, setup ID and experiment name.")
         else:
             self.warning(f"WARNING! An experiment is already running on {self.entry_puppet.get()} \n\nPlease select a different puppet.")
 
-    def print_config_to_yaml(self,current_puppet):
-        self.t_start[current_puppet] = datetime.datetime.now()
-        t = self.t_start[current_puppet].strftime("%Y-%m-%dT%H%M%S")
-        self.filename_config[current_puppet] = t + "_" + current_puppet.replace(" ","-") + "_" + self.experiment[current_puppet].replace(" ","-") + "_" + self.mouse[current_puppet].replace(" ","-") + "_config.yaml"
-        self.filename_results[current_puppet] = self.filename_config[current_puppet].replace('_config','_results')
-        self.bash_file[current_puppet] = current_puppet.replace(" ","_")+".sh"
-        print(self.bash_file[current_puppet])
-        print("MasterGUI: Printing experiment parameters to "+self.filename_config[current_puppet]+"...",end="")
-        dict_to_yaml = {'mouse_name': self.mouse[current_puppet], 
-                        'experiment': self.experiment[current_puppet],
-                        'puppet': current_puppet,
-                        'results': self.puppet_path_to_results+self.filename_results[current_puppet]}
-        with open(self.master_path_to_configs+self.filename_config[current_puppet], 'w') as file:
-            documents = yaml.dump(dict_to_yaml, file)
-        print("OK.")
+    def ssh_run(self,puppet):
+        puppet = self.get_gui_input()
+        self.create_new_tab(puppet)
+        self.create_filenames(puppet)
+        self.print_config_to_yaml(puppet)
+        self.ssh_send_config(puppet)
+        self.ssh_run_command(puppet)
+        sys.exit() # end thread
 
-    def ssh_send_config(self,current_puppet):
-        print('Sending config file to puppet..')
-        path = self.puppet_path_to_configs
-        filename = self.filename_config[current_puppet]
-        username = self.puppets[current_puppet]['username']
-        domain = self.puppets[current_puppet]['domain']
-        ssh = subprocess.run(["scp", self.master_path_to_configs+filename, f"{username}@{domain}:{path}{filename}"])
+    def print_config_to_yaml(self,puppet):
+        dict_to_yaml = {'mouse_name': self.mouse[puppet], 
+                        'experiment': self.experiment[puppet],
+                        'puppet': puppet,
+                        'results': self.puppet_path['results']+self.filename_results[puppet]}
+        with open(self.master_path['configs']+self.filename_config[puppet], 'w') as file:
+            yaml.dump(dict_to_yaml, file)
+
+    def ssh_send_config(self,puppet):
+        config_puppet = self.puppet_path['configs'] + self.filename_config[puppet]
+        config_master = self.master_path['configs'] + self.filename_config[puppet]
+        ssh = subprocess.run(["scp", config_master, f"{self.destination[puppet]}:{config_puppet}"])
         if ssh.returncode != 0:
-            self.remove_puppet_from_current(current_puppet)
-            self.warning(f"Copying config file to {current_puppet} failed.")
+            self.lbl_append(puppet,f"Copying config file to {puppet} failed.")
+            self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+            raise ValueError(f"Copying config file to {puppet} failed.")
         else:
-            self.lbl_tabs_config[current_puppet] = Label(self.tab[current_puppet], text="Sent confg file successfully...")
-            self.lbl_tabs_config[current_puppet].place(x=50,y=75)
+            self.lbl_append(puppet,"\nSent confg file successfully...")
 
-    def ssh_run_command(self,current_puppet):
-        print('Running command...')
-        path = self.puppet_path_to_configs
-        filename = self.filename_config[current_puppet]
-        username = self.puppets[current_puppet]['username']
-        domain = self.puppets[current_puppet]['domain']
-        command = "python "+ self.puppet_path_to_repo + "launch_experiment.py --cfg " + path + filename
-        self.write_sh(current_puppet,command)
+    def ssh_run_command(self,puppet):
+        config_puppet = self.puppet_path['configs'] + self.filename_config[puppet]
+        bash_puppet = self.puppet_path['bash_files'] + self.bash_file[puppet]
+        bash_master = self.master_path['bash_files'] + self.bash_file[puppet]
+        command = "python "+ self.puppet_path['repo'] + "launch_experiment.py --cfg " + config_puppet
+        self.write_sh(puppet,command)
+        self.lbl_append(puppet,"Launching python script on puppet...")
         try:
-            ssh1 = subprocess.run(["scp", self.master_path_to_repo+self.bash_file[current_puppet], f"{username}@{domain}:{self.puppet_path_to_bash}{self.bash_file[current_puppet]}"])
-            ssh2 = subprocess.run(["ssh", username+"@"+domain, "chmod u+x "+self.puppet_path_to_bash+self.bash_file[current_puppet]])
-            ssh3 = subprocess.Popen(["ssh", username+"@"+domain, self.puppet_path_to_bash+self.bash_file[current_puppet]])
-            self.lbl_tabs_command[current_puppet] = Label(self.tab[current_puppet], text="Running...")
-            self.lbl_tabs_command[current_puppet].place(x=50,y=100)
-            x = threading.Thread(target=self.ssh_fetch_status, args=(current_puppet,), daemon = True)
-            x.start()
+            subprocess.run(["scp", bash_master, f"{self.destination[puppet]}:{bash_puppet}"])
+            subprocess.run(["ssh", self.destination[puppet], "chmod u+x "+bash_puppet])
+            subprocess.Popen(["ssh", self.destination[puppet], bash_puppet])
         except:
-            self.remove_puppet_from_current(current_puppet)
-            self.warning(f"Command to {current_puppet} failed.")
+            self.lbl_append(puppet,f"Command to {puppet} failed.")
+            self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+            raise ValueError(f"Command to {puppet} failed.")
 
-
-    def ssh_fetch_status(self,current_puppet):
-        path = self.puppet_path_to_results
-        filename = self.filename_results[current_puppet]
-        username = self.puppets[current_puppet]['username']
-        domain = self.puppets[current_puppet]['domain']
+    def ssh_fetch_status(self,puppet):
+        filename_puppet = self.puppet_path['results'] + self.filename_results[puppet]
+        filename_master = self.master_path['results'] + self.filename_results[puppet]
         i = 0
-        while i<self.thread_max_loops:
-            ssh = subprocess.run(["scp", f"{username}@{domain}:{path}{filename}", f"{self.master_path_to_results}{filename}"])
+        running = False
+        while (datetime.datetime.now()-self.t_start[puppet]).seconds/60<=self.thread_max_time:
+            ssh = subprocess.run(["scp", f"{self.destination[puppet]}:{filename_puppet}", f"{filename_master}"])
             if ssh.returncode != 0:
                 i += 1
-                if (datetime.datetime.now()-self.t_start[current_puppet]).seconds/60 > 80: #if it's been running for more than 80 minutes, cancel run
-                    self.lbl_tabs_status[current_puppet] = Label(self.tab[current_puppet], text=f"Abnormally long experiment (running for more than 80 minutes). Canceled run.", justify="left")
-                    self.lbl_tabs_status[current_puppet].place(x=50,y=125)
+                if (datetime.datetime.now()-self.t_start[puppet]).seconds/60 > 2: #if it's been running for more than 2 minutes with no file found 
+                    self.lbl_append(puppet,f"Status file was not found on puppet. Run canceled.")
                     i = self.thread_max_loops
+                    self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
                 else:
                     time.sleep(self.thread_sleep_seconds)
             else:
-                #ici lire le fichier pour savoir si c'est complete ou une erreur...
-                self.lbl_tabs_status[current_puppet] = Label(self.tab[current_puppet], text=f"Experiment complete! \n\nResults are here:\n{self.master_path_to_results}{self.filename_results[current_puppet]}", justify="left")
-                self.lbl_tabs_status[current_puppet].place(x=50,y=150)
-                i = self.thread_max_loops
-                # Run button
-                time.sleep(10)
-                self.remove_puppet_from_current(current_puppet)
-                # self.btn_tabs[current_puppet] = Button(self.tab[current_puppet], text="Finish", command=self.remove_puppet_from_current(current_puppet))
-                # self.btn_tabs[current_puppet].place(x=380,y=250)
+                status = self.read_status(self,puppet)
+                if status == "running" and running == False:
+                    self.lbl_append(puppet,"Running...")
+                    running = True
+                elif status == "completed":
+                    self.lbl_append(puppet,f"Experiment complete! \n\nResults are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
+                    i = self.thread_max_loops
+                    self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+                elif status == "error":
+                    self.lbl_append(puppet,f"Error raised on puppet.")
+                    i = self.thread_max_loops
+                    self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
 
     def read_experiments_yaml(self,):
-        # print("MasterGUI: Printing experiment parameters to "+self.filename_config[current_puppet]+"...",end="")
         with open(self.experiments_filename, 'r') as file:
             exps = yaml.safe_load(file)
-        # print("OK."
         return exps['experiments']
 
     def read_puppets(self):
-        file = open(self.puppets_filename)
+        file = open(self.puppets_info_filename)
         csvreader = csv.reader(file)
         for row in csvreader:
-            self.puppets[row[0]] = {}
-            self.puppets[row[0]]['username'] = row[1]
-            self.puppets[row[0]]['domain'] = row[2]
+            self.destination[row[0]] = row[1] + "@" +row[2]
 
-    def remove_puppet_from_current(self,current_puppet):
-        self.tabControl.forget(self.tab[current_puppet])
-        self.mouse.pop(current_puppet, None)
-        self.experiment.pop(current_puppet, None)
-        self.tab.pop(current_puppet, None)
-        self.lbl_tabs.pop(current_puppet, None)
-        self.lbl_tabs_config.pop(current_puppet, None)
-        self.lbl_tabs_command.pop(current_puppet, None)
-        self.lbl_tabs_status.pop(current_puppet, None)
-        self.filename_config.pop(current_puppet, None)
-        self.filename_results.pop(current_puppet, None)
-        self.t_start.pop(current_puppet, None)
-        self.bash_file.pop(current_puppet, None)
+    def remove_puppet_from_current(self,puppet):
+        self.tabControl.forget(self.tab[puppet])
+        for attr in self.__dict__:
+            val = getattr(self,attr)
+            if type(val) is dict and puppet in val and attr != "destination":
+                self.__dict__[attr].pop(puppet,None)
 
     def warning(self,message):
         popup = Tk()
-        lbl1_popup = Label(popup, text=f"{message}",wraplength=500, justify="center")
+        lbl1_popup = Label(popup, text=f"{message}",wraplength=500, justify="center",font=("Arial",12))
         lbl1_popup.place(x=50,y=50)
         popup.title("WARNING")
-        popup.geometry("600x350+0+0")
+        popup.geometry("600x350+100+30")
         popup.mainloop()
 
-    def write_sh(self,current_puppet,command):
-        print(f"LogExpOutput: printing bash...")
-        file = open(self.bash_file[current_puppet], "w")
-        file.write("# "+self.bash_file[current_puppet])
-        file.write("\ncd " + self.puppet_path_to_repo)
+    def write_sh(self,puppet,command):
+        file = open(self.bash_file[puppet], "w")
+        file.write("# "+
+        self.bash_file[puppet])
+        file.write("\ncd " + self.puppet_path['repo'])
         file.write("\nsource /home/pi/miniconda3/bin/activate souris")
-        file.write("\nsleep 5")
         file.write("\n"+command)
         file.close()
-        print("OK.")
+
+    def lbl_append(self,puppet,string):
+        text = self.lbl_tabs[puppet].cget("text") + "\n" + string
+        self.lbl_tabs[puppet].configure(text=text)
+
+    def get_gui_input(self):
+        puppet = self.entry_puppet.get()
+        self.mouse[puppet] = self.entry_mouse.get()
+        self.experiment[puppet] = self.entry_exp.get()
+        if self.mouse[puppet] == '' or self.experiment[puppet] == '' or puppet == '':
+            raise ValueError("Please enter a valid mouse name, setup ID and experiment name.")
+        return puppet
+
+    def create_new_tab(self,puppet):
+        self.tab[puppet] = Frame(self.tabControl)
+        self.gui_set_background(puppet)
+        self.canvas = Canvas(self.tab[puppet],width=700,height=280,highlightthickness=2, highlightbackground="#3b607d")
+        self.canvas.place(x=50,y=50)
+        self.tabControl.add(self.tab[puppet], text = puppet)
+        self.lbl_tabs[puppet] = Label(self.tab[puppet], text=f"{puppet} - Starting experiment: {self.experiment[puppet]}\n",justify="left",font=("Arial",10))
+        self.lbl_tabs[puppet].place(x=52,y=52)
+        self.tabControl.select(self.tab[puppet])
+        self.tabControl.pack(expand = 1, fill ="both")
+
+    def create_filenames(self,puppet):
+        self.t_start[puppet] = datetime.datetime.now()
+        t = self.t_start[puppet].strftime("%Y-%m-%dT%H%M%S")
+        self.filename_config[puppet] = t + "_" + puppet.replace(" ","-") + "_" + self.experiment[puppet].replace(" ","-") + "_" + self.mouse[puppet].replace(" ","-") + "_config.yaml"
+        self.filename_results[puppet] = self.filename_config[puppet].replace('_config','_results')
+        self.bash_file[puppet] = puppet.replace(" ","_")+".sh"
+
+    def add_rel_path(self,string):
+        self.puppet_path[string] = self.puppet_path['repo'] + string + "/"
+        self.master_path[string] = self.master_path['repo'] + string + "/"
+        if not os.path.exists(self.master_path[string]):
+            os.mkdir(self.master_path[string])
+
+    def read_status(self,puppet):
+        with open(self.master_path['results'] + self.filename_results[puppet], 'r') as file:
+            out = yaml.safe_load(file)
+        return out['status']
 
 
-myWin = MasterGUI()
+if __name__ == "__main__":
+    myWin = MasterGUI()
