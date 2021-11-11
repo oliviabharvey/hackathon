@@ -133,7 +133,6 @@ if __name__ == '__main__':
         motor = MotorControl(debug=debug)
         motor.setup()
         time.sleep(1)
-        import pdb; pdb.set_trace()
         print('Turning clockwise slow - 8 steps')  #You will barely notice the motor move.
         for i in range(0,8): # MAYBE A WHILE?
             motor.single_step(1)
