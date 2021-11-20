@@ -27,7 +27,8 @@ def parse_args():
                         required=False,
                         default='example.config.yaml',
                         help="Path to config file containing the experiment definition.")
-    parser.add_argument('--debug',
+
+    parser.add_argument('--debug', # add the --debug arg to launch the experiment in debug mode
                         action="store_true",
                         help="Whether to launch script in debug mode - auto click.")
     return parser.parse_args()
