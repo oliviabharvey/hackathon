@@ -20,16 +20,17 @@ class MasterGUI:
 
         if os.environ.get('DISPLAY','') != ':0.0':
             os.environ.__setitem__('DISPLAY', ':0.0')
+        self.FNULL = open(os.devnull, 'w')
 
         # Threads parameters
-        self.thread_max_time = 70 # minutes. If the experiment is not completed after this time, stop looking for a "completed" status
-        self.thread_sleep_seconds = 10 # frequency (s) at which the status checker pings the puppet during run
+        self.thread_max_time = 75 # minutes. If the experiment is not completed after this time, stop looking for a "completed" status
+        self.thread_sleep_seconds = 1 # frequency (s) at which the status checker pings the puppet during run
 
         # Set paths
         self.puppet_path = {}
         self.master_path = {}
         self.puppet_path['repo'] = "/home/pi/hackathon_souris/" #"/home/pi/Projects/hackathon/"
-        self.master_path['repo'] = "C:/dev/olivia/hackathon/" #"/home/pi/hackathon/hackathon/"
+        self.master_path['repo'] = "C:/dev/olivia/hackathon/"#"/home/pi/hackathon/hackathon/"
         self.puppets_info_filename = "puppets_info.csv"
         self.experiments_filename = "experiments.yaml"
         self.add_rel_path("configs")
@@ -54,6 +55,7 @@ class MasterGUI:
         self.background_lbl = {}
         self.btn_img = {}
         self.btn = {}
+        self.status = {}
         
         # Create window (main tab)
         win = Tk()
@@ -122,10 +124,8 @@ class MasterGUI:
             self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
             self.btn[tab].place(x=400-self.btn_width/2+5,y=270)
         elif action == "cancel":
-            # self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
-            # self.btn[tab].place(x=400-self.btn_width/2+5,y=270)
-            pass #add cancel run ; send a cancel file
-        
+            self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.ssh_cancel_command(tab)]),borderwidth=0,highlightthickness=0)
+            self.btn[tab].place(x=600-self.btn_width/2+100,y=270)        
 
     def gui_set_background(self,tab):
         self.background_lbl[tab] = Label(self.tab[tab],image=self.background)
@@ -134,9 +134,19 @@ class MasterGUI:
     def launch_exp(self):
         if self.entry_puppet.get() not in self.tab and self.entry_puppet.get() != "":
             try:
+                puppet = self.get_gui_input()
+                self.status[puppet] = 'running'
+                self.create_new_tab(puppet)
+                self.gui_button(puppet,self.master_path['images']+"cancel_button.png","cancel")
+                self.create_filenames(puppet)
                 # Run experiment in thread
-                x = threading.Thread(target=self.ssh_run, args=(self.entry_puppet.get(),), daemon = True)
-                x.start()
+                t1 = threading.Thread(target=self.ssh_run, args=(self.entry_puppet.get(),), daemon = True)
+                t1.start()
+                # Check status of experiment
+                t2 = threading.Thread(target=self.ssh_fetch_status, args=(self.entry_puppet.get(),), daemon = True)
+                t2.start()
+                for thread in threading.enumerate(): 
+                    print(thread.name)
             except Exception as e:
                 self.warning(f"Experiment raised an error:\n{e}")
                 self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
@@ -146,14 +156,11 @@ class MasterGUI:
             self.warning(f"WARNING! An experiment is already running on {self.entry_puppet.get()} \n\nPlease select a different puppet.")
 
     def ssh_run(self,puppet):
-        puppet = self.get_gui_input()
-        self.create_new_tab(puppet)
-        self.create_filenames(puppet)
         self.print_config_to_yaml(puppet)
         self.ssh_send_config(puppet)
         self.ssh_run_command(puppet)
-        sys.exit() # end thread
-
+        sys.exit()
+         
     def print_config_to_yaml(self,puppet):
         dict_to_yaml = {'mouse_name': self.mouse[puppet], 
                         'experiment': self.experiment[puppet],
@@ -179,10 +186,13 @@ class MasterGUI:
         bash_master = self.master_path['bash_files'] + self.bash_file[puppet]
         command = "python "+ self.puppet_path['repo'] + "launch_experiment.py --cfg " + config_puppet
         self.write_sh(puppet,command)
-        self.lbl_append(puppet,"Launching python script on puppet...")
+        self.lbl_append(puppet,"Launching python script on puppet:")
         try:
+            self.lbl_append(puppet,"Sending bash file...")
             subprocess.run(["scp", bash_master, f"{self.destination[puppet]}:{bash_puppet}"])
+            self.lbl_append(puppet,"Changing permission on bash file...")
             subprocess.run(["ssh", self.destination[puppet], "chmod u+x "+bash_puppet])
+            self.lbl_append(puppet,"Running python script...")
             subprocess.Popen(["ssh", self.destination[puppet], bash_puppet])
         except:
             self.lbl_append(puppet,f"Command to {puppet} failed.")
@@ -192,39 +202,50 @@ class MasterGUI:
     def ssh_fetch_status(self,puppet):
         filename_puppet = self.puppet_path['results'] + self.filename_results[puppet]
         filename_master = self.master_path['results'] + self.filename_results[puppet]
-        i = 0
-        running = False
-        while (datetime.datetime.now()-self.t_start[puppet]).seconds/60<=self.thread_max_time:
-            ssh = subprocess.run(["scp", f"{self.destination[puppet]}:{filename_puppet}", f"{filename_master}"])
+        completed = False
+        while puppet in self.t_start and (datetime.datetime.now()-self.t_start[puppet]).seconds/60<=self.thread_max_time and not completed:
+            ssh = subprocess.run(["scp", f"{self.destination[puppet]}:{filename_puppet}", f"{filename_master}"],stdout=self.FNULL, stderr=subprocess.STDOUT)
             if ssh.returncode != 0:
-                i += 1
-                if (datetime.datetime.now()-self.t_start[puppet]).seconds/60 > 2: #if it's been running for more than 2 minutes with no file found 
-                    self.lbl_append(puppet,f"Status file was not found on puppet. Run canceled.")
-                    i = self.thread_max_loops
-                    self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
-                else:
-                    time.sleep(self.thread_sleep_seconds)
+                time.sleep(self.thread_sleep_seconds)
             else:
                 status = self.read_status(self,puppet)
-                if status == "running" and running == False:
-                    self.lbl_append(puppet,"Running...")
-                    running = True
-                elif status == "completed":
+                print(status)
+                if status == "completed":
                     self.lbl_append(puppet,f"Experiment complete! \n\nResults are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
-                    i = self.thread_max_loops
                     self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+                    completed = True
                 elif status == "error":
                     self.lbl_append(puppet,f"Error raised on puppet.")
-                    i = self.thread_max_loops
                     self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+                    completed = True
+        if puppet in self.t_start and not completed:
+            self.lbl_append(puppet,f"Experiment lasted more than {self.thread_max_time} minutes without any output file generated.")
+            self.ssh_cancel_command(puppet)
+
+        sys.exit()
+
+    def ssh_cancel_command(self,puppet):
+        command = "pkill -9 python "
+        self.lbl_append(puppet,f"Killing all python processes on {puppet}:")
+        ssh = subprocess.run(["ssh", self.destination[puppet], command])
+        if ssh!= 0:
+            self.lbl_append(puppet,f"Failed. Trying again...")
+            ssh = subprocess.run(["ssh", self.destination[puppet], command])
+            if ssh != 0: 
+                self.lbl_append(puppet,f"Failed. Please restart puppet.")
+                self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+            else:
+                self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+        else:
+            self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
 
     def read_experiments_yaml(self,):
-        with open(self.experiments_filename, 'r') as file:
+        with open(self.master_path['repo'] + self.experiments_filename, 'r') as file:
             exps = yaml.safe_load(file)
         return exps['experiments']
 
     def read_puppets(self):
-        file = open(self.puppets_info_filename)
+        file = open(self.master_path['repo'] + self.puppets_info_filename)
         csvreader = csv.reader(file)
         for row in csvreader:
             self.destination[row[0]] = row[1] + "@" +row[2]
@@ -235,6 +256,8 @@ class MasterGUI:
             val = getattr(self,attr)
             if type(val) is dict and puppet in val and attr != "destination":
                 self.__dict__[attr].pop(puppet,None)
+        for thread in threading.enumerate(): 
+            print(thread.name)                
 
     def warning(self,message):
         popup = Tk()
@@ -245,7 +268,7 @@ class MasterGUI:
         popup.mainloop()
 
     def write_sh(self,puppet,command):
-        file = open(self.bash_file[puppet], "w")
+        file = open(self.master_path['bash_files'] + self.bash_file[puppet], "w")
         file.write("# "+
         self.bash_file[puppet])
         file.write("\ncd " + self.puppet_path['repo'])
