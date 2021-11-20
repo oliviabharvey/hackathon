@@ -29,7 +29,6 @@ def parse_args():
                         help="Path to config file containing the experiment definition.")
     parser.add_argument('--debug',
                         action="store_true",
-                        default=True,
                         help="Whether to launch script in debug mode - auto click.")
     return parser.parse_args()
 

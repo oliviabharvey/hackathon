@@ -127,7 +127,7 @@ class BaseExperiment():
         self.tray_light_off()
         self.delay_time_left = 10
         if self.debug:
-            self.delay_time_left = 2
+            self.delay_time_left = 5
         self.log_msg(f'Waiting for {self.delay_time_left} seconds.')
         self.state = States.RESET_DELAY
 
@@ -135,7 +135,7 @@ class BaseExperiment():
         self.tray_light_on()
         self.punish_time_left = delay
         if self.debug:
-            self.punish_time_left = 2
+            self.punish_time_left = 5
         self.log_msg(f'Waiting for {self.punish_time_left} seconds due to incorrect touch.')
         self.state = States.PUNISH_DELAY
 
