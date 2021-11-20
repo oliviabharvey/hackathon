@@ -50,6 +50,7 @@ class IrLed:
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         GPIO.setup(self.ir_sensor_pin, GPIO.IN)
         # Start sending IR
+        client = lirc.Client()
         client.send_start(self.lirc_remote, self.lirc_key)
         # Update state
         self.is_irb_broken = False
