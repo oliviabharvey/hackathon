@@ -1,7 +1,5 @@
 import RPi.GPIO as GPIO  # pip install RPi.GPIO
-import sys
 import time
-import threading
 
 # TODO: Test Infrared script to confirm activation / stop
 
@@ -48,6 +46,7 @@ class IrLed:
                 self.irb_broken_counter += 1
                 if self.irb_broken_counter >= self.max_state_trigger:
                     self.is_irb_broken = True
+                    break
             # While debugging print beam status every 500 ms
             if self.debug:
                 timer += step
@@ -55,9 +54,13 @@ class IrLed:
         return self.is_irb_broken
 
     def start_irb(self):
+        is_irb_broken = False
         self.start_ir()
-        # Start the listener
-        self.listener_beam()
+        # Start the listener - Will stop when beam is broken (True)
+        is_irb_broken = self.check_beam_status()
+        if self.debug:
+            print('Stopped. Final Was Beam Broken: ', is_irb_broken)
+        return is_irb_broken
 
     def start_ir(self):
         GPIO.output(self.ir_led_pin,GPIO.HIGH)
@@ -67,12 +70,6 @@ class IrLed:
         GPIO.output(self.ir_led_pin,GPIO.LOW)
         return bool(GPIO.input(self.ir_led_pin))
 
-    def listener_beam(self):
-        # Listener to update beam. Never stop until experiments stops (daemon=true)
-        thread = threading.Thread(target=self.check_beam_status, args=(), daemon=True)
-        thread.start()
-
-
 ###################################
 ## TEST WHEN CALLING THIS SCRIPT ##
 ###################################
@@ -81,11 +78,9 @@ if __name__ == '__main__':
     if debug:
         irb = IrLed(debug=debug)
         irb.setup()
-        print('Try to break the beam. Status is printed every 500ms.')
-        print('Test will last 10 sec')
-        # import pdb; pdb.set_trace()
+        print('Try to break the beam. Status is printed every 100ms.')
+        print('Test will last 10 sec. Breaking beam will stop test.')
         time.sleep(1)
-        irb.start_ir()
-        irb.check_beam_status()
+        irb.start_irb()
         print('End of test.')
         GPIO.cleanup()
