@@ -17,6 +17,9 @@ class LEDControl:
         self.state = False
 
     def setup(self):
+        # Setup GPIO control for the led
+        GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
+        # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin,GPIO.LOW)
         self.state = False
@@ -36,7 +39,7 @@ class LEDControl:
 
     def light_off(self):
         # Turn lights off and output at False
-        GPIO.output(self.pin,GPIO.LOW)
+        GPIO.output(self.pin,GPIO.HIGH)
         self.update_light_state()
         return self.state
 
@@ -49,12 +52,9 @@ class LEDs:
 
     def __init__(self, debug=False):
         self.debug = bool(debug)
-        # Setup GPIO control for the led
-        GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
-        # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
-        self.ExperienceLEDPin = 29 # Physical location (pin #29, GPIO pin# 5)
-        self.TrayLEDPin = 31 # Physical location (pin #31, GPIO pin# 6)
-        self.BoxLEDPin = 33 # Physical location (pin #33, GPIO pin# 13)
+        self.ExperienceLEDPin = 29 # Physical location (GPIO pin# 5)
+        self.TrayLEDPin = 31 # Physical location (GPIO pin# 6)
+        self.BoxLEDPin = 33 # Physical location (GPIO pin# 13)
         self.LEDPins = [self.ExperienceLEDPin, self.TrayLEDPin, self.BoxLEDPin]
 
         # Initiliazing future LED objects
@@ -64,7 +64,7 @@ class LEDs:
 
     def setup(self):
         # Initiliazing lEDs
-        self.experience_led = LEDControl(pin=self.ExperienceLEDPin,debug=self.debug)
+        self.experience_led = LEDControl(pin=self.ExperienceLEDPinPin,debug=self.debug)
         self.tray_led = LEDControl(pin=self.TrayLEDPin,debug=self.debug)
         self.box_led = LEDControl(pin=self.BoxLEDPin,debug=self.debug)
         
@@ -83,40 +83,39 @@ class LEDs:
 if __name__ == '__main__':
     debug=True
     if debug:
-        lights = LEDs(debug=debug)
-        lights.setup()
-        time.sleep(1)
+        Lights = LEDs(debug=debug)
+
         print('Turning on Experiment LED')
-        lights.experience_led.light_on()
+        Lights.experience_led.light_on()
         time.sleep(0.200)
-        print('Experiment LED is currently: ',lights.experience_led.state)
+        print('Experiment LED is currently: ',Lights.experience_led.state)
         time.sleep(0.500)
         print('Turning off Experiment LED')
-        lights.experience_led.light_off()
+        Lights.experience_led.light_off()
         time.sleep(0.200)
-        print('Experiment LED is currently: ',lights.experience_led.state)
+        print('Experiment LED is currently: ',Lights.experience_led.state)
         time.sleep(0.700)
 
         print('Turning on tray_led')
-        lights.tray_led.light_on()
+        Lights.tray_led.light_on()
         time.sleep(0.200)
-        print('Tray LED is currently: ',lights.tray_led.state)
+        print('Tray LED is currently: ',Lights.tray_led.state)
         time.sleep(0.500)
         print('Turning off Tray LED')
-        lights.tray_led.light_off()
+        Lights.tray_led.light_off()
         time.sleep(0.200)
-        print('Tray LED is currently: ',lights.tray_led.state)
+        print('Tray LED is currently: ',Lights.tray_led.state)
         time.sleep(0.700)
 
         print('Turning on Box LED')
-        lights.box_led.light_on()
+        Lights.box_led.light_on()
         time.sleep(0.200)
-        print('Box LED is currently: ',lights.box_led.state)
+        print('Box LED is currently: ',Lights.box_led.state)
         time.sleep(0.500)
         print('Turning off Box LED')
-        lights.box_led.light_off()
+        Lights.box_led.light_off()
         time.sleep(0.200)
-        print('Box LED is currently: ',lights.box_led.state)
+        print('Box LED is currently: ',Lights.box_led.state)
         time.sleep(0.700)
 
         print('End of test.')
