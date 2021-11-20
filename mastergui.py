@@ -30,7 +30,7 @@ class MasterGUI:
         self.puppet_path = {}
         self.master_path = {}
         self.puppet_path['repo'] = "/home/pi/hackathon_souris/" #"/home/pi/Projects/hackathon/"
-        self.master_path['repo'] = "C:/dev/olivia/hackathon/"#"/home/pi/hackathon/hackathon/"
+        self.master_path['repo'] = "/home/pi/hackathon/hackathon/"
         self.puppets_info_filename = "puppets_info.csv"
         self.experiments_filename = "experiments.yaml"
         self.add_rel_path("configs")
