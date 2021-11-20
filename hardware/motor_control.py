@@ -11,7 +11,7 @@ class MotorControl:
     Enables interfacing with the motor.
     """
 
-    def __init__(self, StepDirection=1, WaitTime=4/1000, debug=False):
+    def __init__(self, StepDirection=1, WaitTime=3/1000, debug=False):
         self.debug = bool(debug)
         self.motorPins = (15, 16, 18, 22)  # Physical location (GPIO pin# 22,23,24,25)
         # Define motor step sequence (datasheet)
@@ -54,11 +54,14 @@ class MotorControl:
         print ('Motor initialized')
 
 
-    def single_step(self,StepDirection=self.StepDirection):
+    def single_step(self,StepDirection=None):
+        if StepDirection == None:
+            StepDirection = self.StepDirection
+
         # Make a single (smallest) motor step
         if self.debug:
             print ("Current Step: ",self.CurrentStep)  # Number of PinSequence 
-            print ("Current Pin Sequence: ",self.PinSequence[CurrentStep])  # Current pin matrix
+            print ("Current Pin Sequence: ",self.PinSequence[self.CurrentStep])  # Current pin matrix
             print ("Number of Steps: ",self.TotalStepCounter)  # Current pin matrix
             print ("Number of Full Rotation: ",self.FullRotationCounter)
             
@@ -69,42 +72,51 @@ class MotorControl:
 
         # Turning on/off appropriate pins for the step
         for pin in range(0, 4):
-            pin = self.motorPins[pin]
-        if self.PinSequence[self.CurrentStep][pin]!=0:
-            if self.debug:
-                print('Enable GPIO# ', pin)
-                GPIO.output(pin, GPIO.HIGH)
-        else:
-            GPIO.output(pin, GPIO.LOW)
+            gpio_pin = self.motorPins[pin]
+            if self.PinSequence[self.CurrentStep][pin]!=0:
+                if self.debug:
+                    print('Enable GPIO# ', gpio_pin)
+                    GPIO.output(gpio_pin, GPIO.HIGH)
+            else:
+                GPIO.output(gpio_pin, GPIO.LOW)
         # The motor can only take an input every 3ms
         time.sleep(self.WaitTime)
     
         return self.TotalStepCounter
 
 
-    def full_rotation(self,StepDirection=self.StepDirection):
+    def full_rotation(self,StepDirection=None):
+        if StepDirection == None:
+            StepDirection = self.StepDirection
         # Make one full motor rotation
+        nb_steps_full = 4096  # 512 times the 8 sequence steps
         if abs(StepDirection) == 2:
-            step_to_rotation = 4
+            step_to_rotation = int(nb_steps_full/2)
         else:
-            step_to_rotation = 8
+            step_to_rotation = int(nb_steps_full)
         for i in range(0,step_to_rotation): # MAYBE A WHILE?
-            single_step(self,StepDirection)
+            self.single_step(StepDirection)
 
 
-    def microliter(self, microliter, StepDirection=self.StepDirection):
+    def microliter(self, microliter, StepDirection=None):
         # How many turn/step for a microliter
+        if StepDirection == None:
+            StepDirection = self.StepDirection
         pass
         return
 
 
-    def provide_reward(self, microliter, StepDirection=self.StepDirection):
+    def provide_reward(self, microliter, StepDirection=None):
+        if StepDirection == None:
+            StepDirection = self.StepDirection
         # Provide the number of microliter as a reward
         thread = threading.Thread(target=self.microliter, args=(microliter), daemon=True)
         thread.start()
 
 
-    def reset(self,StepDirection= -self.StepDirection):
+    def reset(self,StepDirection= None):
+        if StepDirection == None:
+            StepDirection= - self.StepDirection
         # To call at the end of experience to inverse all motor movement
         for i in range(0,self.TotalStepCounter): # MAYBE A WHILE?
             self.single_step(self,StepDirection)
@@ -118,36 +130,21 @@ class MotorControl:
 if __name__ == '__main__':
     debug=True
     if debug:
-        motor = motor_control(debug=debug)
+        motor = MotorControl(debug=debug)
         motor.setup()
-
-        print('Turning clockwise slow - 8 steps, 1 full turn...')
+        time.sleep(1)
+        # import pdb; pdb.set_trace()
+        print('Turning clockwise slow - 8 steps')  #You will barely notice the motor move.
         for i in range(0,8): # MAYBE A WHILE?
             motor.single_step(1)
-            time.sleep(1000)
-        
-        print('Turning clockwise fast - 4 steps, 1 full turn...')
-        for i in range(0,4): # MAYBE A WHILE?
-            motor.single_step(2)
-            time.sleep(1000)
-        
-        print('Turning counterclockwise fast - 8 steps, 1 full turn...')
-        for i in range(0,8): # MAYBE A WHILE?
-            motor.single_step(-1)
-            time.sleep(1000)
-        
-        print('Turning counterclockwise fast - 4 steps, 1 full turn...')
-        for i in range(0,4): # MAYBE A WHILE?
-            motor.single_step(-2)
-            time.sleep(1000)
 
         print('Turning clockwise full turn - slow')
         motor.full_rotation(1)
-        time.sleep(1000)
+        time.sleep(1)
 
         print('Turning counterclockwise full turn - fast')
         motor.full_rotation(-2)
-        time.sleep(1000)   
+        time.sleep(1)   
 
         print('End of test.')
         GPIO.cleanup()

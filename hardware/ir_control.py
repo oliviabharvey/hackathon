@@ -27,7 +27,7 @@ class IrLed:
     Enabling control of the infrared LED at 38kHz
     """
 
-    def __init__(self, debug=False, lirc_remote='Remote', lirc_key='Key'):
+    def __init__(self, debug=False, lirc_remote='RM-830', lirc_key='KEY_1'):
         self.debug = bool(debug)
         self.ir_led_pin = 11 # Physical location (GPIO pin# 17)
         self.ir_sensor_pin = 12 # Physical location (GPIO pin# 18)
@@ -50,6 +50,7 @@ class IrLed:
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         GPIO.setup(self.ir_sensor_pin, GPIO.IN)
         # Start sending IR
+        client = lirc.Client()
         client.send_start(self.lirc_remote, self.lirc_key)
         # Update state
         self.is_irb_broken = False
