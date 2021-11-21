@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO  # pip install RPi.GPIO
 import time
+import sys
 
 # TODO: Test Infrared script to confirm activation / stop
 
@@ -50,7 +51,7 @@ class IrLed:
             # While debugging print beam status every 500 ms
             if self.debug:
                 timer += step
-                print('Is Beam Broken: ', self.is_irb_broken)
+                sys.stdout.write('\n Is Beam Broken: ' + str(self.is_irb_broken))
         return self.is_irb_broken
 
     def start_irb(self):
@@ -59,7 +60,7 @@ class IrLed:
         # Start the listener - Will stop when beam is broken (True)
         is_irb_broken = self.check_beam_status()
         if self.debug:
-            print('Stopped. Final Was Beam Broken: ', is_irb_broken)
+            sys.stdout.write('\n Stopped. Final Was Beam Broken: ' + str(self.is_irb_broken))
         return is_irb_broken
 
     def start_ir(self):
@@ -78,9 +79,9 @@ if __name__ == '__main__':
     if debug:
         irb = IrLed(debug=debug)
         irb.setup()
-        print('Try to break the beam. Status is printed every 100ms.')
-        print('Test will last 10 sec. Breaking beam will stop test.')
+        sys.stdout.write('Try to break the beam. Status is printed every 100ms.')
+        sys.stdout.write('Test will last 10 sec. Breaking beam will stop test.')
         time.sleep(1)
         irb.start_irb()
-        print('End of test.')
+        sys.stdout.write('End of test.')
         GPIO.cleanup()

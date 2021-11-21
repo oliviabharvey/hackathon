@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO  # pip install RPi.GPIO
 import time # Only used for debug.
+import sys
 
 class LEDControl:
     """
@@ -66,7 +67,7 @@ class LEDs:
         self.experience_led.setup()
         self.tray_led.setup()
         self.box_led.setup()
-        print ('LEDs initialized')
+        sys.stdout.write('\n LEDs initialized')
 
     def stop_leds(self):
         GPIO.cleanup()

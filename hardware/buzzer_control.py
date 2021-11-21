@@ -27,7 +27,7 @@ class BuzzerControl:
     
     def start_sound(self, **kwargs):
         if self.debug:
-            print('Playing sound')
+            sys.stdout.write('Playing sound')
         # Default values
         frequency = self.Frequency
         duration = self.Duration
@@ -50,7 +50,7 @@ class BuzzerControl:
         self.Buzzer.stop()
         if kill_thread:
             if self.debug:
-                print('Killing buzzer thread now')
+                sys.stdout.write('Killing buzzer thread now')
             sys.exit() # harsh solution, but easy to implement to kill thread.
             # Could use a _is_running variable? (https://stackoverflow.com/questions/4541190/how-to-close-a-thread-from-within)
 
@@ -87,7 +87,7 @@ if __name__ == '__main__':
         buzzer = BuzzerControl(debug=debug)
         buzzer.setup()
         time.sleep(1)
-        print('Playing "normal" sound')
+        sys.stdout.write('Playing "normal" sound')
         buzzer.start_sound()
 
         # print('Funky stuff...')
@@ -95,9 +95,9 @@ if __name__ == '__main__':
         # buzzer.start_sound(frequency=880,duration=1, volume=25)
         # buzzer.start_sound(frequency=2000,duration=1, volume=50)
 
-        print('Testing thread')
+        sys.stdout.write('Testing thread')
         buzzer.play_sound()
         time.sleep(8)
 
-        print('End of test.')
+        sys.stdout.write('End of test.')
         #GPIO.cleanup()

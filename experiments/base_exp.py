@@ -1,6 +1,7 @@
 import time
 import random
 from data.manager import DataManager
+import sys
 
 from module_touchscreen.touch_screen_helper import TouchScreenHelper
 from hardware.hardware_connector import HardwareConnector
@@ -111,7 +112,7 @@ class BaseExperiment():
 
     def log_msg(self, msg):
         m, s = divmod((time.time() - self.start_time), 60)
-        print(f'Time: {round(m)} min {round(s,1)} s - {str(msg)}'.replace('0 min ', ''))
+        sys.stdout.write(f'\n Time: {round(m)} min {round(s,1)} s - {str(msg)}'.replace('0 min ', ''))
 
     def proceed_to_touch(self):
         """
