@@ -67,5 +67,5 @@ class HardwareConnector():
         # Stopping hardware approriately
         self.leds.stop_leds()
         self.motor.stop_motor()
-        self.ir.stop_ir()
+        self.irb.stop_ir()
         self.leds.gpio_cleanup()

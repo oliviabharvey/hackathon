@@ -76,7 +76,7 @@ class BuzzerControl:
         thread = threading.Thread(target=self.start_sound, kwargs={'frequency':frequency,'duration':duration,'volume':volume,'threaded':kill_thread}, daemon=True)
         thread.start()
 
-    def gpio_cleanup():
+    def gpio_cleanup(self):
         GPIO.cleanup()
 
 ###################################

@@ -30,20 +30,15 @@ class BaseExperiment():
                 time.sleep(self.tick)
             self.on_completion()
         except:
-            import sys            
-            self.log_msg("Exception occured : "+ str(sys.exc_info())) 
-            if self.debug :
-                raise     
-        
-            self.data_mgr.update_status('error')
-            self.data_mgr.write_dict(self.cfg['results'])
+            self.on_error()
+            
 
     def initialize(self):
         """
         Initiates initial steps of experiment.
         """
         self.start_time = time.time()
-        self.log_msg('Starting Experiment')
+        self.log_msg('Starting Initialization')
         self.data_mgr = DataManager(self.cfg)
         self.data_mgr.update_status('running')
         self.hardware_connector = HardwareConnector(self.debug)
@@ -66,7 +61,7 @@ class BaseExperiment():
         self.hardware_connector.play_tone(duration=5) 
         return
 
-    def deliver_food(self, qty=100):
+    def deliver_food(self, qty=20):
         self.hardware_connector.squeeze_syringe(qty)
         self.hardware_connector.play_tone(duration=2)
         self.hardware_connector.turn_tray_light_on()
@@ -74,7 +69,7 @@ class BaseExperiment():
         self.data_mgr.update(TimeStamps.FEED)
 
     def is_completed(self):
-            return time.time() - self.start_time >= self.exp_duration
+            return time.time() - self.experiement_time >= self.exp_duration
 
     def update_state(self):
         return
@@ -92,7 +87,10 @@ class BaseExperiment():
         # When intializing the touch screen helper, by setting it to black screen for 10 seconds, it 
         # allows us some time before the experiment actually starts
         self.touch_screen_helper.display_black_screen()
+        self.log_msg("Waiting for screen initialization.")
         time.sleep(10)
+        self.log_msg("Starting Experiment")
+        self.experiement_time = time.time()
         return
 
     def on_completion(self):
@@ -104,16 +102,16 @@ class BaseExperiment():
         self.data_mgr.compute_end_of_experiment_statistics(self.start_time, self.touch_screen_helper.get_number_reversals())
         self.data_mgr.update_status('completed')
         self.data_mgr.write_dict(self.cfg['results'])
-        self.hardware_connector.turn_experiment_light_off()
+        self.hardware_connector.stop_hardware()
 
-    def on_error(self):
-        import sys            
+    def on_error(self):         
         self.log_msg("Exception occured : "+ sys.exc_info()) 
         if self.debug:
             raise     
        
         self.data_mgr.update_status('error')
         self.data_mgr.write_dict(self.cfg['results'])
+        self.hardware_connector.stop_hardware()
 
     def log_msg(self, msg):
         m, s = divmod((time.time() - self.start_time), 60)

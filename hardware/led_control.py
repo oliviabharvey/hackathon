@@ -74,7 +74,7 @@ class LEDs:
         self.tray_led.light_off()
         self.box_led.light_off()
 
-    def gpio_cleanup():
+    def gpio_cleanup(self):
         GPIO.cleanup()
 
 
@@ -90,35 +90,35 @@ if __name__ == '__main__':
         sys.stdout.write('\nTurning on Experiment LED')
         lights.experience_led.light_on()
         time.sleep(0.200)
-        sys.stdout.write('\nExperiment LED is currently: ',lights.experience_led.state)
+        sys.stdout.write('\nExperiment LED is currently: %s' % lights.experience_led.state)
         time.sleep(0.500)
         sys.stdout.write('\nTurning off Experiment LED')
         lights.experience_led.light_off()
         time.sleep(0.200)
-        sys.stdout.write('\nExperiment LED is currently: ',lights.experience_led.state)
+        sys.stdout.write('\nExperiment LED is currently: %s' % lights.experience_led.state)
         time.sleep(0.700)
 
         sys.stdout.write('\nTurning on tray_led')
         lights.tray_led.light_on()
         time.sleep(0.200)
-        sys.stdout.write('\nTray LED is currently: ',lights.tray_led.state)
+        sys.stdout.write('\nTray LED is currently: %s' % lights.tray_led.state)
         time.sleep(0.500)
         sys.stdout.write('\nTurning off Tray LED')
         lights.tray_led.light_off()
         time.sleep(0.200)
-        sys.stdout.write('\nTray LED is currently: ',lights.tray_led.state)
+        sys.stdout.write('\nTray LED is currently: %s' % lights.tray_led.state)
         time.sleep(0.700)
 
         sys.stdout.write('\nTurning on Box LED')
         lights.box_led.light_on()
         time.sleep(0.200)
-        sys.stdout.write('\nBox LED is currently: ',lights.box_led.state)
+        sys.stdout.write('\nBox LED is currently: %s' % lights.box_led.state)
         time.sleep(0.500)
         sys.stdout.write('\nTurning off Box LED')
         lights.box_led.light_off()
         time.sleep(0.200)
-        sys.stdout.write('\nBox LED is currently: ',lights.box_led.state)
+        sys.stdout.write('\nBox LED is currently: %s' % lights.box_led.state)
         time.sleep(0.700)
 
         sys.stdout.write('\nEnd of test.')
-        GPIO.cleanup()
+        lights.gpio_cleanup()

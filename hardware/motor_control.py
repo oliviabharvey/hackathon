@@ -132,19 +132,20 @@ class MotorControl:
         thread.start()
 
 
-    def reset(self,StepDirection= None):
+    def reset_position(self,StepDirection= None):
+        sys.stdout.write('\nReseting motor to initial position...')
         if StepDirection == None:
-            StepDirection= - self.StepDirection
+            StepDirection = - self.StepDirection
         # To call at the end of experience to inverse all motor movement
         for i in range(0,self.TotalStepCounter): # MAYBE A WHILE?
-            self.single_step(self,StepDirection)
+            self.single_step(StepDirection=StepDirection)
 
     def stop_motor(self):
         for pin in range(0, 4):
             gpio_pin = self.motorPins[pin]
             GPIO.output(gpio_pin, GPIO.LOW)
 
-    def gpio_cleanup():
+    def gpio_cleanup(self):
         GPIO.cleanup()
 
 ###################################
@@ -171,6 +172,9 @@ if __name__ == '__main__':
         sys.stdout.write('\nTesting threaded motor')   
         motor.provide_reward(20)
         time.sleep(5) # Main waiting for thread to end (~5 sec per 20uL)
+
+        sys.stdout.write('\nTesting position reset')
+        motor.reset_position()
 
         sys.stdout.write('\nEnd of test.')
         # removed gpio cleanup 

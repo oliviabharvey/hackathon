@@ -71,7 +71,7 @@ class IrLed:
         GPIO.output(self.ir_led_pin,GPIO.LOW)
         return bool(GPIO.input(self.ir_led_pin))
     
-    def gpio_cleanup():
+    def gpio_cleanup(self):
         GPIO.cleanup()
 
 ###################################
