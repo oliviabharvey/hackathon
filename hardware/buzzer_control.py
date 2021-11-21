@@ -43,7 +43,7 @@ class BuzzerControl:
             elif item_name.lower() == 'volume':
                 volume = value
             elif item_name.lower() == 'threaded':
-                kill_thread = True
+                kill_thread = value
         
         self.Buzzer.ChangeFrequency(frequency)
         self.Buzzer.start(volume)
@@ -101,4 +101,4 @@ if __name__ == '__main__':
         time.sleep(8)
 
         sys.stdout.write('\nEnd of test.')
-        #GPIO.cleanup()
+        GPIO.cleanup()

@@ -101,23 +101,34 @@ class MotorControl:
             step_to_rotation = int(nb_steps_full/2)
         else:
             step_to_rotation = int(nb_steps_full)
-        for i in range(0,step_to_rotation): # MAYBE A WHILE?
+        for i in range(0,step_to_rotation):
             self.single_step(StepDirection)
 
 
-    def microliter(self, microliter, StepDirection=None):
+    def microliter(self, microliter, StepDirection=None, kill_thread=True):
         # How many turn/step for a microliter
         if StepDirection == None:
             StepDirection = self.StepDirection
-        self.full_rotation(2)
-        self.full_rotation(-2)
-        sys.exit()
+        # This was not a exactly measure, but 1 turn (4096 steps) gives about 60uL.
+        # To confirm
+        steps_per_uL = 4096/60
+        steps_for_qty = int(steps_per_uL * microliter)
+        if abs(StepDirection) == 2:
+            step_to_rotation = int(steps_for_qty/2)
+        else:
+            step_to_rotation = int(steps_for_qty)
+        for i in range(0,step_to_rotation):
+            self.single_step(StepDirection)
+        if kill_thread:
+            if self.debug:
+                sys.stdout.write('\nKilling motor thread now')
+            sys.exit()
 
-    def provide_reward(self, microliter, StepDirection=None):
+    def provide_reward(self, microliter,StepDirection=None, kill_thread=True, daemon=False):
         if StepDirection == None:
             StepDirection = self.StepDirection
         # Provide the number of microliter as a reward
-        thread = threading.Thread(target=self.microliter, args=(microliter,), daemon=False)
+        thread = threading.Thread(target=self.microliter, args=(microliter,), daemon=daemon)
         thread.start()
 
 
@@ -156,8 +167,10 @@ if __name__ == '__main__':
         sys.stdout.write('\nTurning counterclockwise full turn - fast')
         motor.full_rotation(-2)
         time.sleep(1)
-        sys.stdout.write('\nTesting provide reward')   
-        motor.provide_reward(100)
+
+        sys.stdout.write('\nTesting threaded motor')   
+        motor.provide_reward(20)
+        time.sleep(5) # Main waiting for thread to end (~5 sec per 20uL)
 
         sys.stdout.write('\nEnd of test.')
         # removed gpio cleanup 
