@@ -15,7 +15,7 @@ class MotorControl:
 
     def __init__(self, StepDirection=1, WaitTime=3/1000, debug=False, motor_verbose=False):
         self.debug = bool(debug)
-        self.motor_verbose = motor_verbose # That's a lot of output. Set to true only if error driving GPIO pins.
+        self.motor_verbose = bool(motor_verbose) # That's a lot of output. Set to true only if error driving GPIO pins.
         self.motorPins = (15, 16, 18, 22)  # Physical location (GPIO pin# 22,23,24,25)
         # Define motor step sequence (datasheet)
         self.PinSequence = [
