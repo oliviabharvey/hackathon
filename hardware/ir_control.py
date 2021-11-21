@@ -9,8 +9,9 @@ class IrLed:
     """
     Enabling control of the infrared LED beam sensor
     """
-    def __init__(self, debug=False):
+    def __init__(self, debug=False, irb_verbose=False):
         self.debug = bool(debug)
+        self.irb_verbose = bool(irb_verbose)
         self.ir_led_pin = 11 # Physical location (GPIO pin# 17)
         self.ir_sensor_pin = 12 # Physical location (GPIO pin# 18)
         self.state = False  # Beam connected = True, Broken =  False
@@ -31,10 +32,8 @@ class IrLed:
         sys.stdout.write('\n IR beam initialized')
 
     def check_beam_status(self):
-        timer = 0
-        debug_timer = 11 # 10 sec debug session
         step = 0.100 # 10Hz refresh rate
-        while timer < debug_timer:
+        while True:
             time.sleep(step) # 10Hz refresh rate
             # import pdb; pdb.set_trace()
             self.state = bool(GPIO.input(self.ir_sensor_pin))
@@ -51,8 +50,8 @@ class IrLed:
                     break
             # While debugging print beam status every 500 ms
             if self.debug:
-                timer += step
-                sys.stdout.write('\nIs Beam Broken: ' + str(self.is_irb_broken))
+                if self.irb_verbose:
+                    sys.stdout.write('\nIs Beam Broken: ' + str(self.is_irb_broken))
         return self.is_irb_broken
 
     def start_irb(self):
@@ -84,7 +83,7 @@ if __name__ == '__main__':
         irb = IrLed(debug=debug)
         irb.setup()
         sys.stdout.write('\nTry to break the beam. Status is printed every 100ms.')
-        sys.stdout.write('\nTest will last 10 sec. Breaking beam will stop test.')
+        sys.stdout.write('\nTest will last beam is broken.')
         time.sleep(1)
         irb.start_irb()
         sys.stdout.write('\nEnd of test.')
