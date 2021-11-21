@@ -70,6 +70,12 @@ class DataManager():
                 display_and_touch_times.append(self.data['trials'][trial]['seconds_between_display_and_touch'])
             if self.data['trials'][trial]['seconds_between_feed_and_eat'] != None:
                 feed_and_eat_times.append(self.data['trials'][trial]['seconds_between_feed_and_eat'])
-        self.data['summary']['average_seconds_between_display_and_touch'] = round(statistics.mean(display_and_touch_times), 1)
-        self.data['summary']['average_seconds_between_feed_and_eat'] = round(statistics.mean(feed_and_eat_times), 1)
+        if display_and_touch_times:
+            self.data['summary']['average_seconds_between_display_and_touch'] = round(statistics.mean(display_and_touch_times), 1)
+        else:
+            self.data['summary']['average_seconds_between_display_and_touch'] = -1
+        if feed_and_eat_times:
+            self.data['summary']['average_seconds_between_feed_and_eat'] = round(statistics.mean(feed_and_eat_times), 1)
+        else:
+            self.data['summary']['average_seconds_between_feed_and_eat'] = -1
         self.data['summary']['number_of_reversals'] = num_reversals

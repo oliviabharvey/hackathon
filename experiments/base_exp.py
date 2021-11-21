@@ -106,12 +106,11 @@ class BaseExperiment():
 
     def on_error(self):         
         self.log_msg("Exception occured : "+ sys.exc_info()) 
-        if self.debug:
-            raise     
-       
         self.data_mgr.update_status('error')
         self.data_mgr.write_dict(self.cfg['results'])
         self.hardware_connector.stop_hardware()
+        if self.debug:
+            raise
 
     def log_msg(self, msg):
         m, s = divmod((time.time() - self.start_time), 60)
