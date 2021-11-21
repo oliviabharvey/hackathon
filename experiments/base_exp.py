@@ -46,6 +46,7 @@ class BaseExperiment():
         self.data_mgr = DataManager(self.cfg)
         self.data_mgr.update_status('running')
         self.hardware_connector = HardwareConnector(self.debug)
+        self.hardware_connector.turn_experiment_light_on()
 
     def deliver_sequence(self, qty=100):
         """
@@ -64,6 +65,9 @@ class BaseExperiment():
         return
 
     def deliver_food(self, qty=100):
+        self.hardware_connector.squeeze_syringe(qty)
+        self.hardware_connector.play_tone(duration=2)
+        self.hardware_connector.turn_tray_light_on()
         self.log_msg(f'Food delivered: {qty}')
         self.data_mgr.update(TimeStamps.FEED)
 
@@ -94,6 +98,7 @@ class BaseExperiment():
         self.data_mgr.compute_end_of_experiment_statistics(self.start_time, self.touch_screen_helper.get_number_reversals())
         self.data_mgr.update_status('completed')
         self.data_mgr.write_dict(self.cfg['results'])
+        self.hardware_connector.turn_experiment_light_off()
 
     def on_error(self):
         import sys            
@@ -132,7 +137,7 @@ class BaseExperiment():
         self.state = States.RESET_DELAY
 
     def proceed_to_punish_delay(self, delay=5):
-        self.tray_light_on()
+        #self.tray_light_on()
         self.punish_time_left = delay
         if self.debug:
             self.punish_time_left = 5

@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO  # pip install RPi.GPIO
+import sys
 import threading
 import time 
 
@@ -102,15 +103,15 @@ class MotorControl:
         # How many turn/step for a microliter
         if StepDirection == None:
             StepDirection = self.StepDirection
-        pass
-        return
-
+        self.full_rotation(2)
+        self.full_rotation(-2)
+        sys.exit()
 
     def provide_reward(self, microliter, StepDirection=None):
         if StepDirection == None:
             StepDirection = self.StepDirection
         # Provide the number of microliter as a reward
-        thread = threading.Thread(target=self.microliter, args=(microliter), daemon=True)
+        thread = threading.Thread(target=self.microliter, args=(microliter,), daemon=False)
         thread.start()
 
 
@@ -132,7 +133,7 @@ if __name__ == '__main__':
     if debug:
         motor = MotorControl(debug=debug)
         motor.setup()
-        time.sleep(1)
+        """ time.sleep(1)
         print('Turning clockwise slow - 8 steps')  #You will barely notice the motor move.
         for i in range(0,8): # MAYBE A WHILE?
             motor.single_step(1)
@@ -143,7 +144,10 @@ if __name__ == '__main__':
 
         print('Turning counterclockwise full turn - fast')
         motor.full_rotation(-2)
-        time.sleep(1)   
+        time.sleep(1)"""
+        print('Testing provide reward')   
+        motor.provide_reward(100)
 
         print('End of test.')
-        GPIO.cleanup()
+        # removed gpio cleanup 
+        # GPIO.cleanup()

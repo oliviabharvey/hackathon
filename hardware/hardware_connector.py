@@ -28,19 +28,10 @@ class HardwareConnector():
         self.ir = IrLed(debug=self.debug)
         self.ir.setup()
 
-
     def is_irb_broken(self):
-        # return True if infrared beam is broken, False otherwise
-        # pour l'instant, c'est à True le temps de voir ce qui se passe
-        """if self.debug: 
-            ir_break = False
-            if random.uniform(0, 1) >= 0.95:
-                ir_break = True
-            return ir_break
-        else: 
-            return False"""
-
-        self.ir.is_irb_broken
+        ir_break = self.ir.start_irb()
+        self.turn_tray_light_off()
+        return ir_break
 
     def play_tone(self, duration):
         # start playing tone for duration, but do not wait for it to be finished
@@ -52,6 +43,12 @@ class HardwareConnector():
 
     def turn_tray_light_off(self):
         return self.leds.tray_led.light_off()
+
+    def turn_experiment_light_on(self):
+        return self.leds.experience_led.light_on()
+
+    def turn_experiment_light_off(self):
+        return self.leds.experience_led.light_off()
 
     def squeeze_syringe(self, qty):
         # turn motor to provide a given qty of fluid (in microliter) in food tray.

@@ -100,4 +100,4 @@ if __name__ == '__main__':
         time.sleep(8)
 
         print('End of test.')
-        GPIO.cleanup()
+        #GPIO.cleanup()
