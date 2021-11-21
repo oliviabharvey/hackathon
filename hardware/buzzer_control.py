@@ -49,7 +49,7 @@ class BuzzerControl:
         time.sleep(duration)
         self.Buzzer.stop()
         if kill_thread:
-            if debug:
+            if self.debug:
                 print('Killing buzzer thread now')
             sys.exit() # harsh solution, but easy to implement to kill thread.
             # Could use a _is_running variable? (https://stackoverflow.com/questions/4541190/how-to-close-a-thread-from-within)
