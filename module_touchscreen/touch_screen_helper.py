@@ -1,4 +1,3 @@
-# Imports
 import os
 import random
 os.environ["DISPLAY"]=":0"
@@ -9,8 +8,6 @@ import threading
 import logging
 from utils.enums import *
 from module_touchscreen.image_creator import ImageCreator
-
-#logging.basicConfig(filename="module_touchscreen/mouse_log.txt", level=logging.DEBUG, format='%(asctime)s: %(message)s')
 
 class TouchScreenHelper():
     def __init__(self, experiment, display_type):
@@ -41,7 +38,6 @@ class TouchScreenHelper():
             self.touch_screen_enabled = False
             click_type, good_collision = self.check_click_type(x, y)
             self.current_exp.on_click(click_type, good_collision)
-            #logging.info("Mouse moved to ({0}, {1})".format(x, y))
 
     def show_next_image(self):
         if self.display_type == DisplayPatterns.NONE:
