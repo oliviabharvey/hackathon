@@ -28,6 +28,7 @@ class IrLed:
         # Update state
         self.is_irb_broken = False
         self.state = False
+        sys.stdout.write('\n IR beam initialized')
 
     def check_beam_status(self):
         timer = 0
@@ -51,7 +52,7 @@ class IrLed:
             # While debugging print beam status every 500 ms
             if self.debug:
                 timer += step
-                sys.stdout.write('\n Is Beam Broken: ' + str(self.is_irb_broken))
+                sys.stdout.write('\nIs Beam Broken: ' + str(self.is_irb_broken))
         return self.is_irb_broken
 
     def start_irb(self):
@@ -60,7 +61,7 @@ class IrLed:
         # Start the listener - Will stop when beam is broken (True)
         is_irb_broken = self.check_beam_status()
         if self.debug:
-            sys.stdout.write('\n Stopped. Final Was Beam Broken: ' + str(self.is_irb_broken))
+            sys.stdout.write('\nStopped. Final - Beam was Broken: ' + str(self.is_irb_broken))
         return is_irb_broken
 
     def start_ir(self):
@@ -70,6 +71,9 @@ class IrLed:
     def stop_ir(self):
         GPIO.output(self.ir_led_pin,GPIO.LOW)
         return bool(GPIO.input(self.ir_led_pin))
+    
+    def gpio_cleanup():
+        GPIO.cleanup()
 
 ###################################
 ## TEST WHEN CALLING THIS SCRIPT ##
@@ -79,9 +83,9 @@ if __name__ == '__main__':
     if debug:
         irb = IrLed(debug=debug)
         irb.setup()
-        sys.stdout.write('Try to break the beam. Status is printed every 100ms.')
-        sys.stdout.write('Test will last 10 sec. Breaking beam will stop test.')
+        sys.stdout.write('\nTry to break the beam. Status is printed every 100ms.')
+        sys.stdout.write('\nTest will last 10 sec. Breaking beam will stop test.')
         time.sleep(1)
         irb.start_irb()
-        sys.stdout.write('End of test.')
+        sys.stdout.write('\nEnd of test.')
         GPIO.cleanup()

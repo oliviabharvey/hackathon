@@ -53,7 +53,7 @@ class MotorControl:
         self.CurrentStep = 0
         self.FullRotationCounter = 0
         self.TotalStepCounter = 0
-        sys.stdout.write('\n Motor initialized')
+        sys.stdout.write('\nMotor initialized')
 
 
     def single_step(self,StepDirection=None):
@@ -62,10 +62,10 @@ class MotorControl:
 
         # Make a single (smallest) motor step
         if self.debug:
-            sys.stdout.write("\n Current Step: " + str(self.CurrentStep))  # Number of PinSequence 
-            sys.stdout.write("\n Current Pin Sequence: " + str(self.PinSequence[self.CurrentStep]))  # Current pin matrix
-            sys.stdout.write("\n Number of Steps: " + str(self.TotalStepCounter))  # Current pin matrix
-            sys.stdout.write("\n Number of Full Rotation: " + str(self.FullRotationCounter))
+            sys.stdout.write("\nCurrent Step: " + str(self.CurrentStep))  # Number of PinSequence 
+            sys.stdout.write("\nCurrent Pin Sequence: " + str(self.PinSequence[self.CurrentStep]))  # Current pin matrix
+            sys.stdout.write("\nNumber of Steps: " + str(self.TotalStepCounter))  # Current pin matrix
+            sys.stdout.write("\nNumber of Full Rotation: " + str(self.FullRotationCounter))
             
         self.TotalStepCounter += StepDirection
         self.CurrentStep = self.TotalStepCounter % self.MaxPinSequence  # Modulo of TotalStepCounter gives next step
@@ -77,8 +77,8 @@ class MotorControl:
             gpio_pin = self.motorPins[pin]
             if self.PinSequence[self.CurrentStep][pin]!=0:
                 if self.debug:
-                    sys.stdout.write('\n Enable GPIO# ' + str(gpio_pin))
-                    GPIO.output(gpio_pin, GPIO.HIGH)
+                    sys.stdout.write('\nEnable GPIO# ' + str(gpio_pin))
+                GPIO.output(gpio_pin, GPIO.HIGH)
             else:
                 GPIO.output(gpio_pin, GPIO.LOW)
         # The motor can only take an input every 3ms
@@ -124,6 +124,11 @@ class MotorControl:
             self.single_step(self,StepDirection)
 
     def stop_motor(self):
+        for pin in range(0, 4):
+            gpio_pin = self.motorPins[pin]
+            GPIO.output(gpio_pin, GPIO.LOW)
+
+    def gpio_cleanup():
         GPIO.cleanup()
 
 ###################################
@@ -134,21 +139,21 @@ if __name__ == '__main__':
     if debug:
         motor = MotorControl(debug=debug)
         motor.setup()
-        """ time.sleep(1)
-        print('Turning clockwise slow - 8 steps')  #You will barely notice the motor move.
+        time.sleep(1)
+        sys.stdout.write('\nTurning clockwise slow - 8 steps')  #You will barely notice the motor move.
         for i in range(0,8): # MAYBE A WHILE?
             motor.single_step(1)
 
-        print('Turning clockwise full turn - slow')
+        sys.stdout.write('\nTurning clockwise full turn - slow')
         motor.full_rotation(1)
         time.sleep(1)
 
-        print('Turning counterclockwise full turn - fast')
+        sys.stdout.write('\nTurning counterclockwise full turn - fast')
         motor.full_rotation(-2)
-        time.sleep(1)"""
-        print('Testing provide reward')   
+        time.sleep(1)
+        sys.stdout.write('\nTesting provide reward')   
         motor.provide_reward(100)
 
-        print('End of test.')
+        sys.stdout.write('\nEnd of test.')
         # removed gpio cleanup 
-        # GPIO.cleanup()
+        GPIO.cleanup()

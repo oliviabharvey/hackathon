@@ -23,11 +23,12 @@ class BuzzerControl:
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         GPIO.setup(self.BuzzerPin, GPIO.OUT)
         self.Buzzer = GPIO.PWM(self.BuzzerPin, self.Frequency)
+        sys.stdout.write('\n Buzzer initialized')
         
     
     def start_sound(self, **kwargs):
         if self.debug:
-            sys.stdout.write('Playing sound')
+            sys.stdout.write('\nPlaying sound')
         # Default values
         frequency = self.Frequency
         duration = self.Duration
@@ -50,7 +51,7 @@ class BuzzerControl:
         self.Buzzer.stop()
         if kill_thread:
             if self.debug:
-                sys.stdout.write('Killing buzzer thread now')
+                sys.stdout.write('\nKilling buzzer thread now')
             sys.exit() # harsh solution, but easy to implement to kill thread.
             # Could use a _is_running variable? (https://stackoverflow.com/questions/4541190/how-to-close-a-thread-from-within)
 
@@ -75,7 +76,7 @@ class BuzzerControl:
         thread = threading.Thread(target=self.start_sound, kwargs={'frequency':frequency,'duration':duration,'volume':volume,'threaded':kill_thread}, daemon=True)
         thread.start()
 
-    def stop_buzzer(self):
+    def gpio_cleanup():
         GPIO.cleanup()
 
 ###################################
@@ -87,7 +88,7 @@ if __name__ == '__main__':
         buzzer = BuzzerControl(debug=debug)
         buzzer.setup()
         time.sleep(1)
-        sys.stdout.write('Playing "normal" sound')
+        sys.stdout.write('\nPlaying "normal" sound')
         buzzer.start_sound()
 
         # print('Funky stuff...')
@@ -95,9 +96,9 @@ if __name__ == '__main__':
         # buzzer.start_sound(frequency=880,duration=1, volume=25)
         # buzzer.start_sound(frequency=2000,duration=1, volume=50)
 
-        sys.stdout.write('Testing thread')
+        sys.stdout.write('\nTesting thread')
         buzzer.play_sound()
         time.sleep(8)
 
-        sys.stdout.write('End of test.')
+        sys.stdout.write('\nEnd of test.')
         #GPIO.cleanup()
