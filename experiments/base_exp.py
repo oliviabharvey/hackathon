@@ -89,6 +89,8 @@ class BaseExperiment():
 
     def initialize_touch_screen_helper(self, display_type):
         self.touch_screen_helper = TouchScreenHelper(self, display_type)
+        # When intializing the touch screen helper, by setting it to black screen for 10 seconds, it 
+        # allows us some time before the experiment actually starts
         self.touch_screen_helper.display_black_screen()
         time.sleep(10)
         return
