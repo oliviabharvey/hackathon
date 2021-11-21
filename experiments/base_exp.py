@@ -49,6 +49,7 @@ class BaseExperiment():
         self.hardware_connector = HardwareConnector(self.debug)
         self.hardware_connector.turn_experiment_light_on()
 
+
     def deliver_sequence(self, qty=100):
         """
         Performs full food delivery sequence: turning tray light on, playing tone and delivering food.
@@ -88,6 +89,8 @@ class BaseExperiment():
 
     def initialize_touch_screen_helper(self, display_type):
         self.touch_screen_helper = TouchScreenHelper(self, display_type)
+        self.touch_screen_helper.display_black_screen()
+        time.sleep(10)
         return
 
     def on_completion(self):
