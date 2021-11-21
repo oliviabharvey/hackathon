@@ -60,7 +60,7 @@ class IrLed:
         # Start the listener - Will stop when beam is broken (True)
         is_irb_broken = self.check_beam_status()
         if self.debug:
-            sys.stdout.write('\nStopped. Final - Beam was Broken: ' + str(self.is_irb_broken))
+            sys.stdout.write('\nBeam was Broken: ' + str(self.is_irb_broken))
         return is_irb_broken
 
     def start_ir(self):

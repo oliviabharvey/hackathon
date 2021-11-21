@@ -57,9 +57,9 @@ class HardwareConnector():
 
     def stop_hardware(self):
         # Ending hardware appropriately
-        self.motor.reset() #  Reset motor to initial position
+        self.motor.reset_position() #  Reset motor to initial position
         # Stopping hardware approriately
         self.leds.stop_leds()
-        self.buzzer.stop_buzzer()
         self.motor.stop_motor()
         self.ir.stop_ir()
+        self.leds.gpio_cleanup()
