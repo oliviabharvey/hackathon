@@ -77,7 +77,7 @@ class MotorControl:
             if self.PinSequence[self.CurrentStep][pin]!=0:
                 if self.debug:
                     print('Enable GPIO# ', gpio_pin)
-                    GPIO.output(gpio_pin, GPIO.HIGH)
+                GPIO.output(gpio_pin, GPIO.HIGH)
             else:
                 GPIO.output(gpio_pin, GPIO.LOW)
         # The motor can only take an input every 3ms
@@ -100,12 +100,16 @@ class MotorControl:
 
 
     def microliter(self, microliter, StepDirection=None):
+        kill_thread = False
         # How many turn/step for a microliter
         if StepDirection == None:
             StepDirection = self.StepDirection
         self.full_rotation(2)
         self.full_rotation(-2)
-        sys.exit()
+        if kill_thread:
+            if self.dedug:
+                print('Killing motor thread now')
+            sys.exit()
 
     def provide_reward(self, microliter, StepDirection=None):
         if StepDirection == None:
@@ -133,7 +137,7 @@ if __name__ == '__main__':
     if debug:
         motor = MotorControl(debug=debug)
         motor.setup()
-        """ time.sleep(1)
+        time.sleep(1)
         print('Turning clockwise slow - 8 steps')  #You will barely notice the motor move.
         for i in range(0,8): # MAYBE A WHILE?
             motor.single_step(1)
@@ -144,10 +148,10 @@ if __name__ == '__main__':
 
         print('Turning counterclockwise full turn - fast')
         motor.full_rotation(-2)
-        time.sleep(1)"""
+        time.sleep(1)
         print('Testing provide reward')   
         motor.provide_reward(100)
 
         print('End of test.')
         # removed gpio cleanup 
-        # GPIO.cleanup()
+        GPIO.cleanup()

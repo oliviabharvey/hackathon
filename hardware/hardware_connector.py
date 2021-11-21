@@ -25,11 +25,11 @@ class HardwareConnector():
         self.motor.setup()
 
         # Initializing IR beam (tray)
-        self.ir = IrLed(debug=self.debug)
-        self.ir.setup()
+        self.irb = IrLed(debug=self.debug)
+        self.irb.setup()
 
     def is_irb_broken(self):
-        ir_break = self.ir.start_irb()
+        ir_break = self.irb.start_irb()
         self.turn_tray_light_off()
         return ir_break
 
