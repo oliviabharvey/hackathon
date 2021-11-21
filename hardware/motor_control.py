@@ -79,7 +79,7 @@ class MotorControl:
             gpio_pin = self.motorPins[pin]
             if self.PinSequence[self.CurrentStep][pin]!=0:
                 if self.debug:
-                    if motor_verbose:
+                    if self.motor_verbose:
                         sys.stdout.write('\nEnable GPIO# ' + str(gpio_pin))
                 GPIO.output(gpio_pin, GPIO.HIGH)
             else:
@@ -95,7 +95,7 @@ class MotorControl:
             StepDirection = self.StepDirection
         # Make one full motor rotation
         if self.debug:
-            sys.stdout.write('One full motor rotation - Direction: ', StepDirection)
+            sys.stdout.write('\nOne full motor rotation - Direction: ' + str(StepDirection))
         nb_steps_full = 4096  # 512 times the 8 sequence steps
         if abs(StepDirection) == 2:
             step_to_rotation = int(nb_steps_full/2)

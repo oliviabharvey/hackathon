@@ -29,9 +29,15 @@ class HardwareConnector():
         self.irb.setup()
 
     def is_irb_broken(self):
-        ir_break = self.irb.start_irb()
-        self.turn_tray_light_off()
-        return ir_break
+        if self.debug: 
+            ir_break = False
+            if random.uniform(0, 1) >= 0.95:
+                ir_break = True
+            return ir_break
+        else: 
+            ir_break = self.irb.start_irb()
+            self.turn_tray_light_off()
+            return ir_break
 
     def play_tone(self, duration):
         # start playing tone for duration, but do not wait for it to be finished
