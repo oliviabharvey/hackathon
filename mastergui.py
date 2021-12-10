@@ -18,6 +18,7 @@ class MasterGUI:
     def __init__(self):
 
         self.debug = False
+        self.stdout_nlines = 6
         self.set_logger('master-gui',debug=self.debug)
         self.debug_default_puppet_idx = 1
         self.debug_default_exp_idx = 1
@@ -225,6 +226,7 @@ class MasterGUI:
             self.lbl_append(puppet,f"Launching experiment on {puppet}...\n\n")
         if self.status[puppet] == 'running':
             cmd = ["ssh", self.destination[puppet], bash_puppet]
+            self.lbl_append(puppet,'--- Last '+str(self.stdout_nlines)+' lines of output --- \n\n')
             popen = subprocess.Popen(cmd,stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
             self.print_stdout(puppet,popen)
 
