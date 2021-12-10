@@ -254,15 +254,17 @@ class MasterGUI:
                     status = self.read_status(puppet)
                     self.logger.info('status on '+puppet+': '+status)
                     if status == "completed":
+                        time.sleep(2)
+                        self.status[puppet] = 'completed'
                         self.lbl_append(puppet,f"Experiment complete! \n\nResults are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
                         self.gui_button(puppet,self.master_path['images']+"finish_button.png","finish")
                         completed = True
-                        self.status[puppet] = 'completed'
                     elif status == "error":
+                        time.sleep(2)
+                        self.status[puppet] = 'completed'
                         self.lbl_append(puppet,f"Error raised on puppet.")
                         self.gui_button(puppet,self.master_path['images']+"finish_button.png","finish")
                         completed = True
-                        self.status[puppet] = 'completed'
             if puppet in self.t_start and not completed and self.status[puppet] != 'canceled':
                 self.lbl_append(puppet,f"Experiment lasted more than max. duration ({self.exp_duration[puppet]} minutes) without any output file generated.")
                 self.ssh_cancel_command(puppet)
