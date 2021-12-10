@@ -229,10 +229,14 @@ class MasterGUI:
             self.print_stdout(puppet,popen)
 
     def print_stdout(self,puppet,popen):
-        while popen.poll() is None:
+        l = []
+        while popen.poll() is None and self.status[puppet] == 'running':
             txt = popen.stdout.readline().decode()
             if txt != '' and txt != '\n':
-                self.lbl_append(puppet,txt.replace('\t',''),newline=False)
+                if 'EXPERIMENT' not in txt:
+                    l.append(txt)
+                    l = self.lbl_replace(puppet,l)
+        popen.stdout.close()
 
     def ssh_fetch_status(self,puppet):
         try:
@@ -245,7 +249,7 @@ class MasterGUI:
                 if ssh.returncode != 0:
                     time.sleep(self.thread_sleep_seconds)
                 else:
-                    status = self.read_status(self,puppet)
+                    status = self.read_status(puppet)
                     self.logger.info('status on '+puppet+': '+status)
                     if status == "completed":
                         self.lbl_append(puppet,f"Experiment complete! \n\nResults are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
@@ -324,6 +328,18 @@ class MasterGUI:
         text = self.lbl_tabs[puppet].cget("text") + string
         self.lbl_tabs[puppet].configure(text=text)
 
+    def lbl_replace(self,puppet,string):
+        self.logger.info(puppet+': '+string[-1])
+        text = self.lbl_tabs[puppet].cget("text")
+        pos = text.find(string[0])
+        text = text[:pos]
+        if len(string) > self.stdout_nlines:
+            string = string[-self.stdout_nlines:]
+        for str in string:
+            text = text + str
+        self.lbl_tabs[puppet].configure(text=text)
+        return string
+
     def get_gui_input(self):
         puppet = self.entry_puppet.get()
         self.mouse[puppet] = self.entry_mouse.get()
@@ -376,7 +392,7 @@ class MasterGUI:
                         split = file_str[pos:].split(',')
                         minutes = float(split[0].replace(str,'').replace(' ',''))
                         self.exp_duration[puppet] = minutes
-                        # ajouter try catch?
+
         if not found:
             self.exp_duration[puppet] = self.thread_max_time
 
@@ -396,6 +412,7 @@ class MasterGUI:
     
     def ssh_keep_screen_active(self,puppet):
         try:
+            time.sleep(5)
             i = 1
             while puppet in self.status and self.status[puppet] == 'running':
                 if i % self.poke_screen_seconds == 0:
