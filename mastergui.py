@@ -135,10 +135,10 @@ class MasterGUI:
             self.btn[tab].place(x=400-self.btn_width/2+5,y=220)
         elif action == "finish":
             self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.btn[tab].place_forget(), self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
-            self.btn[tab].place(x=400-self.btn_width/2+5,y=270)
+            self.btn[tab].place(x=400-self.btn_width/2+5,y=280)
         elif action == "cancel":
             self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.btn[tab].place_forget(), self.ssh_cancel_command(tab)]),borderwidth=0,highlightthickness=0)
-            self.btn[tab].place(x=600-self.btn_width/2+100,y=270)    
+            self.btn[tab].place(x=600-self.btn_width/2+100,y=280)    
 
     def gui_set_background(self,tab):
         self.background_lbl[tab] = Label(self.tab[tab],image=self.background)
@@ -223,9 +223,10 @@ class MasterGUI:
             subprocess.run(["ssh", self.destination[puppet], "chmod u+x "+bash_puppet])
             self.lbl_append(puppet,"Done.",newline=False)
         if self.status[puppet] == 'running':
-            self.lbl_append(puppet,f"Launching experiment on {puppet}...\n\n")
+            self.lbl_append(puppet,f"Launching experiment on {puppet}...\n")
         if self.status[puppet] == 'running':
             cmd = ["ssh", self.destination[puppet], bash_puppet]
+            self.lbl_append(puppet,'EXPERIMENT : '+self.experiment[puppet])
             self.lbl_append(puppet,'--- Last '+str(self.stdout_nlines)+' lines of output --- \n\n')
             popen = subprocess.Popen(cmd,stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
             self.print_stdout(puppet,popen)
@@ -256,7 +257,7 @@ class MasterGUI:
                     if status == "completed":
                         time.sleep(2)
                         self.status[puppet] = 'completed'
-                        self.lbl_append(puppet,f"Experiment complete! \n\nResults are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
+                        self.lbl_append(puppet,f"Experiment complete! Results are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
                         self.gui_button(puppet,self.master_path['images']+"finish_button.png","finish")
                         completed = True
                     elif status == "error":
