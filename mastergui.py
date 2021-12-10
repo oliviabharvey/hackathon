@@ -17,10 +17,10 @@ class MasterGUI:
 
     def __init__(self):
 
-        self.debug = True
+        self.debug = False
         self.set_logger('master-gui',debug=self.debug)
-        self.debug_default_puppet_idx = 2
-        self.debug_default_exp_idx = 4
+        self.debug_default_puppet_idx = 1
+        self.debug_default_exp_idx = 1
         self.logger.info("MasterGUI: Running GUI...")
 
         if os.environ.get('DISPLAY','') != ':0.0':
@@ -133,15 +133,18 @@ class MasterGUI:
             self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.launch_exp()]),borderwidth=0,highlightthickness=0)
             self.btn[tab].place(x=400-self.btn_width/2+5,y=220)
         elif action == "finish":
-            self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
+            self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.btn[tab].place_forget(), self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
             self.btn[tab].place(x=400-self.btn_width/2+5,y=270)
         elif action == "cancel":
-            self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.ssh_cancel_command(tab)]),borderwidth=0,highlightthickness=0)
-            self.btn[tab].place(x=600-self.btn_width/2+100,y=270)        
+            self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.btn[tab].place_forget(), self.ssh_cancel_command(tab)]),borderwidth=0,highlightthickness=0)
+            self.btn[tab].place(x=600-self.btn_width/2+100,y=270)    
 
     def gui_set_background(self,tab):
         self.background_lbl[tab] = Label(self.tab[tab],image=self.background)
         self.background_lbl[tab].place(x=0,y=0)
+
+    def gui_button_remove(self,tab):
+        self.btn[tab].place_forget()
 
     def launch_exp(self):
         if self.entry_puppet.get() not in self.tab and self.entry_puppet.get() != "":
@@ -152,28 +155,32 @@ class MasterGUI:
                 self.gui_button(puppet,self.master_path['images']+"cancel_button.png","cancel")
                 self.create_filenames(puppet)
                 # Run experiment in thread
-                t1 = threading.Thread(target=self.ssh_run, args=(self.entry_puppet.get(),), daemon=True)
+                t1 = threading.Thread(target=self.ssh_run, args=(puppet,), daemon=True)
                 t1.start()
                 # Check status of experiment
-                t2 = threading.Thread(target=self.ssh_fetch_status, args=(self.entry_puppet.get(),), daemon = True)
+                t2 = threading.Thread(target=self.ssh_fetch_status, args=(puppet,), daemon = True)
                 t2.start()
                 # Keep screen active
-                t3 = threading.Thread(target=self.ssh_keep_screen_active, args=(self.entry_puppet.get(),), daemon = True)
+                t3 = threading.Thread(target=self.ssh_keep_screen_active, args=(puppet,), daemon = True)
                 t3.start()
-                for thread in threading.enumerate(): 
-                    self.logger.debug(thread.name)
             except Exception as e:
-                self.warning(f"Experiment raised an error:\n{e}")
-                self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+                self.gui_button_remove(puppet)
+                self.lbl_append(puppet,f"Experiment raised an error: {e}")
+                self.ssh_cancel_command(puppet)
         elif self.entry_puppet.get() == "":
             self.warning("Please enter a valid mouse name, setup ID and experiment name.")
         else:
             self.warning(f"WARNING! An experiment is already running on {self.entry_puppet.get()} \n\nPlease select a different puppet.")
 
     def ssh_run(self,puppet):
-        self.print_config_to_yaml(puppet)
-        self.ssh_send_config(puppet)
-        self.ssh_run_command(puppet)
+        try:
+            self.print_config_to_yaml(puppet)
+            self.ssh_send_config(puppet)
+            self.ssh_run_command(puppet)
+        except Exception as e:
+            self.gui_button_remove(puppet)
+            self.lbl_append(puppet,f"Experiment raised an error: {e}")
+            self.ssh_cancel_command(puppet)
         sys.exit()
          
     def print_config_to_yaml(self,puppet):
@@ -191,8 +198,6 @@ class MasterGUI:
             config_master = self.master_path['configs'] + self.filename_config[puppet]
             ssh = subprocess.run(["scp", config_master, f"{self.destination[puppet]}:{config_puppet}"])
             if ssh.returncode != 0:
-                self.lbl_append(puppet,f"Copying config file to {puppet} failed.")
-                self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
                 raise ValueError(f"Copying config file to {puppet} failed.")
             else:
                 self.lbl_append(puppet,"Done.",newline=False)
@@ -206,28 +211,22 @@ class MasterGUI:
         else:
             command = "python -u "+ self.puppet_path['repo'] + 'launch_experiment.py --cfg ' + config_puppet
         self.write_sh(puppet,command)
-        try:
-            if self.status[puppet] == 'running':
-                subprocess.run(["ssh", self.destination[puppet], "xset s 60 -display :0.0"])
-            if self.status[puppet] == 'running':
-                self.lbl_append(puppet,f"Sending bash file to {puppet}...")
-                subprocess.run(["scp", bash_master, f"{self.destination[puppet]}:{bash_puppet}"])
-                self.lbl_append(puppet,"Done.",newline=False)
-            if self.status[puppet] == 'running':
-                self.lbl_append(puppet,"Changing permission on bash file...")
-                subprocess.run(["ssh", self.destination[puppet], "chmod u+x "+bash_puppet])
-                self.lbl_append(puppet,"Done.",newline=False)
-            if self.status[puppet] == 'running':
-                self.lbl_append(puppet,f"Launching experiment on {puppet}...\n\n")
-            if self.status[puppet] == 'running':
-                cmd = ["ssh", self.destination[puppet], bash_puppet]
-                popen = subprocess.Popen(cmd,stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
-                self.print_stdout(puppet,popen)
-        except Exception as e:
-            self.lbl_append(puppet,f"Command to {puppet} failed.")
-            self.ssh_cancel_command(puppet)
-            self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
-            raise ValueError(f"Command to {puppet} failed :\n{e}") #please check!!
+        if self.status[puppet] == 'running':
+            subprocess.run(["ssh", self.destination[puppet], "xset s 60 -display :0.0"])
+        if self.status[puppet] == 'running':
+            self.lbl_append(puppet,f"Sending bash file to {puppet}...")
+            subprocess.run(["scp", bash_master, f"{self.destination[puppet]}:{bash_puppet}"])
+            self.lbl_append(puppet,"Done.",newline=False)
+        if self.status[puppet] == 'running':
+            self.lbl_append(puppet,"Changing permission on bash file...")
+            subprocess.run(["ssh", self.destination[puppet], "chmod u+x "+bash_puppet])
+            self.lbl_append(puppet,"Done.",newline=False)
+        if self.status[puppet] == 'running':
+            self.lbl_append(puppet,f"Launching experiment on {puppet}...\n\n")
+        if self.status[puppet] == 'running':
+            cmd = ["ssh", self.destination[puppet], bash_puppet]
+            popen = subprocess.Popen(cmd,stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
+            self.print_stdout(puppet,popen)
 
     def print_stdout(self,puppet,popen):
         while popen.poll() is None:
@@ -236,31 +235,35 @@ class MasterGUI:
                 self.lbl_append(puppet,txt.replace('\t',''),newline=False)
 
     def ssh_fetch_status(self,puppet):
-        filename_puppet = self.puppet_path['results'] + self.filename_results[puppet]
-        filename_master = self.master_path['results'] + self.filename_results[puppet]
-        completed = False
-        self.check_exp_duration(puppet)
-        while puppet in self.t_start and (datetime.datetime.now()-self.t_start[puppet]).seconds/60<=self.exp_duration[puppet]+1 and not completed and self.status[puppet] != 'canceled':
-            ssh = subprocess.run(["scp", f"{self.destination[puppet]}:{filename_puppet}", f"{filename_master}"],stdout=self.FNULL, stderr=subprocess.STDOUT)
-            if ssh.returncode != 0:
-                time.sleep(self.thread_sleep_seconds)
-            else:
-                status = self.read_status(self,puppet)
-                self.logger.info('status on '+puppet+': '+status)
-                if status == "completed":
-                    self.lbl_append(puppet,f"Experiment complete! \n\nResults are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
-                    self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
-                    completed = True
-                    self.status[puppet] = 'completed'
-                elif status == "error":
-                    self.lbl_append(puppet,f"Error raised on puppet.")
-                    self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
-                    completed = True
-                    self.status[puppet] = 'completed'
-        if puppet in self.t_start and not completed and self.status[puppet] != 'canceled':
-            self.lbl_append(puppet,f"Experiment lasted more than max. duration ({self.exp_duration[puppet]} minutes) without any output file generated.")
+        try:
+            filename_puppet = self.puppet_path['results'] + self.filename_results[puppet]
+            filename_master = self.master_path['results'] + self.filename_results[puppet]
+            completed = False
+            self.check_exp_duration(puppet)
+            while puppet in self.t_start and (datetime.datetime.now()-self.t_start[puppet]).seconds/60<=self.exp_duration[puppet]+1 and not completed and self.status[puppet] != 'canceled':
+                ssh = subprocess.run(["scp", f"{self.destination[puppet]}:{filename_puppet}", f"{filename_master}"],stdout=self.FNULL, stderr=subprocess.STDOUT)
+                if ssh.returncode != 0:
+                    time.sleep(self.thread_sleep_seconds)
+                else:
+                    status = self.read_status(self,puppet)
+                    self.logger.info('status on '+puppet+': '+status)
+                    if status == "completed":
+                        self.lbl_append(puppet,f"Experiment complete! \n\nResults are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
+                        self.gui_button(puppet,self.master_path['images']+"finish_button.png","finish")
+                        completed = True
+                        self.status[puppet] = 'completed'
+                    elif status == "error":
+                        self.lbl_append(puppet,f"Error raised on puppet.")
+                        self.gui_button(puppet,self.master_path['images']+"finish_button.png","finish")
+                        completed = True
+                        self.status[puppet] = 'completed'
+            if puppet in self.t_start and not completed and self.status[puppet] != 'canceled':
+                self.lbl_append(puppet,f"Experiment lasted more than max. duration ({self.exp_duration[puppet]} minutes) without any output file generated.")
+                self.ssh_cancel_command(puppet)
+        except Exception as e:
+            self.gui_button_remove(puppet)
+            self.lbl_append(puppet,f"Experiment raised an error: {e}")
             self.ssh_cancel_command(puppet)
-
         sys.exit()
 
     def ssh_cancel_command(self,puppet):
@@ -269,17 +272,10 @@ class MasterGUI:
         self.lbl_append(puppet,f"Killing all python processes on {puppet}...")
         ssh = subprocess.run(["ssh", self.destination[puppet], command])
         if ssh.returncode not in [0,1]:
-            self.lbl_append(puppet,"Failed. Trying again...")
-            ssh = subprocess.run(["ssh", self.destination[puppet], command])
-            if ssh.returncode not in [0,1]: 
-                self.lbl_append(puppet,"Failed. Please restart puppet.")
-                self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
-            else:
-                self.lbl_append(puppet,'Done.',newline=False)
-                self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+            self.lbl_append(puppet,"Failed. Please restart puppet.",newline=False)
         else:
             self.lbl_append(puppet,'Done.',newline=False)
-            self.gui_button(self.entry_puppet.get(),self.master_path['images']+"finish_button.png","finish")
+        self.gui_button(puppet,self.master_path['images']+"finish_button.png","finish")
 
     def read_experiments_yaml(self,):
         with open(self.master_path['repo'] + self.experiments_filename, 'r') as file:
@@ -399,12 +395,15 @@ class MasterGUI:
         self.logger.addHandler(self.ch)
     
     def ssh_keep_screen_active(self,puppet):
-        i = 1
-        while puppet in self.status and self.status[puppet] == 'running':
-            if i % self.poke_screen_seconds == 0:
-                time.sleep(1)
-                subprocess.run(["ssh", self.destination[puppet], "xset s reset -display :0.0"])
-            i += 1
+        try:
+            i = 1
+            while puppet in self.status and self.status[puppet] == 'running':
+                if i % self.poke_screen_seconds == 0:
+                    time.sleep(1)
+                    subprocess.run(["ssh", self.destination[puppet], "xset s reset -display :0.0"])
+                i += 1
+        except Exception as e:
+            self.lbl_append(puppet,f"Experiment raised an non fatal error: {e}")
         sys.exit()
 
 
