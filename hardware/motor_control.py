@@ -143,6 +143,7 @@ class MotorControl:
         """
         if StepDirection == None:
             StepDirection = self.StepDirection
+        microliter = abs(microliter)
         # How many turn/step for a microliter
         # This was not a exactly measure, but 1 turn (4096 steps) gives about 60uL.
         # To confirm

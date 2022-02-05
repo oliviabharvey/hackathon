@@ -29,7 +29,13 @@ class HardwareConnector():
         self.irb = IrLed(debug=self.debug)
         self.irb.setup()
 
-    def is_irb_broken(self):
+    def is_irb_broken(self) -> bool:
+        """
+        Starting the infrared beam (IRB) and waiting until the beam is broken. Once beam is broken, turn off tray light.
+
+        Outputs:
+            - ir_break: Returns True once the beam has been broken.
+        """
         if self.debug: 
             ir_break = False
             if random.uniform(0, 1) >= 0.95:
@@ -40,29 +46,69 @@ class HardwareConnector():
             self.turn_tray_light_off()
             return ir_break
 
-    def play_tone(self, duration):
-        # start playing tone for duration, but do not wait for it to be finished
-        # to continue (needs to be asynchronous)
-        return self.buzzer.play_sound(time=duration)
+    def play_tone(self, duration: float):
+        """
+        Play a buzzer tone for a fixed duration (in seconds).
+        """
+        # Start playing tone for duration. Asynchronous.
+        self.buzzer.play_sound(time=duration)
+        return
 
     def turn_tray_light_on(self):
+        """
+        Turn on the food tray light.
+
+        Outputs:
+            - self.leds.tray_led.light_on(): Return light status. True = On; False = Off
+        """
         return self.leds.tray_led.light_on()
 
     def turn_tray_light_off(self):
+        """
+        Turn off the food tray light.
+
+        Outputs:
+            - self.leds.tray_led.light_off(): Return light status. True = On; False = Off
+        """
         return self.leds.tray_led.light_off()
 
     def turn_experiment_light_on(self):
+        """
+        Turn on the experiment light. 
+        This is an outside light to have a visual indicator that an experience is ongoing.
+
+        Outputs:
+            - self.leds.experience_led.light_on(): Return light status. True = On; False = Off
+        """
         return self.leds.experience_led.light_on()
 
     def turn_experiment_light_off(self):
+        """
+        Turn off the experiment light. 
+        This is an outside light to have a visual indicator that an experience is ongoing.
+
+        Outputs:
+            - self.leds.experience_led.light_off(): Return light status. True = On; False = Off
+        """
         return self.leds.experience_led.light_off()
 
-    def squeeze_syringe(self, qty):
-        # turn motor to provide a given qty of fluid (in microliter) in food tray.
-        # This probably needs to be asynchronous.
-        return self.motor.provide_reward(microliter=qty)
+    def squeeze_syringe(self, qty: int):
+        """
+        Provide a reward by squeezing the syringe.
+
+        Inputs:
+            - qty: Quantity volume (in microliter) of reward to provide.
+
+        """
+        # Turn motor to provide a given qty of fluid (in microliter) in food tray. Asynchronous.
+        self.motor.provide_reward(microliter=qty)
+        return
 
     def stop_hardware(self):
+        """
+        Reset and stop all hardware components controlled by the hardward connector.
+        To be call at the very end of an experiment as all hardward will become unresponsive until next initialization.
+        """
         # Ending hardware appropriately
         self.motor.reset_position() #  Reset motor to initial position
         # Stopping hardware approriately

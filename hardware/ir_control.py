@@ -69,7 +69,7 @@ class IrLed:
 
     def start_irb(self) -> bool:
         """
-        Gouverning method to start the beam, and then listen until the beam was broken.
+        Gouverning method to start the infrared beam (IRB), and then listen until the beam was broken.
         When broken, return a true statement.
 
         Outputs:
