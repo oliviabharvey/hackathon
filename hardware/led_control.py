@@ -4,33 +4,52 @@ import sys
 
 class LEDControl:
     """
-    Enabling control of a single LED.
+    Class enabling control of a single LED.
     """
 
-    def __init__(self, pin, debug=False):
+    def __init__(self, pin: int, debug: bool = False):
         self.debug = bool(debug)
         self.pin = int(pin)
         self.state = False
 
     def setup(self):
+        """
+        Setting pin output (physical pin connection) LED lighting (not the infrared LED).
+        Setting initial LED state as OFF.
+        """
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin,GPIO.LOW)
         self.state = False
 
 
-    def update_light_state(self):
+    def update_light_state(self) -> bool:
+        """
+        Retrieve light state (True/On or False/Off).
+        Outputs:
+            - self.state: State of the LED.  Return True if on; False is off.
+        """
         # Check current light status. True if on - False otherwise.
         self.state = bool(GPIO.input(self.pin))
         return self.state
         
 
     def light_on(self):
+        """
+        Turn on the light. Sends the new light status to confirm. 
+        Outputs:
+            - self.state: State of the LED.  Return True if on; False is off.
+        """
         # Turn lights on and output at True
         GPIO.output(self.pin,GPIO.HIGH)
         self.update_light_state()
         return self.state
 
     def light_off(self):
+        """
+        Turn off the light. Sends the new light status to confirm. 
+        Outputs:
+            - self.state: State of the LED.  Return True if on; False is off.
+        """
         # Turn lights off and output at False
         GPIO.output(self.pin,GPIO.LOW)
         self.update_light_state()
@@ -40,10 +59,10 @@ class LEDControl:
 
 class LEDs:
     """
-    Enabling control of all LEDs.
+    Class enabling control of multiple LEDs. Overarching multiple object from the LEDControl class.
     """
 
-    def __init__(self, debug=False):
+    def __init__(self, debug: bool = False):
         self.debug = bool(debug)
         # Setup GPIO control for the led
         GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
@@ -59,6 +78,10 @@ class LEDs:
         self.box_led = None
 
     def setup(self):
+        """
+        Setting pin output (physical pin connection) for all three lighting LED (excluding infrared LED).
+        A LEDControl class object is created for each light.
+        """
         # Initiliazing lEDs
         self.experience_led = LEDControl(pin=self.ExperienceLEDPin,debug=self.debug)
         self.tray_led = LEDControl(pin=self.TrayLEDPin,debug=self.debug)
@@ -70,14 +93,24 @@ class LEDs:
         sys.stdout.write('\nLEDs initialized')
 
     def stop_leds(self):
+        """
+        Methods to quickly turn off all LEDs at the end of an experiment
+        """
         self.experience_led.light_off()
         self.tray_led.light_off()
         self.box_led.light_off()
 
     def gpio_cleanup(self):
+        """
+        Remove ALL GPIO pins from memory, even if sets elsewhere. To be called once at the end of the script.
+        """
         GPIO.cleanup()
 
 
+
+"""
+When calling this script directly, a small unit test (defined below) is run for debugging purposes.
+"""
 ###################################
 ## TEST WHEN CALLING THIS SCRIPT ##
 ###################################

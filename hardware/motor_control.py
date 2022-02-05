@@ -13,11 +13,11 @@ class MotorControl:
     Enables interfacing with the motor.
     """
 
-    def __init__(self, StepDirection=1, WaitTime=3/1000, debug=False, motor_verbose=False):
+    def __init__(self, StepDirection: int = 1, WaitTime: float = 3/1000, debug: bool = False, motor_verbose: bool = False):
         self.debug = bool(debug)
         self.motor_verbose = bool(motor_verbose) # That's a lot of output. Set to true only if error driving GPIO pins.
         self.motorPins = (15, 16, 18, 22)  # Physical location (GPIO pin# 22,23,24,25)
-        # Define motor step sequence (datasheet)
+        # Define motor step sequence (from motor datasheet)
         self.PinSequence = [
             [1,0,0,1], 
             [1,0,0,0],
@@ -30,34 +30,52 @@ class MotorControl:
             ]
 
         self.WaitTime = float(WaitTime)  #In seconds -> 3ms minimum
+        if self.WaitTime  < 3/1000:
+            self.WaitTime = 3/1000
         self.MaxPinSequence = len(self.PinSequence)
-        self.CurrentStep = 0
-        self.FullRotationCounter = 0
-        self.TotalStepCounter = 0
+        self.CurrentStep = 0  # What is the current GPIO pin sequence to move the motor.
+        self.FullSequence = 0  # How many full motor PinSequence were completed (clockwise and counterclockwise rotation cancel out)
+        self.TotalStepCounter = 0  # How many steps were completed (clockwise and counterclockwise rotation cancel out)
         # Set to 1 (slower - more torque) or 2 (faster - less torque) for clockwise
         # Set to -1 or -2 for anti-clockwise
         self.StepDirection = int(StepDirection)
-        # Motor protection
-        if (abs(self.StepDirection) > 2) or (self.StepDirection==0):
-            pass
-            # RAISE ERROR / sys.exit()
+        # Motor protection from invalid inputs
+        if self.StepDirection > 2:
+            self.StepDirection = int(2)
+        elif self.StepDirection < -2:
+            self.StepDirection = int(-2)
+        elif self.StepDirection==0:
+            self.StepDirection = int(1)
+
 
 
     def setup(self):
+        """
+        Setting pin output (physical pin connection) for all 4 motor connectors.
+        """
         #Initialization of pins
         GPIO.setmode(GPIO.BOARD)    # Numbers GPIOs by physical location
         # GPIO.setmode(GPIO.BCM)    # Numbers GPIOs by GPIO
         for pin in self.motorPins:
                 GPIO.setup(pin,GPIO.OUT)
                 GPIO.output(pin,GPIO.LOW)
-        #Initialization of variables (Should force a reset for these values to work)
+        #Initialization of variables
         self.CurrentStep = 0
-        self.FullRotationCounter = 0
+        self.FullSequence = 0
         self.TotalStepCounter = 0
         sys.stdout.write('\nMotor initialized')
 
 
-    def single_step(self,StepDirection=None):
+    def single_step(self,StepDirection: int = None):
+        """
+        Moving the step motor by a single step. There are 4096 steps in one rotation.
+
+        Inputs: 
+            - StepDirection: Positive value (1 [slower] or 2 [faster]) for clockwise rotation, 
+                             negative value (-1 [slower] or -2 [faster]) for anti-clockwise rotation
+        Outputs:
+            - self.TotalStepCounter: Current motor position, in motor steps (based on initial state of 0)
+        """
         if StepDirection == None:
             StepDirection = self.StepDirection
 
@@ -67,12 +85,10 @@ class MotorControl:
                 sys.stdout.write("\nCurrent Step: " + str(self.CurrentStep))  # Number of PinSequence 
                 sys.stdout.write("\nCurrent Pin Sequence: " + str(self.PinSequence[self.CurrentStep]))  # Current pin matrix
                 sys.stdout.write("\nNumber of Steps: " + str(self.TotalStepCounter))  # Current pin matrix
-                sys.stdout.write("\nNumber of Full Rotation: " + str(self.FullRotationCounter))
-            
+                sys.stdout.write("\nNumber of Full Sequence completed " + str(self.FullSequence))
         self.TotalStepCounter += StepDirection
         self.CurrentStep = self.TotalStepCounter % self.MaxPinSequence  # Modulo of TotalStepCounter gives next step
-        self.FullRotationCounter = self.TotalStepCounter // self.MaxPinSequence # Floor division of TotalStepCounter gives next step
-
+        self.FullSequence = self.TotalStepCounter // self.MaxPinSequence # Floor division of TotalStepCounter gives next step
 
         # Turning on/off appropriate pins for the step
         for pin in range(0, 4):
@@ -90,7 +106,14 @@ class MotorControl:
         return self.TotalStepCounter
 
 
-    def full_rotation(self,StepDirection=None):
+    def full_rotation(self,StepDirection: int = None):
+        """
+        Move the motor by a full turn. This method is based on the single_step method.
+
+        Inputs: 
+            - StepDirection: Positive value (1 [slower] or 2 [faster]) for clockwise rotation, 
+                             negative value (-1 [slower] or -2 [faster]) for anti-clockwise rotation
+        """
         if StepDirection == None:
             StepDirection = self.StepDirection
         # Make one full motor rotation
@@ -105,10 +128,22 @@ class MotorControl:
             self.single_step(StepDirection)
 
 
-    def microliter(self, microliter, StepDirection=None, kill_thread=True):
-        # How many turn/step for a microliter
+    def microliter(self, microliter: int, StepDirection: int = None, kill_thread: bool = True):
+        """
+        Send a number of microliter of liquid using the motor to push a syringe. 
+        This function contains the calibration in variable `steps_per_uL`
+        1 full motor turn (4096 steps) = X microliter.
+        If this function is threaded, it can kill its thread once the motor as turned.
+
+        Inputs:
+            - microliter: The volume of liquid to provide
+            - StepDirection: Positive value (1 [slower] or 2 [faster]) for clockwise rotation, 
+                             negative value (-1 [slower] or -2 [faster]) for anti-clockwise rotation
+            - kill_thread: If true, this function will kill its thread after liquid volume is delivered.
+        """
         if StepDirection == None:
             StepDirection = self.StepDirection
+        # How many turn/step for a microliter
         # This was not a exactly measure, but 1 turn (4096 steps) gives about 60uL.
         # To confirm
         steps_per_uL = 4096/60
@@ -117,6 +152,7 @@ class MotorControl:
             step_to_rotation = int(steps_for_qty/2)
         else:
             step_to_rotation = int(steps_for_qty)
+        # iterator to rotate the motor a fixed amount of time
         for i in range(0,step_to_rotation):
             self.single_step(StepDirection)
         if kill_thread:
@@ -124,7 +160,18 @@ class MotorControl:
                 sys.stdout.write('\nKilling motor thread now')
             sys.exit()
 
-    def provide_reward(self, microliter,StepDirection=None, kill_thread=True, daemon=False):
+    def provide_reward(self, microliter: int,StepDirection:int = None, kill_thread: bool = True, daemon: bool = False):
+        """
+        Gouverning microliter method to start as a new thread. 
+
+        Inputs:
+            - microliter: The volume of liquid to provide
+            - StepDirection: Positive value (1 [slower] or 2 [faster]) for clockwise rotation, 
+                             negative value (-1 [slower] or -2 [faster]) for anti-clockwise rotation
+            - kill_thread: If true, this function will kill its thread after liquid volume is delivered.
+            - daemon: If true, this function will start as thread as daemon. 
+                      This means that the sub-thread will abruptly end if the main thread ends.
+        """
         if StepDirection == None:
             StepDirection = self.StepDirection
         # Provide the number of microliter as a reward
@@ -132,7 +179,14 @@ class MotorControl:
         thread.start()
 
 
-    def reset_position(self,StepDirection= None):
+    def reset_position(self,StepDirection: int = None):
+        """
+        Reset motor to initial position based on the total movement.
+
+        Inputs: 
+            - StepDirection: Positive value (1 [slower] or 2 [faster]) for clockwise rotation, 
+                             negative value (-1 [slower] or -2 [faster]) for anti-clockwise rotation
+        """
         sys.stdout.write('\nReseting motor to initial position...')
         if StepDirection == None:
             StepDirection = - self.StepDirection
@@ -141,13 +195,23 @@ class MotorControl:
             self.single_step(StepDirection=StepDirection)
 
     def stop_motor(self):
+        """
+        Stop motor by setting all GPIO pins voltage to 0.
+        """
         for pin in range(0, 4):
             gpio_pin = self.motorPins[pin]
             GPIO.output(gpio_pin, GPIO.LOW)
 
     def gpio_cleanup(self):
+        """
+        Remove ALL GPIO pins from memory, even if sets elsewhere. To be called once at the end of the script.
+        """
         GPIO.cleanup()
 
+
+"""
+When calling this script directly, a small unit test (defined below) is run for debugging purposes.
+"""
 ###################################
 ## TEST WHEN CALLING THIS SCRIPT ##
 ###################################

@@ -1,4 +1,5 @@
 import random
+
 from hardware.led_control import LEDs
 from hardware.buzzer_control import BuzzerControl
 from hardware.motor_control import MotorControl

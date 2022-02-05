@@ -1,7 +1,8 @@
-import RPi.GPIO as GPIO  # pip install RPi.GPIO
-from picamera import PiCamera   # pip install picamera
 import threading
 import time 
+
+import RPi.GPIO as GPIO  # pip install RPi.GPIO
+from picamera import PiCamera   # pip install picamera
 
 # TODO:
 
