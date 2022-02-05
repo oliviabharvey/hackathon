@@ -1,19 +1,24 @@
-# imports
-from tkinter import *  
-from PIL import ImageTk,Image, ImageDraw 
 import os
 import tkinter
-from PIL import Image, ImageTk
+from tkinter import *
+from PIL import Image, ImageDraw, ImageTk
 
 # Display on RPi
 os.environ["DISPLAY"]=":0"
 
 class ImageCreator():
+    """
+    The ImageCreator class serves different purposes:
+    - creating a canvas
+    - displaying an image on the canvas
+    - resetting the canvas blank during an experiment
+    - showing either a left or right or both rectangles
+    """
     size_canvas = (800,480)
     rectangle_left = ((440, 0), (740, 300))
     rectangle_right = ((60, 0), (360, 300 ))
     saving_path = '/home/pi/Pictures/pillow_imagedraw.jpg'
-    
+
     def __init__(self):
         self.root = tkinter.Tk() 
         self.w, self.h = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
@@ -26,8 +31,12 @@ class ImageCreator():
         self.canvas.pack()
         self.canvas.configure(background='black')
     
-    # Function to show image with Pil and Tkinter in full display on Rpi
-    def showPIL(self, pilImage):              
+    def showPIL(self, pilImage):
+        """
+        Function to show image in full display on Rpi.
+        Input: 
+            - pilImage: a JPG image used for the experiments
+        """              
 
         self.canvas.delete("all")
 
@@ -45,6 +54,9 @@ class ImageCreator():
 
         
     def show_left_and_right_rectangles(self):
+        """
+        This function allows the user to show both left and right rectangles on the canvas
+        """
         im = Image.new(mode="RGB", size=ImageCreator.size_canvas, color=0)
         draw = ImageDraw.Draw(im)
 
@@ -56,6 +68,9 @@ class ImageCreator():
         self.showPIL(pilImage)
 
     def reset_canvas(self):
+        """
+        This function resets the canvas blank
+        """
         im = Image.new(mode="RGB", size=ImageCreator.size_canvas, color=0)
         draw = ImageDraw.Draw(im)        
         im.save(ImageCreator.saving_path, quality=100)
@@ -63,6 +78,9 @@ class ImageCreator():
         self.showPIL(pilImage)
 
     def show_left_rectangle(self):
+        """
+        This function shows the left rectangle only
+        """
         im = Image.new(mode="RGB", size=ImageCreator.size_canvas, color=0)
         draw = ImageDraw.Draw(im)
 
@@ -73,6 +91,9 @@ class ImageCreator():
         self.showPIL(pilImage)
 
     def show_right_rectangle(self):
+        """
+        This function shows the right rectangle only
+        """
         im = Image.new(mode="RGB", size=ImageCreator.size_canvas, color=0)
         draw = ImageDraw.Draw(im)
 

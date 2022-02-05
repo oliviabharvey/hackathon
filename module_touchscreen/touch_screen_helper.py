@@ -1,15 +1,21 @@
+import logging
 import os
 import random
-os.environ["DISPLAY"]=":0"
-
+import threading
 from pynput.mouse import Listener
 
-import threading
-import logging
 from utils.enums import *
 from module_touchscreen.image_creator import ImageCreator
 
+os.environ["DISPLAY"]=":0"
+
+
 class TouchScreenHelper():
+    """
+    The TouchScreenHelper class creates an object that has a lot of methods to help us with the touch screen.
+    It is instantiated in the base experiments since a lot of experiments require the touch screen and interaction with images.
+    It takes as inputs an experiment and a display type.
+    """
     def __init__(self, experiment, display_type):
         self.current_exp = experiment
         self.display_type = display_type
@@ -18,6 +24,7 @@ class TouchScreenHelper():
         thread.daemon = True
         thread.start()
 
+        # We also need to intialize some counters to track the progress of the experiments
         self.imageCreator = ImageCreator()
         self.side = random.choice([Sides.LEFT, Sides.RIGHT])
         self.same_side_count = 0
@@ -28,18 +35,28 @@ class TouchScreenHelper():
         return
 
     def start_listening(self):
+        """
+        This function will initialize the tracking of the movements on the touchscreen
+        """
         with Listener(on_move=self.on_move) as listener:
             self.listener_ref = listener
             isListenerStarted = True
             listener.join()
 
     def on_move(self, x, y):
+        """
+        This function monitors the movement on the touchscreen and whether the touches are 
+        good (in a rectangle) or not (outside of the borders of a rectangle)
+        """
         if  self.touch_screen_enabled:
             self.touch_screen_enabled = False
             click_type, good_collision = self.check_click_type(x, y)
             self.current_exp.on_click(click_type, good_collision)
 
     def show_next_image(self):
+        """
+        This function shows the next image depending on the state of the display type
+        """
         if self.display_type == DisplayPatterns.NONE:
             self.display_black_screen()
         elif self.display_type == DisplayPatterns.FIND_THE_SQUARE:
@@ -51,9 +68,15 @@ class TouchScreenHelper():
         self.touch_screen_enabled = True
     
     def display_black_screen(self):
+        """
+        This function displays the black screen
+        """
         self.imageCreator.reset_canvas()
 
     def display_single_rectangle(self):
+        """
+        This function displays a single rectangle given the state self.side of the object.
+        """
         if self.side == Sides.LEFT:
             self.imageCreator.show_left_rectangle()
         elif self.side == Sides.RIGHT:
@@ -63,6 +86,11 @@ class TouchScreenHelper():
         self.imageCreator.show_left_and_right_rectangles()
 
     def display_find_the_square(self):
+        """
+        This function displays a single rectangle. In order to do so, it will randomly choose between displaying
+        the rectangle on the same side or not. If the rectangle is being displayed in the same side 3 times or more, then 
+        we enforce the object to swap sides. 
+        """
         if self.same_side_count >= 3: 
             self.swap_side()
             self.same_side_count = 1
@@ -76,6 +104,10 @@ class TouchScreenHelper():
         self.display_single_rectangle()
 
     def display_left_or_right(self):
+        """
+        This function checks whether there has been 5 or more consecutive good clicks.
+        It will swap the side of the rectangle depending on this condition.
+        """
         if self.consecutive_good_clicks >= 5:
             if self.count_reversals == None:
                 self.count_reversals = 1
@@ -91,6 +123,13 @@ class TouchScreenHelper():
             self.side = Sides.LEFT
 
     def check_click_type(self, x, y):
+        """
+        This function checks for the validity of the click using mulitple functions.
+        It checks whether it's a good or bad collision. We also increment a counter to take note
+        of the consecutive good clicks.
+
+        If the collision is good, we return a given number representing GOOD and the boolean
+        """
         good_collision = self.check_collision(x, y)
         if good_collision:
             self.consecutive_good_clicks += 1         
@@ -112,8 +151,18 @@ class TouchScreenHelper():
         else:
             return ClickTypes.BAD, good_collision
 
-    def check_collision(self, x, y):
+    def check_collision(self, x, y) -> bool:
+        """
+        Depending on the coordinates, this checks whether the click on the touchscreen
+        was inside the left or right rectangle or outside the rectangles
 
+        Inputs:
+            - x: a coordinate on the X axis
+            - y: a coordinate on the Y axis
+
+        Outputs:
+             - Check if the touch was inside the borders of the rectangles (True or False)
+        """
         if self.side == Sides.LEFT:
             box_left = ImageCreator.rectangle_left[0][0]
             box_right = ImageCreator.rectangle_left[1][0]
@@ -129,7 +178,11 @@ class TouchScreenHelper():
         return self.check_collision_internal(x,y,box_left, box_right, box_top, box_bottom)
 
 
-    def check_collision_internal(self,click_x, click_y, box_left, box_right, box_top, box_bottom):
+    def check_collision_internal(self,click_x, click_y, box_left, box_right, box_top, box_bottom) -> bool:
+        """
+        This function checks whether the collision happenned inside or outside certain coordinates.
+        It returns True or False
+        """
         return not (click_x < box_left or click_x > box_right or click_y > box_top or click_y < box_bottom)
 
     def get_number_reversals(self):
