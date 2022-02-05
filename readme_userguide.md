@@ -2,4 +2,4 @@
 
 ## How to run an experiment
 
-## How to add a module
+## How to reinstall or add a puppet

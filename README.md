@@ -3,6 +3,8 @@ This repository contains the userguide, the code and the hardward requirements t
 
 The [userguide](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md) explains how to run the experiments.
 
-The [development environment](https://github.com/oliviabharvey/hackathon/blob/master/readme_development_environment.md)  explains how to setup your environment to develop or update code.
+The [development environment](https://github.com/oliviabharvey/hackathon/blob/master/readme_development_environment.md) readme explains how to setup your environment to develop or update code.
 
-The [hardward requirements](https://github.com/oliviabharvey/hackathon/tree/master/hardware/readme_hardware.md) explains how everything is connected, etc.
+The [hardware](https://github.com/oliviabharvey/hackathon/tree/master/hardware/readme_hardware.md) readme explains how everything is connected, etc.
+
+## Project Overview?
