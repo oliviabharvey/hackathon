@@ -1,5 +1,5 @@
 # PROJECT NAME
-This repository contains the userguide, the code and the hardward requirements to create automated congnitive experiments used for mouses. This was created for the Canadian Reasearch Chair XXXXXXX
+This repository contains the userguide, the code and the hardward requirements to create automated cognitive experiments used for mice. This was created for the Canadian Reasearch Chair XXXXXXX
 
 The [userguide](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md) explains how to run the experiments.
 
