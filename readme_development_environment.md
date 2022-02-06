@@ -1,4 +1,33 @@
-# Setup
+# High level overview of the code
+
+### **1) Interaction between the GUI and the results**
+
+When the user selects an experiment with the GUI, launch_experiment.py is called. This script takes as input
+a config file (example.config.yaml) that holds the details of the experiment. For example, it contains the nature of the experiment (exp4, etc.). 
+An object of type Experiment is then instantiated and launched from the GUI.
+
+All experiments are a subclass of the class BaseExperiment located in base_exp.py. In order to understand better how this programs works, let's dive a little into the workflow.
+
+The BaseExperiment class is a template for all the possible experiments. This template contains a great number of methods that are useful for all different experiments. Depending on the actual task, an experiment will select 
+  - Run experiment
+  - Initialize
+  - Deliver sequence
+  - Tray light on
+  - play tone
+  - deliver food
+  - is completed
+  - on infrared break
+  - tray light off
+  - ...
+
+Any experiment is based on the BaseExperiment class and so will inherit all of these methods as well as specific method per experiment. When the function launch_experiment.py is used, the method called run_experiment() is called. This function initializes the whole experiment. It starts the timer, it adjusts the status of the experiment to running and it turns the light on to indicate that the experiment is indeed running. It will wait for the status to be completed and once the experiment is done, the results will be saved inside a yaml file. The GUI will indicate where the results are saved so that you can look at them.
+
+# Setup (UPDATED)
+
+Create an image on a disk 
+blablabla
+
+# Setup (DEPRECATED)
 Setup on Ubuntu by default. Windows specific steps are also described below.
 
 ### **Required**
@@ -61,7 +90,7 @@ Congrats! Now your VS Code IDE is remotely linked to your pi. You can launch a t
 * Active your enviroment to use it `source activate souris`
 
 ## Install GIT & Repo
-* Install Git`sudo apt install git`
+* Install Git `sudo apt install git`
 * Create a folder `mkdir /home/pi/Projects/hackathon/`
 * Got to home folder `cd /home/pi/Projects`
 * Clone the repo `git clone https://github.com/oliviabharvey/hackathon.git`. VSCode will pop up a web connection to Github. Enter your crendentials.
