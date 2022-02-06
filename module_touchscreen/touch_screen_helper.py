@@ -2,12 +2,13 @@ import logging
 import os
 import random
 import threading
+os.environ["DISPLAY"]=":0"  # Must be before Listener input
 from pynput.mouse import Listener
 
 from utils.enums import *
 from module_touchscreen.image_creator import ImageCreator
 
-os.environ["DISPLAY"]=":0"
+
 
 
 class TouchScreenHelper():

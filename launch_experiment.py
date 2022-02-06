@@ -34,6 +34,10 @@ def parse_args():
     return parser.parse_args()
 
 def main(cfg, debug): 
+    """
+    Main function to start the experiment.
+
+    """
     print(f"\n --- EXPERIMENT {cfg['experiment'].upper()} ON MOUSE {cfg['mouse_name'].upper()} ---\n")
     Experiment = eval(f"{cfg['experiment']}")
     my_exp = Experiment(cfg=cfg, duration_minutes=2, debug=debug, enableAutoClick=debug)
@@ -41,6 +45,10 @@ def main(cfg, debug):
     return
 
 
+"""
+When calling lauch_experiment.py directly, the code reads the command line arguments,
+reads the yaml config file, and from there, run the main script.
+"""
 if __name__ == "__main__":
     args = parse_args()
     with open(args.cfg, 'r') as f:

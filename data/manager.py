@@ -1,7 +1,8 @@
-import yaml
-import time
 import statistics
+import time
+import yaml
 from copy import deepcopy
+from typing import Dict
 
 from utils.enums import TimeStamps
 
@@ -27,8 +28,11 @@ RESULTS_SCHEMA = {
     }  
 
 class DataManager():
+    """
+    Calculating experiment statistics and generating outputs at each step of the experiment.
+    """
 
-    def __init__(self, cfg):
+    def __init__(self, cfg: Dict):
         self.cfg = cfg
         # adding relevant keys from config to results dict
         self.data = {x: cfg[x] for x in cfg if x not in ['results']}
@@ -36,7 +40,10 @@ class DataManager():
         self.data.update(RESULTS_SCHEMA)
         self.current_trial = 0
 
-    def update(self, time_stamp_type, info=None):
+    def update(self, time_stamp_type: int , info: Dict = None):
+        """
+        Update the data dictonnary during one of the 4 steps (dislay, touch, feed, eat)
+        """
         if time_stamp_type == TimeStamps.DISPLAY:
             self.trial_display_time_start = time.time()
         elif time_stamp_type == TimeStamps.TOUCH:
@@ -48,19 +55,34 @@ class DataManager():
         elif time_stamp_type == TimeStamps.EAT:
             self.data['trials'][self.current_trial]['seconds_between_feed_and_eat'] = round(time.time() - self.trial_feed_time_start, 1)
 
-    def update_status(self, status):
+    def update_status(self, status: str):
+        """
+        Update the status string.
+        
+        Inputs:
+            - status: string to output (ex: 'running', 'completed')
+        """
         self.data['status'] = status
 
     def write_dict(self, path='results/results.yaml'):
+        """
+        Write the results to a YAML file.
+        """
         with open(path, "w") as file:
             yaml.dump(self.data, file, default_flow_style=False)
 
     def start_trial(self):
+        """
+        Trial counter when a new image showing trial is showned.
+        """
         self.current_trial += 1
         self.data['trials'][self.current_trial] = deepcopy(TRIAL_SCHEMA)
         return
 
     def compute_end_of_experiment_statistics(self, start_time, num_reversals):
+        """
+        Compute all the statistics useful for analysing the experiment.
+        """
         self.data['summary']['total_time'] = round(time.time() - start_time, 1)
         self.data['summary']['trials_number'] = len(self.data['trials'])
         display_and_touch_times = []
