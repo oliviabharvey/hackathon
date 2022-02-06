@@ -9,7 +9,7 @@ import os
 import yaml
 from tkinter import *
 from tkinter.ttk import Combobox, Notebook
-from typing import List
+from typing import List, Dict
 from PIL import Image, ImageTk
 
 class MasterGUI:
@@ -24,6 +24,7 @@ class MasterGUI:
         self.stdout_nlines = 6 # Number of lines shown in the live output shown while running experiments
         self.debug_default_puppet_idx = 1 # Position of default puppet idx
         self.debug_default_exp_idx = 1 # Position of default experiment idx
+        self.debug_default_seq_idx = 0 # Position of default experiment idx
 
         # Initialize logger
         self.set_logger('master-gui',debug=self.debug)
@@ -46,6 +47,7 @@ class MasterGUI:
         self.master_path['repo'] = "/home/pi/hackathon/hackathon/"
         self.puppets_info_filename = "puppets_info.csv"
         self.experiments_filename = "experiments.yaml"
+        self.sequences_filename = "sequences.yaml"
         self.img_background = "gui_background.png"
         self.img_octopus = "octopus.png"
         self.img_run_button = "run_button.png"
@@ -125,15 +127,17 @@ class MasterGUI:
         self.entry_puppet.tk.call('%s.f.l' % popdown, 'configure', '-font', self.entry_puppet['font'])
         self.entry_puppet.place(x=410, y=120)
 
-        # Add entry (dropdown) : Choose which experiment to run
-        self.lbl_exp = Label(self.tab['main'], text="Experiment to run:",font=("Arial",11))
-        self.lbl_exp.place(x=240,y=170)
-        self.entry_exp=Combobox(self.tab['main'], font=('Arial', 12), width=14, values=self.read_experiments_yaml())
+        # Add entry (dropdown) : Choose which sequence of experiments to run
+        seqs = self.read_sequences_yaml()
+        self.lbl_seq = Label(self.tab['main'], text="Sequence to run:",font=("Arial",11))
+        self.lbl_seq.place(x=240,y=170)
+        self.entry_seq=Combobox(self.tab['main'], font=('Arial', 12), width=14, values=list(seqs.keys()))
         if self.debug:
-            self.entry_exp.current(self.debug_default_exp_idx)
-        popdown = self.entry_exp.tk.eval('ttk::combobox::PopdownWindow %s' % self.entry_exp)
-        self.entry_exp.tk.call('%s.f.l' % popdown, 'configure', '-font', self.entry_exp['font'])
-        self.entry_exp.place(x=410, y=170)
+            self.entry_seq.current(self.debug_default_seq_idx)
+        popdown = self.entry_seq.tk.eval('ttk::combobox::PopdownWindow %s' % self.entry_seq)
+        self.entry_seq.tk.call('%s.f.l' % popdown, 'configure', '-font', self.entry_seq['font'])
+        self.entry_seq.place(x=410, y=170)
+        self.entry_seq.bind("<<ComboboxSelected>>", self.add_exp_dropdown)
 
         # Add run button
         self.gui_button('main',self.master_path['images']+self.img_run_button,"run")
@@ -142,6 +146,20 @@ class MasterGUI:
         win.title("Run experiment")
         win.geometry("800x410+0+0")
         win.mainloop()
+
+    def add_exp_dropdown(self,seqs):
+        # Add entry (dropdown) : Choose which experiment to run
+        seqs = self.read_sequences_yaml()
+        seq = self.entry_seq.get()
+        self.lbl_exp = Label(self.tab['main'], text="Experiment to run:",font=("Arial",11))
+        self.lbl_exp.place(x=240,y=190)
+        self.entry_exp=Combobox(self.tab['main'], font=('Arial', 12), width=14, values=seqs[seq])
+        if self.debug:
+            self.entry_exp.current(self.debug_default_exp_idx)
+        popdown = self.entry_exp.tk.eval('ttk::combobox::PopdownWindow %s' % self.entry_exp)
+        self.entry_exp.tk.call('%s.f.l' % popdown, 'configure', '-font', self.entry_exp['font'])
+        self.entry_exp.place(x=410, y=190)
+
 
     def gui_button(self,tab: str,img_file: str,action: str):
         """
@@ -160,10 +178,10 @@ class MasterGUI:
             self.btn[tab].place(x=400-self.btn_width/2+5,y=220)
         elif action == "finish": # Close current tab and remove puppet from current variables
             self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.btn[tab].place_forget(), self.remove_puppet_from_current(tab)]),borderwidth=0,highlightthickness=0)
-            self.btn[tab].place(x=400-self.btn_width/2+5,y=280)
+            self.btn[tab].place(x=400-self.btn_width/2+5,y=290)
         elif action == "cancel": # Cancel run (for a specific puppet)
             self.btn[tab] = Button(self.tab[tab], image=self.btn_img[tab], command=(lambda: [self.btn[tab].place_forget(), self.ssh_cancel_command(tab)]),borderwidth=0,highlightthickness=0)
-            self.btn[tab].place(x=600-self.btn_width/2+100,y=280)    
+            self.btn[tab].place(x=600-self.btn_width/2+100,y=290)
 
     def gui_set_background(self,tab: str):
         """
@@ -322,6 +340,8 @@ class MasterGUI:
             if txt != '' and txt != '\n' and 'EXPERIMENT' not in txt:
                 l.append(txt)
                 l = self.lbl_replace(puppet,l) # Replace n last lines of label with most recent ouput
+            if "Finished!" in txt:
+                break
         popen.stdout.close()
 
     def ssh_fetch_status(self,puppet: str):
@@ -346,13 +366,11 @@ class MasterGUI:
                     status = self.read_status(puppet) # read status of experiment in the file
                     self.logger.info('status on '+puppet+': '+status)
                     if status == "completed":
-                        # time.sleep(2) remove?
                         self.status[puppet] = 'completed'
                         self.gui_button_remove(puppet) # removes cancel button
                         self.lbl_append(puppet,f"Experiment complete! Results are here:\n{self.master_path['results']}{self.filename_results[puppet]}")
                         self.gui_button(puppet,self.master_path['images']+self.img_finish_button,"finish")
                     elif status == "error":
-                        # time.sleep(2) remove?
                         self.status[puppet] = 'completed'
                         self.gui_button_remove(puppet) # removes cancel button
                         self.lbl_append(puppet,f"Error raised on puppet.")
@@ -393,11 +411,26 @@ class MasterGUI:
         """
         Reads yaml file with list of available experiments.
         Returns:
-            - exps['experiments']: list of experiments (list of strings)
+            - List: list of experiments (list of strings)
         """
         with open(self.master_path['repo'] + self.experiments_filename, 'r') as file:
             exps = yaml.safe_load(file)
         return exps['experiments']
+
+    def read_sequences_yaml(self) -> Dict:
+        """
+        Reads yaml file with list of sequence of experiments.
+        Returns:
+            - List: list of experiments in this sequence (list of strings)
+        """
+        seq_str = {}
+        with open(self.master_path['repo'] + self.sequences_filename, 'r') as file:
+            seqs = yaml.safe_load(file)
+        for seq in seqs:
+            seq_str[seq] = []
+            for exp in seqs[seq]:
+                seq_str[seq].append("Day "+str(exp)+": "+seqs[seq][exp])
+        return seq_str
 
     def read_puppets(self):
         """
@@ -504,7 +537,7 @@ class MasterGUI:
         """
         puppet = self.entry_puppet.get()
         self.mouse[puppet] = self.entry_mouse.get()
-        self.experiment[puppet] = self.entry_exp.get()
+        self.experiment[puppet] = self.entry_exp.get().split(': ')[1]
         if self.mouse[puppet] == '' or self.experiment[puppet] == '' or puppet == '':
             raise ValueError("Please enter a valid mouse name, setup ID and experiment name.")
         return puppet
