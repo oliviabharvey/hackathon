@@ -22,7 +22,7 @@ Please note the following terms that will be used throughout this guide:
 3. Type the followind command: `./run_GUI.sh` (you should by default already be in the `/home/pi/` folder)
 4. The GUI will launch
 
-![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/empty.png | width=600)
+![](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/empty.png)
 
 ### 3) Test the equipment on a specific **Puppet RPi**
 
@@ -32,11 +32,11 @@ Please note the following terms that will be used throughout this guide:
 
 1. Fill in the `Name of the mouse` field.
 
-    ![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/Name.png | width=600)
+![](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/Name.png)
 
 2. Select the puppet on which you want to run the experiment in the `Puppet ID` field.
 
-    ![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/puppet.png | width=600)
+![](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/puppet.png)
 
 3. Select a sequence of experiments in the `Sequence to run` field.
 
@@ -46,7 +46,7 @@ Please note the following terms that will be used throughout this guide:
 
 
 
-    ![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/exp_all.png | width=600)
+![](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/exp_all.png)
 
 
 
