@@ -64,6 +64,3 @@ if __name__ == '__main__':
         camera.stop_recording()
         camera.reset()
         camera.get_mp4()
-    
-
-192.168.0.21
