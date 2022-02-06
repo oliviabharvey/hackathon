@@ -113,6 +113,14 @@ class BaseExperiment():
         self.experiement_time = time.time()
         return
 
+    def end_check(self):
+        """
+        This function ends the "Checking Components" experiment
+        """
+        self.log_msg("Ending check")
+        self.experiement_time = time.time()
+        self.experiement_time = self.exp_duration # by setting the time to the experiration, we can end the experiment
+
     def on_completion(self):
         """
         This function is called when the experiment is done. It resets the canvas.

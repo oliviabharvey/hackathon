@@ -10,6 +10,7 @@ from experiments.exp3 import Exp3
 from experiments.exp4 import Exp4
 from experiments.exp5 import Exp5
 from experiments.prl1 import Prl1
+from experiments.check_components import CheckComponents
 
 def parse_args():
     """

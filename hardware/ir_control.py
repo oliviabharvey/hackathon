@@ -104,11 +104,10 @@ class IrLed:
         return bool(GPIO.input(self.ir_led_pin))
 
     def check_ir(self):
-        self.setup()
         self.start_ir()
         self.state = bool(GPIO.input(self.ir_sensor_pin))
         if self.state == True:
-            sys.stdou.write("\nIR beam works")
+            sys.stdout.write("\nIR beam works")
         else:
             sys.stdout.write("\nIR beam fails")      
 

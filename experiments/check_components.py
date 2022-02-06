@@ -1,17 +1,21 @@
 import time
 import random
+import sys
 
 from experiments.base_exp import BaseExperiment
 from utils.enums import *
 from hardware.motor_control import MotorControl
 from hardware.ir_control import IrLed
+from hardware.buzzer_control import BuzzerControl
+from hardware.led_control import LEDs
+from module_touchscreen.touch_screen_helper import TouchScreenHelper
 
 class CheckComponents(BaseExperiment):
     """
     Check that all components work before doing an experiment
     """
 
-    def __init__(self, cfg, duration_minutes=1, debug=False, enableAutoClick=False):
+    def __init__(self, cfg, duration_minutes=0.1, debug=False, enableAutoClick=False):
         super().__init__(cfg, duration_minutes, debug, enableAutoClick)
         return
 
@@ -34,17 +38,18 @@ class CheckComponents(BaseExperiment):
         # Check motor
         sys.stdout.write('\nChecking motor')
         motor = MotorControl()
-        motor.setup()
         sys.stdout.write('\nTurning clockwise full turn')
         motor.full_rotation(2)
         time.sleep(1)
         sys.stdout.write('\nTurning counterclockwise full turn')
         motor.full_rotation(-2)
-        time.sleep(1)
+        time.sleep(5)
         # Check IR
         sys.stdout.write("\nChecking IR")
         irled = IrLed()
         irled.check_ir()
-
+        time.sleep(2)
+        self.touch_screen_helper = TouchScreenHelper(self, DisplayPatterns.NONE)
+        self.end_check()
     def update_state(self):
         return
