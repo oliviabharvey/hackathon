@@ -4,6 +4,7 @@ from hardware.led_control import LEDs
 from hardware.buzzer_control import BuzzerControl
 from hardware.motor_control import MotorControl
 from hardware.ir_control import IrLed
+from hardware.camera_control import CameraControl
 
 class HardwareConnector():
     """
@@ -25,9 +26,15 @@ class HardwareConnector():
         self.motor = MotorControl(debug=self.debug)
         self.motor.setup()
 
-        # Initializing IR beam (tray)
+        # Initializing IR beam (food tray)
         self.irb = IrLed(debug=self.debug)
         self.irb.setup()
+
+        # Initializing Camera
+        self.camera = CameraControl(debug=self.debug)
+        self.camera.setup()
+
+
 
     def is_irb_broken(self) -> bool:
         """
@@ -98,11 +105,30 @@ class HardwareConnector():
 
         Inputs:
             - qty: Quantity volume (in microliter) of reward to provide.
-
         """
         # Turn motor to provide a given qty of fluid (in microliter) in food tray. Asynchronous.
         self.motor.provide_reward(microliter=qty)
         return
+
+    def start_camera(self, videoname: str = None):
+        """
+        Start video camera.
+
+        Inputs:
+            - videoname: If a video name is provided, this name will be used. If not, the current datetime will be used.
+        """
+        self.camera.start(self, videoname)
+
+    def stop_camera(self):
+        """
+        Stops the video camera and returns the name of the file.
+
+        Outputs:
+            - videoname: The name of the video output file.
+        """
+        videoname = self.camera.stop()
+        return videoname
+
 
     def stop_hardware(self):
         """
@@ -116,3 +142,5 @@ class HardwareConnector():
         self.motor.stop_motor()
         self.irb.stop_ir()
         self.leds.gpio_cleanup()
+        self.camera.cleanup()
+        
