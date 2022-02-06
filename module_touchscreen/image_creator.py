@@ -15,8 +15,8 @@ class ImageCreator():
     - showing either a left or right or both rectangless
     """
     size_canvas = (800,480)
-    rectangle_left = ((520, 0), (785, 300))
-    rectangle_right = ((18, 0), (280, 300 ))
+    rectangle_left = ((510, 0), (790, 300))
+    rectangle_right = ((10, 0), (285, 300 ))
     saving_path = '/home/pi/Pictures/pillow_imagedraw.jpg'
 
     def __init__(self):
@@ -25,7 +25,6 @@ class ImageCreator():
         self.root.overrideredirect(1)
         self.root.geometry("%dx%d+0+0" % (self.w, self.h))
         self.root.focus_set()    
-        #self.root.bind("<Escape>", lambda e: (e.widget.withdraw(), e.widget.quit()))
         self.root.config(cursor="none")
         self.canvas = tkinter.Canvas(self.root,width=self.w,height=self.h)
         self.canvas.pack()
