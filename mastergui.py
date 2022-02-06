@@ -407,16 +407,6 @@ class MasterGUI:
         self.gui_button_remove(puppet) # removes cancel button
         self.gui_button(puppet,self.master_path['images']+self.img_finish_button,"finish") # Add finish button
 
-    def read_experiments_yaml(self) -> List:
-        """
-        Reads yaml file with list of available experiments.
-        Returns:
-            - List: list of experiments (list of strings)
-        """
-        with open(self.master_path['repo'] + self.experiments_filename, 'r') as file:
-            exps = yaml.safe_load(file)
-        return exps['experiments']
-
     def read_sequences_yaml(self) -> Dict:
         """
         Reads yaml file with list of sequence of experiments.
@@ -429,7 +419,7 @@ class MasterGUI:
         for seq in seqs:
             seq_str[seq] = []
             for exp in seqs[seq]:
-                seq_str[seq].append("Day "+str(exp)+": "+seqs[seq][exp])
+                seq_str[seq].append(str(exp)+": "+seqs[seq][exp])
         return seq_str
 
     def read_puppets(self):
