@@ -21,8 +21,8 @@ Please note the following terms that will be used throughout this guide:
 2. Open the **Terminal**
 3. Type the followind command: `./run_GUI.sh` (you should by default already be in the `/home/pi/` folder)
 4. The GUI will launch
-<!-- [[/images_for_readme/empty.png]] -->
-![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/empty.png)
+
+![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/empty.png | width=600)
 
 ### 3) Test the equipment on a specific **Puppet RPi**
 
@@ -32,7 +32,25 @@ Please note the following terms that will be used throughout this guide:
 
 1. Fill in the `Name of the mouse` field.
 
+    ![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/Name.png | width=600)
 
+2. Select the puppet on which you want to run the experiment in the `Puppet ID` field.
+
+    ![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/puppet.png | width=600)
+
+3. Select a sequence of experiments in the `Sequence to run` field.
+
+    **Sequences** are predefined lists of experiments (that can be in a specific suggested order) to help the user in the selection of the experiments. This only affects the experiments shown in the dropdown menu on the GUI. The specific sequence names `All Experiments` should always include all available experiments.
+
+    It is possible to modify this list to create new sequences or add new experiments to the dropdown menu by modifying the [sequences.yaml](https://github.com/oliviabharvey/hackathon/blob/master/sequences.yaml) file (see instructions in [section below](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences)).
+
+
+
+    ![Empty GUI](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/exp_all.png | width=600)
+
+
+
+## How to update the experiment sequences
 
 ## How to reinstall or add a puppet
 
