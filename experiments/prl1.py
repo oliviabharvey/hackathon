@@ -24,10 +24,10 @@ class Prl1(BaseExperiment):
     def update_state(self):
         if self.state == States.TOUCH:
             if self.enableAutoClick:
-                if random.uniform(0, 1) >= 0.98:
+                if random.uniform(0, 1) >= 0.98: # used for random mouse behaviour during debug
                     self.click_type = ClickTypes.GOOD
                     self.on_click(self.click_type, True)
-                if random.uniform(0,1) >= 0.98:
+                if random.uniform(0,1) >= 0.98: # used for random mouse behaviour during debug
                     self.click_type = ClickTypes.BAD
                     self.on_click(self.click_type, False)
             if self.click_type == ClickTypes.GOOD:
