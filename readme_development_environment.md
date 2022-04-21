@@ -3,12 +3,12 @@
 ### **1) Interaction between the GUI and the experiment launching**
 
 When the user selects an experiment with the GUI, launch_experiment.py is called. This script takes as input
-a config file (example.config.yaml) that holds the details of the experiment. For example, it contains the nature of the experiment (exp4, etc.). 
+a config file (example.config.yaml) that holds the details of the experiment. For example, it contains the nature of the experiment (example: exp4). 
 An object of type Experiment is then instantiated and launched from the GUI.
 
-All experiments are a subclass of the class BaseExperiment located in base_exp.py. In order to understand better how this programs works, let's dive a little into the workflow.
+All experiments are a subclass of the class BaseExperiment located in base_exp.py. In order to understand better how this program works, let's dive a little into the workflow.
 
-The BaseExperiment class is a template for all the possible experiments. This template contains a great number of methods that are useful for all different experiments. Depending on the actual task, an experiment will select 
+The BaseExperiment class is a template for all the possible experiments. This template contains a great number of methods that are useful for all different experiments. Depending on the actual task, an experiment will select any of the following:
   - Run experiment
   - Initialize
   - Deliver sequence
@@ -20,20 +20,28 @@ The BaseExperiment class is a template for all the possible experiments. This te
   - tray light off
   - ...
 
-Any experiment is based on the BaseExperiment class and so will inherit all of these methods as well as specific method per experiment. When the function launch_experiment.py is used, the method called run_experiment() is called. This function initializes the whole experiment. It starts the timer, it adjusts the status of the experiment to running and it turns the light on to indicate that the experiment is indeed running. It will wait for the status to be completed and once the experiment is done, the results will be saved inside a yaml file. The GUI will indicate where the results are saved so that you can look at them.
+Any experiment is based on the BaseExperiment class and so will inherit all of these methods as well as specific method per experiment. When the function launch_experiment.py is used, run_experiment() is called. This function initializes the whole experiment. It starts the timer, it adjusts the status of the experiment to running and it turns the light on to indicate that the experiment is indeed running. It will wait for the status to be completed and once the experiment is done, the results will be saved inside a yaml file. The GUI will indicate where the results are saved so that you can look at them.
 
-### **2) Interaction between the experiments and the hardware/touchscreen**
+### **2) Experiments setup
 
-The hardware components are stored in ./hardware/. They contain ...
+Any experience starts with Box Habituation
 
-The touchscreen module is stored ./module_touchscreen/. It contains two scripts : ...
+Box Habituation
+ 1: Exp1a --> black screen
+ 2: Exp1B --> familiarize with food tray
+ 3: Exp2 --> familiarize with touchscreen
+ 4: Exp3 --> press the good square to obtain food, otherwise nothing happens
+ 5 Exp4 --> press the good square to obtain food, otherwise punishment happens
 
 
+TOUTES LES EXPÉRIENCES
+ 
+Perseverence:
 
-# Setup (UPDATED)
+- Exp5: deterministic reversal learning (existe déjà): 2 carrés blanc, 100$ du temps à gauche
+- PRL-test (existe déjà) : 80% du temps d'un bord, 20% de l'autre (vérifier que la lumière s'allume mm quand c'est pas bon, pas de son quand c'est pas bon)
 
-Create an image on a disk 
-blablabla
+
 
 # Setup (DEPRECATED)
 Setup on Ubuntu by default. Windows specific steps are also described below.
