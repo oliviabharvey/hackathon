@@ -120,5 +120,7 @@ For both RPI types (puppet and master), the process is the same.
     * For a puppet RPI: `cd hackathon_souris/`
     * For a master RPI: `cd hackathon/`
 14. Enter the following command to pull the most recent scripts from gitgub `git pull` (this is important if changes are made to the github scripts after 2022/04/20, since this is the date when the ISO image was created).
-15. * If
+15. Final steps:
+    * For a puppet RPI, use the [hardware readme](https://github.com/oliviabharvey/hackathon/blob/master/hardware/readme_hardware.md) to plug all the necessary hardware to the puppet. Then, make sure it is connected by ethernet cable to the Switch, which should be connected to the master RPI.
+    * For a master RPI, your are ready to go! Just make sure it is connected to the switch (which should be connected to at least 1 puppet RPI).
 
