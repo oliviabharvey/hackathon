@@ -7,6 +7,7 @@ Please note the following terms that will be used throughout this guide:
 - **Master RPi**: The RPi used as main console. This RPi will be used to launch expriments on the other RPis.
 - **Puppet RPi**: RPi plugged into the physical setup (screen, motor, lights, etc.). The experience will be run on this RPi. Multiple **Puppet RPis** can be connected to the **Master RPi**.
 
+
 In this section, you will find the following procedures:
 1) [How to run an experiment](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-run-an-experiment)
 2) [How to update experiment sequences in the GUI](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences)
@@ -31,6 +32,8 @@ In this section, you will find the following procedures:
 
 ### 3) Test the equipment on a specific **Puppet RPi**
 
+We have an experiment named [check_components.py](https://github.com/oliviabharvey/hackathon/blob/master/experiments/check_components.py) if you want make sure all components are working. This is not 100% completed. If you need to use it, make sure that it is [added to the sequence list](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences) to be able to access it from the master GUI. Then just launch the experiment.
+
 ### 4) Run an experiment on a specific **Puppet RPi**
 
 *Note: Please refrain from using special characters in any field (é, à, %, $, etc.)*
@@ -42,6 +45,10 @@ In this section, you will find the following procedures:
 2. Select the puppet on which you want to run the experiment in the `Puppet ID` field.
 
 ![](https://github.com/oliviabharvey/hackathon/blob/master/images_for_readme/puppet.png)
+
+    **Notes**
+    * If the puppet is not there, see the step 16 of [the install guide](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-reinstall-or-setup-a-new-masterpuppet-rpi) to add it to the list.
+    * To find the hostname of the puppet, open a command line window on the puppet RPI. You will see something like "pi@puppet1", where "pi" is the username and "puppet1" is the hostname (name of the puppet).
 
 3. Select a sequence of experiments in the `Sequence to run` field.
 
@@ -121,7 +128,7 @@ For both RPI types (puppet and master), the process is very similar:
 12. Enter the following command to activate your environment: `source activate souris`
 13. Enter the following command to go the the github folder 
     * For a puppet RPI: `cd hackathon_souris/`
-    * For a master RPI: `cd hackathon/`
+    * For a master RPI: `cd hackathon/hackathon/`
 14. Enter the following command to pull the most recent scripts from github `git pull` (this is important if changes are made to the github scripts after 2022/04/20, since this is the date when the ISO image was created).
 15. [Change the hostname of the RPI](https://thepihut.com/blogs/raspberry-pi-tutorials/19668676-renaming-your-raspberry-pi-the-hostname) to something significant for you (ex: puppet5).
 16. **If your are setting up a puppet RPI:** from your PC, add a new line to the [puppets_info.csv](https://github.com/oliviabharvey/hackathon/blob/master/puppets_info.csv) (name of the puppet that will appear in the GUI, username, hostname.local (ex:puppet5.local)). Then, on the puppet RPI, pull the recent changes (steps 11 to 14 above). This is important so this new puppet appears in the Master GUI. 
