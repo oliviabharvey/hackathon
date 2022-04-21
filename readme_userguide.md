@@ -8,9 +8,9 @@ Please note the following terms that will be used throughout this guide:
 - **Puppet RPi**: RPi plugged into the physical setup (screen, motor, lights, etc.). The experience will be run on this RPi. Multiple **Puppet RPis** can be connected to the **Master RPi**.
 
 In this section, you will find the following procedures:
-1) [How to run an experiment]()
-2) [How to update experiment sequences in the GUI]()
-3) [Setup a new puppet or master GUI from scratch]()
+1) [How to run an experiment](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-run-an-experiment)
+2) [How to update experiment sequences in the GUI](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences)
+3) [Setup a new puppet or master GUI from scratch](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences)
 
 ## How to run an experiment
 
