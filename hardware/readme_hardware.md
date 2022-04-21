@@ -64,6 +64,9 @@ The food tray was pierced with 4 holes. One for the LED Tray light, one for the 
 # Future Upgrades
 This section includes any updgrades that would be nice to have on the system.
 
+## Mouse interaction with IR Beam
+Since we did not had any mouse to test our setup during development, we tested the breaking of the IR beam with our fingers. It is possible that the head of the mouse will be too small to break the IR beam. If that is the case, reducing the size of the hole to make the beam more narrow should work.
+
 ## Calculate the microliter 
 We did not have access to a pipette to accurately count microliters provided by the motor. The current values are estimated - one full turn = 60 uL. To be rigourous, they should be measured with a pipette. The number of uL given by a turn should be entered by overwriting the denominator in the line `steps_per_uL = 4096/60`, under function `microliter`, in `motor_control.py` (around line 150).
 
