@@ -37,5 +37,8 @@ LED is driven directly by the GPIO pin. Receiver's collector is connected to the
 - Pin 11 (GPIO 17)
 - Pin 12 (GPIO 18)
 
+### Schematics
+The schematics image above (available as HTML here https://github.com/oliviabharvey/hackathon/blob/master/hardware/hardware_diagram.html) can be modified using 
+
 [^1]: We were lacking some 220Ω when soldering the boards. 330Ω resistances were used as a replacement.
 [^2]: Any IR LED/Receiver that can be driven by 3.3V would work. Just make sure that the receiver is a IR receiver that is at its high voltage state when being illumitated by the IR LED and its low voltage state when the infrared beam is broken.
