@@ -23,8 +23,8 @@ You will find three boards in the this setting. The biggest one, is the Raspberr
 
 The last board is homemade and capture all of the electronic setup in the of the connections & Schematics. You only have to plug the board as specified in the schematic above (and in the images below) to connect all the hardware appropriately. All the connections are flowing from GPIO to Ground, making it easy to isolate the circuit for each (each LED, buzzer, etc.)
 
-![Breadboard Groups](./Breadboard_group.jpg)
-![Breadboard Connectors](./Breadboard_connector.jpg)
+<img src="./Breadboard_group.jpg" alt="Breadboard Groups" width="600"/>
+<img src="./Breadboard_connector.jpg" alt="Breadboard Connectors" width="600"/>
 
 ## LEDs
 5mm, 15mA "common" LEDs.
