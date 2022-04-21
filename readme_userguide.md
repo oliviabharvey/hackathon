@@ -103,15 +103,15 @@ Please note that this sequences only works for already implemented experiments. 
 
 ## How to reinstall or setup a new master/puppet RPI
 
-To start a new puppet or master RPI from scratch, you need to write an image of the puppet or master to a new microSD card and insert it in a new RPI. ISO image of both the puppet RPI and Master RaspberryPi can be found temporarely [here](https://drive.google.com/drive/folders/1dRwQIU48NYPIhd8pfDT68SfZ8-5DPNCz?usp=sharing), but should be kept o
+To start a new puppet or master RPI from scratch, you need to write an image of the puppet or master to a new microSD card and insert it in a new RPI. ISO image of both the puppet RPI and Master RaspberryPi can be found temporarely [here](https://drive.google.com/drive/folders/1dRwQIU48NYPIhd8pfDT68SfZ8-5DPNCz?usp=sharing), but should be kept locally on more than one PC/USB drive. 
 
-For both RPI types (puppet and master), the process is the same. 
+For both RPI types (puppet and master), the process is very similar: 
 
 1. Insert your microSD card into your PC using a microSD card reader.
 2. Format microSD card.
 3. Download ([here](https://www.raspberrypi.com/software/)) and install Rasperry Pi Imager.
 4. Launch Raspberry Pi Manager on your PC.
-5. Under "Operating System", select "Use Custom", select your *.img.gz* file.
+5. Under "Operating System", select "Use Custom", select your *.img.gz* file (use puppetimg.img.gz for a puppet or masterimg.img.gz for the master RPI)
 6. Select the microSD card you wish to burn it to (the one you just inserted in your PC).
 7. Click "write".
 8. Once the process is done, eject the microSD.
