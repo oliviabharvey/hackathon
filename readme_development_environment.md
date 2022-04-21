@@ -27,11 +27,11 @@ Any experiment is based on the BaseExperiment class and so will inherit all of t
 Any experience starts with Box Habituation
 
 Box Habituation
- 1: Exp1a --> black screen
- 2: Exp1B --> familiarize with food tray
- 3: Exp2 --> familiarize with touchscreen
- 4: Exp3 --> press the good square to obtain food, otherwise nothing happens
- 5 Exp4 --> press the good square to obtain food, otherwise punishment happens
+ 1: Exp1a --> black screen <br />
+ 2: Exp1B --> familiarize with food tray <br /> 
+ 3: Exp2 --> familiarize with touchscreen <br /> 
+ 4: Exp3 --> press the good square to obtain food, otherwise nothing happens <br />
+ 5 Exp4 --> press the good square to obtain food, otherwise punishment happens <br />
 
 
 TOUTES LES EXPÉRIENCES
