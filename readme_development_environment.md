@@ -24,9 +24,9 @@ Any experiment is based on the BaseExperiment class and so will inherit all of t
 
 ### **2) Experiments setup**
 
-Any experience starts with Box Habituation
+Any experience starts with Box Habituation <br />
 
-Box Habituation
+Box Habituation <br />
  1: Exp1a --> black screen <br />
  2: Exp1B --> familiarize with food tray <br /> 
  3: Exp2 --> familiarize with touchscreen <br /> 
