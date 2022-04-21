@@ -36,3 +36,6 @@ Any experience starts with Box Habituation <br />
 #### Perseverence 
 - 1: Exp5: deterministic reversal learning: There is always two squares, the left one is always the good square.
 - 2: Prl1: 80% of the time, the good square will be on side X, the other 20% will be on side Y.
+
+#### Create a new experiment
+If one wishes to create a new experiment, the code should be added in the [experiments](https://github.com/oliviabharvey/hackathon/tree/master/experiments) section of the code. One should use the BaseExperiment class (base_exp.py) as template for any new addition.
