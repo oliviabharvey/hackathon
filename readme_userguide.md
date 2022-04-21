@@ -7,6 +7,8 @@ Please note the following terms that will be used throughout this guide:
 - **Master RPi**: The RPi used as main console. This RPi will be used to launch expriments on the other RPis.
 - **Puppet RPi**: RPi plugged into the physical setup (screen, motor, lights, etc.). The experience will be run on this RPi. Multiple **Puppet RPis** can be connected to the **Master RPi**.
 
+In this section, you will find 
+
 ## How to run an experiment
 
 ### 1) Make sure the setup is ready to be used
@@ -51,6 +53,10 @@ Please note the following terms that will be used throughout this guide:
 
 
 ## How to update the experiment sequences
+
+Sequences are predefined lists of experiments (that can be in a specific suggested order) to help the user in the selection of the experiments. This only affects the experiments shown in the dropdown menu on the GUI. The specific sequence named All Experiments should always include all available experiments.
+
+ It is possible to modify this list to create new sequences or add new experiments to the dropdown menu by modifying the [sequences.yaml](https://github.com/oliviabharvey/hackathon/blob/master/sequences.yaml) file.
 
 Here is an example of what the [sequence.yaml](https://github.com/oliviabharvey/hackathon/blob/master/sequences.yaml) can look like this:
 
@@ -111,5 +117,5 @@ For both RPI types (puppet and master), the process is the same.
     * For a puppet RPI: `cd hackathon_souris/`
     * For a master RPI: `cd hackathon/`
 14. Enter the following command to pull the most recent scripts from gitgub `git pull` (this is important if changes are made to the github scripts after 2022/04/20, since this is the date when the ISO image was created).
-15. Your new RPI (puppet or master) is good to go!
+15. * If
 
