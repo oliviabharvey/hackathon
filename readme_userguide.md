@@ -18,7 +18,7 @@ In this section, you will find the following procedures:
 
 * Check that all RPis (Master and puppets) are plugged in (power source)
 * Check that all RPis are connected to the Ethernet Switch (via Ethernet cable)
-* Check that the pysical setup of each puppet (box, screen, motor, lights, etc.) are correclty installed and plugged in to the RPi (see [hardware readme](https://github.com/oliviabharvey/hackathon/blob/master/hardware/readme_hardware.md)for more info)
+* Check that the pysical setup of each puppet (box, screen, motor, lights, etc.) are correclty installed and plugged in to the RPi (see [hardware readme](https://github.com/oliviabharvey/hackathon/blob/master/hardware/readme_hardware.md) for more info)
 
 ### 2) Launch the Graphical User Interface (GUI) on the Master RPi
 
@@ -123,8 +123,8 @@ For both RPI types (puppet and master), the process is very similar:
     * For a puppet RPI: `cd hackathon_souris/`
     * For a master RPI: `cd hackathon/`
 14. Enter the following command to pull the most recent scripts from github `git pull` (this is important if changes are made to the github scripts after 2022/04/20, since this is the date when the ISO image was created).
-15. [Change the hostname of the RPI](https://thepihut.com/blogs/raspberry-pi-tutorials/19668676-renaming-your-raspberry-pi-the-hostname) to something significant for you (ex: puppet5.local).
-16. **If your are setting up a ppuppet RPI:** from your PC, add a new line to the [puppets_info.csv](https://github.com/oliviabharvey/hackathon/blob/master/puppets_info.csv) (name of the puppet that will appear in the GUI, username, hostname). Then, on the puppet RPI, pull the recent changes (steps 11 to 14 above). This is important so this new puppet appears in the Master GUI. 
+15. [Change the hostname of the RPI](https://thepihut.com/blogs/raspberry-pi-tutorials/19668676-renaming-your-raspberry-pi-the-hostname) to something significant for you (ex: puppet5).
+16. **If your are setting up a puppet RPI:** from your PC, add a new line to the [puppets_info.csv](https://github.com/oliviabharvey/hackathon/blob/master/puppets_info.csv) (name of the puppet that will appear in the GUI, username, hostname.local (ex:puppet5.local)). Then, on the puppet RPI, pull the recent changes (steps 11 to 14 above). This is important so this new puppet appears in the Master GUI. 
 17. Final steps:
     * For a puppet RPI, use the [hardware readme](https://github.com/oliviabharvey/hackathon/blob/master/hardware/readme_hardware.md) to plug all the necessary hardware to the puppet. Then, make sure it is connected by ethernet cable to the Switch, which should be connected to the master RPI.
     * For a master RPI, your are ready to go! Just make sure it is connected to the switch (which should be connected to at least 1 puppet RPI).
