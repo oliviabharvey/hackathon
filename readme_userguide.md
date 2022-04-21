@@ -96,8 +96,11 @@ New Sequence:
  3: Exp3
 ```
 
-## How to reinstall or add a puppet
+Please note that this sequences only works for already implemented experiments. To add new experiments, [read the development environment readme](https://github.com/oliviabharvey/hackathon/blob/master/readme_development_environment.md#2-experiments-setup).
 
+## How to reinstall or setup a new master/puppet RPI
+
+To start a new
 An ISO image of both the puppet RPI and Master RaspberryPi can be found [here]().
 
 For both RPI types (puppet and master), the process is the same. 
