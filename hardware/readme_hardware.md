@@ -66,6 +66,9 @@ The camera was flagged has a nice to have. A code was developped and the camera 
 2. The video output is currently saved as a mp4 on the puppet Rapsberry (the one where the experiment is conducted). It would need be pulled by the master at the end of the experiment so the user can then copy them from the master Raspberry Pi and deleted from the puppet once the file transfer is completed (use the `scp` command - see how other files are pull to the master at the end of an experiment).
 3. Physically setup a space on top of the experiment box to mount the camera in a stable way.
 
+## Update the box and the isolation box
+The box has a basic setup to hold current LEDs and syringe/motor setup. In time, with pratices these could be refined, to make LED more stable, add places for wires, mount the experiment LED to the isolation box, etc.
+
 
 [^1]: We were lacking some 220Ω when soldering the boards. 330Ω resistances were used as a replacement.
 [^2]: Any IR LED/Receiver that can be driven by 3.3V would work. Just make sure that the receiver is a IR receiver that is at its high voltage state when being illumitated by the IR LED and its low voltage state when the infrared beam is broken.
