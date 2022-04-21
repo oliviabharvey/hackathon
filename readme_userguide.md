@@ -54,6 +54,20 @@ Please note the following terms that will be used throughout this guide:
 
 ## How to reinstall or add a puppet
 
-inital setup: connecter le master aux RPIs
+An ISO image of both the puppet RPI and Master RaspberryPi can be found [here]().
+
+For both RPI types (puppet and master), the process is the same. 
+
+1. Insert you microSD car into your PC using a microSD card reader.
+2. Download ([here](https://www.raspberrypi.com/software/)) and install Rasperry Pi Imager.
+3. Launch Raspberry Pi Manager on your PC.
+4. Under "Operating System", select "Use Custom", select your *.img.gz* file.
+5. Select the microSD card you wish to burn it to (the one you just inserted in your PC).
+6. Click "write".
+7. Once the process is done, eject the microSD.
+8. Insert the microSD into your RPI (it has to be connected to a RPI screen).
+9. Turn on the RPI. Note that if any password is required throughout the process, use "raspberry".
+10. Open a command window in the RPI
+11. 
 copie ISO (master & puppet) (noter comment refaire une copie iso au besoin)
 git pull pour les mettre à jour
