@@ -32,7 +32,9 @@ In this section, you will find the following procedures:
 
 ### 3) Test the equipment on a specific **Puppet RPi**
 
-We have an experiment named [check_components.py](https://github.com/oliviabharvey/hackathon/blob/master/experiments/check_components.py) if you want make sure all components are working. This is not 100% completed. If you need to use it, make sure that it is [added to the sequence list](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences) to be able to access it from the master GUI. Then just launch the experiment.
+We have an experiment named [check_components.py](https://github.com/oliviabharvey/hackathon/blob/master/experiments/check_components.py) if you want make sure all components are working. Currently it is not appearing in the GUI sequence list, if you need to use it, make sure that it is [added to the sequence list](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences) to be able to access it from the master GUI. Then just launch the experiment.
+
+If you don't want to test the equipment, skip to the next step, but it would be useful to have this feature to make sure everything is working well before starting an experiment.
 
 ### 4) Run an experiment on a specific **Puppet RPi**
 
