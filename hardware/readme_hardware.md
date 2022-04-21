@@ -1,6 +1,8 @@
 # Hardward Readme
 This readme covers the hardware installation and connections.
 
+*General warning* Make sure that you're are not using this setup on a metal surface. The electronic boards, like the Raspberry Pi, the homemade board, etc. are unshielded and could be shorted if placed on metal surface or if metal tools (like a screwdriver) is touching multiple points on the board.
+
 ## Overview
 The hardware is composed of the components described below. A schematics is available below.
 - **LEDs**: All LEDs are the generic 5mm, ≈15mA LED. They are all in serie with a 220Ω[^1] resistance to limit current to 15mA from the Raspberry Pi 3.3V source. There are three lights in the system:
@@ -50,6 +52,14 @@ LED is driven directly by the GPIO pin. Receiver's collector is connected to the
 
 ## Schematics
 The schematics image above (available as HTML [here](https://github.com/oliviabharvey/hackathon/blob/master/hardware/hardware_diagram.html)) can be loaded and modified using https://app.diagrams.net/.
+
+# Actual Box Setup
+The image below present a Puppet Raspberry Pi box without the isolation box as a general image.
+<img src="./BoxOverview_noIsolation.jpg" alt="Overview of the internal setup" width="600"/>
+
+## Food tray
+The food tray was pierced with 4 holes. One for the LED Tray light, one for the IR LED, one for the IR Receiver and small slot for the syringe. The image present the setup. The LEDs fit nicely in the holes, but adding tape or glue could help secure it in place.
+<img src="./Foodtray_Setup.jpg" alt="Food tray setup" width="600"/>
 
 # Future Upgrades
 This section includes any updgrades that would be nice to have on the system.
