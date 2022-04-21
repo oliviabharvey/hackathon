@@ -1,7 +1,7 @@
 # Hardward Readme
 This readme covers the hardware installation and connections.
 
-*General warning* Make sure that you're are not using this setup on a metal surface. The electronic boards, like the Raspberry Pi, the homemade board, etc. are unshielded and could be shorted if placed on metal surface or if metal tools (like a screwdriver) is touching multiple points on the board.
+*General warning:* Make sure that you're are not using this setup on a metal surface. The electronic boards, like the Raspberry Pi, the homemade board, etc. are unshielded and could be shorted if placed on metal surface or if metal tools (like a screwdriver) is touching multiple points on the board.
 
 ## Overview
 The hardware is composed of the components described below. A schematics is available below.
