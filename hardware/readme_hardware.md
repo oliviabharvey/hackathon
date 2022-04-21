@@ -19,12 +19,12 @@ Overview of the connections & Schematics:
 ### Boards
 You will find three boards in the this setting. The biggest one, is the Raspberry Pi, the computer of the whole setup (see image above). The smallest professional one is a board used to drive the step motor (see image below).
 
-![Step Motor Board]
+![Step Motor Board](./Motorboard_connector.jpg)
 
-The last board is homemade and capture all of the electronic setup in the of the connections & Schematics. You only have to plug the board as specified in the schematic above (and in the images below) to connect all the hardware appropriately.
+The last board is homemade and capture all of the electronic setup in the of the connections & Schematics. You only have to plug the board as specified in the schematic above (and in the images below) to connect all the hardware appropriately. All the connections are flowing from GPIO to Ground, making it easy to isolate the circuit for each (each LED, buzzer, etc.)
 
-![Connector]
-![Connector]
+![Breadboard Groups](./Breadboard_group.jpg)
+![Breadboard Connectors](./Breadboard_connector.jpg)
 
 ## LEDs
 5mm, 15mA "common" LEDs.
