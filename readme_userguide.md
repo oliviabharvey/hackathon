@@ -40,7 +40,7 @@ Please note the following terms that will be used throughout this guide:
 
 3. Select a sequence of experiments in the `Sequence to run` field.
 
-    **Sequences** are predefined lists of experiments (that can be in a specific suggested order) to help the user in the selection of the experiments. This only affects the experiments shown in the dropdown menu on the GUI. The specific sequence names `All Experiments` should always include all available experiments.
+    **Sequences** are predefined lists of experiments (that can be in a specific suggested order) to help the user in the selection of the experiments. This only affects the experiments shown in the dropdown menu on the GUI. The specific sequence named `All Experiments` should always include all available experiments.
 
     It is possible to modify this list to create new sequences or add new experiments to the dropdown menu by modifying the [sequences.yaml](https://github.com/oliviabharvey/hackathon/blob/master/sequences.yaml) file (see instructions in [section below](https://github.com/oliviabharvey/hackathon/blob/master/readme_userguide.md#how-to-update-the-experiment-sequences)).
 
@@ -52,19 +52,42 @@ Please note the following terms that will be used throughout this guide:
 
 ## How to update the experiment sequences
 
-Here is an example of what the [sequence.yaml](https://github.com/oliviabharvey/hackathon/blob/master/sequences.yaml) can look like:
+Here is an example of what the [sequence.yaml](https://github.com/oliviabharvey/hackathon/blob/master/sequences.yaml) can look like this:
 
 ```
-Sequence 1:
+Check Components:
+ Check: CheckComponents
+Perseverence:
  1: Exp1a
  2: Exp1B
  3: Exp2
  4: Exp3
-Sequence 2:
+Other Sequence:
  1: Exp3
  2: Exp4
  3: Exp5
  4: Prl1
+All experiments:
+ a: Exp1A
+ b: Exp1B
+ c: Exp2
+ d: Exp3
+ e: Exp4
+ f: Exp5
+ g: Prl1
+```
+
+A sequence is simply a list of experiment to filter through all the available experiment in the GUI.
+
+* The sequence "Check Components" should always stay in the file.
+* The sequence "All experiments" should also always stay in the file and include all available experiments.
+* You can add any number of sequences in the file, as long as you respect the yaml formatting, and they will appear in the GUI at the next launch. For example:
+
+```
+New Sequence:
+ 1: Exp5
+ 2: Exp4
+ 3: Exp3
 ```
 
 ## How to reinstall or add a puppet
