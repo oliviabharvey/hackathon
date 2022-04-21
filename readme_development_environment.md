@@ -22,7 +22,7 @@ The BaseExperiment class is a template for all the possible experiments. This te
 
 Any experiment is based on the BaseExperiment class and so will inherit all of these methods as well as specific method per experiment. When the function launch_experiment.py is used, run_experiment() is called. This function initializes the whole experiment. It starts the timer, it adjusts the status of the experiment to running and it turns the light on to indicate that the experiment is indeed running. It will wait for the status to be completed and once the experiment is done, the results will be saved inside a yaml file. The GUI will indicate where the results are saved so that you can look at them.
 
-### **2) Experiments setup
+### **2) Experiments setup**
 
 Any experience starts with Box Habituation
 
