@@ -30,5 +30,7 @@ dependencies:
     - pynput==1.7.4
     - python-xlib==0.31
     - six==1.16.0
+    - RPi.GPIO==0.7.0
+    - picamera==1.13
 prefix: /home/pi/miniconda3/envs/souris
 
