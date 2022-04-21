@@ -13,7 +13,7 @@ Please note the following terms that will be used throughout this guide:
 
 * Check that all RPis (Master and puppets) are plugged in (power source)
 * Check that all RPis are connected to the Ethernet Switch (via Ethernet cable)
-* Check that the pysical setup of each puppet (box, screen, motor, lights, etc.) are correclty installed and plugged in to the RPi
+* Check that the pysical setup of each puppet (box, screen, motor, lights, etc.) are correclty installed and plugged in to the RPi (see [hardware readme](https://github.com/oliviabharvey/hackathon/blob/master/hardware/readme_hardware.md)for more info)
 
 ### 2) Launch the Graphical User Interface (GUI) on the Master RPi
 
