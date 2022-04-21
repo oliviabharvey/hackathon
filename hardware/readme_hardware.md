@@ -51,6 +51,20 @@ LED is driven directly by the GPIO pin. Receiver's collector is connected to the
 ## Schematics
 The schematics image above (available as HTML here https://github.com/oliviabharvey/hackathon/blob/master/hardware/hardware_diagram.html) can be loaded and modified using https://app.diagrams.net/.
 
+# Future Upgrades
+This section includes any updgrades that would be nice to have on the system.
+
+## Calculate the microliter 
+We did not have access to a pipette to accurately count microliters provided by the motor. The current values are estimated - one full turn = 60 uL. To be rigourous, they should be measured with a pipette. The number of uL given by a turn should be entered by overwriting the denominator in the line `steps_per_uL = 4096/60`, under function `microliter`, in `motor_control.py` (around line 150).
+
+## Advance / Return Motor buttons
+There is no buttons to quickly advance or return the motor to move the syringe. This would help during setup instead of having the syringe at the perfect length to fit the current motor extension. These could be hardware buttons, added the homemade board, or added through the GUI on the master Raspberry Pi.
+
+## Camera
+The camera was flagged has a nice to have. A code was developped and the camera can be started and stopped using the `start_camera` and `stop_camera` functions in the hardware_connector (see [hardware/hardware_connector.py](https://github.com/oliviabharvey/hackathon/blob/master/hardware/hardware_connector.py)). The camera could be added to any experiment once the three following steps are completed:
+1. Add the calls to `start_camera` and to `stop_camera` to the experiment scripts.
+2. The video output is currently saved as a mp4 on the puppet Rapsberry (the one where the experiment is conducted). It would need be pulled by the master at the end of the experiment so the user can then copy them from the master Raspberry Pi and deleted from the puppet once the file transfer is completed (use the `scp` command - see how other files are pull to the master at the end of an experiment).
+3. Physically setup a space on top of the experiment box to mount the camera in a stable way.
 
 
 [^1]: We were lacking some 220Ω when soldering the boards. 330Ω resistances were used as a replacement.
