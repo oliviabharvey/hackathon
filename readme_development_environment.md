@@ -34,5 +34,5 @@ Any experience starts with Box Habituation <br />
  5 Exp4 --> press the good square to obtain food, otherwise punishment happens <br />
 
 #### Perseverence 
-- Exp5: deterministic reversal learning: There is always two squares, the left one is always the good square.
-- Prl1: 80% of the time, the good square will be on side X, the other 20% will be on side Y.
+- 1: Exp5: deterministic reversal learning: There is always two squares, the left one is always the good square.
+- 2: Prl1: 80% of the time, the good square will be on side X, the other 20% will be on side Y.
