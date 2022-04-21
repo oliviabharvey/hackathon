@@ -107,8 +107,9 @@ For both RPI types (puppet and master), the process is the same.
 9. Turn on the RPI. Note that if any password is required throughout the process, use "raspberry".
 10. Open a command window in the RPI
 11. Enter the following command to activate your environment: `source activate souris`
-12. Enter the following command to go the the github folder ``
-13. Enter the following command to pull the most recent scripts from gitgub `git pull` (this is important if changes are made to the github scripts after 2022/04/22, since this is the date when the ISO image was created).
-14. Your new RPI (puppet or master) is good to go!
-copie ISO (master & puppet) (noter comment refaire une copie iso au besoin)
-git pull pour les mettre à jour
+12. Enter the following command to go the the github folder 
+    * For a puppet RPI: `cd hackathon_souris/`
+    * For a master RPI: `cd hackathon/`
+14. Enter the following command to pull the most recent scripts from gitgub `git pull` (this is important if changes are made to the github scripts after 2022/04/20, since this is the date when the ISO image was created).
+15. Your new RPI (puppet or master) is good to go!
+
