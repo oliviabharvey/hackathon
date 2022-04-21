@@ -49,7 +49,7 @@ LED is driven directly by the GPIO pin. Receiver's collector is connected to the
 - Pin 12 (GPIO 18)
 
 ## Schematics
-The schematics image above (available as HTML here https://github.com/oliviabharvey/hackathon/blob/master/hardware/hardware_diagram.html) can be loaded and modified using https://app.diagrams.net/.
+The schematics image above (available as HTML [here](https://github.com/oliviabharvey/hackathon/blob/master/hardware/hardware_diagram.html)) can be loaded and modified using https://app.diagrams.net/.
 
 # Future Upgrades
 This section includes any updgrades that would be nice to have on the system.
