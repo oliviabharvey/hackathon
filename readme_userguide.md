@@ -52,6 +52,21 @@ Please note the following terms that will be used throughout this guide:
 
 ## How to update the experiment sequences
 
+Here is an example of what the [sequence.yaml](https://github.com/oliviabharvey/hackathon/blob/master/sequences.yaml) can look like:
+
+```
+Sequence 1:
+ 1: Exp1a
+ 2: Exp1B
+ 3: Exp2
+ 4: Exp3
+Sequence 2:
+ 1: Exp3
+ 2: Exp4
+ 3: Exp5
+ 4: Prl1
+```
+
 ## How to reinstall or add a puppet
 
 An ISO image of both the puppet RPI and Master RaspberryPi can be found [here]().
@@ -68,6 +83,9 @@ For both RPI types (puppet and master), the process is the same.
 8. Insert the microSD into your RPI (it has to be connected to a RPI screen).
 9. Turn on the RPI. Note that if any password is required throughout the process, use "raspberry".
 10. Open a command window in the RPI
-11. 
+11. Enter the following command to activate your environment: `source activate souris`
+12. Enter the following command to go the the github folder ``
+13. Enter the following command to pull the most recent scripts from gitgub `git pull` (this is important if changes are made to the github scripts after 2022/04/22, since this is the date when the ISO image was created).
+14. Your new RPI (puppet or master) is good to go!
 copie ISO (master & puppet) (noter comment refaire une copie iso au besoin)
 git pull pour les mettre à jour
