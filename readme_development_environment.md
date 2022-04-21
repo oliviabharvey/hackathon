@@ -13,11 +13,11 @@ The BaseExperiment class is a template for all the possible experiments. This te
   - Initialize
   - Deliver sequence
   - Tray light on
-  - play tone
-  - deliver food
-  - is completed
-  - on infrared break
-  - tray light off
+  - Play tone
+  - Deliver food
+  - Is completed
+  - On infrared break
+  - Tray light off
   - ...
 
 Any experiment is based on the BaseExperiment class and so will inherit all of these methods as well as specific method per experiment. When the function launch_experiment.py is used, run_experiment() is called. This function initializes the whole experiment. It starts the timer, it adjusts the status of the experiment to running and it turns the light on to indicate that the experiment is indeed running. It will wait for the status to be completed and once the experiment is done, the results will be saved inside a yaml file. The GUI will indicate where the results are saved so that you can look at them.
